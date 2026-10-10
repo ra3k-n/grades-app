@@ -114,6 +114,7 @@ button:disabled{opacity:.35}
 td .sts{justify-content:center}
 .cn{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:3px 10px 3px 8px;color:#fff;font-size:15px;font-weight:700}
 .cn svg{width:14px;height:14px}
+#wt{min-height:150px}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -127,6 +128,7 @@ td .sts{justify-content:center}
 <div class="er" id="er" hidden>تعذّر الحفظ على هذا الجهاز! أنشئ نسخة احتياطية الآن.</div><div id="main"><div class="btns"><div class="sv2" id="cs" hidden><button class="p" onclick="saveColors()">حفظ</button><button onclick="cancelColors()">إلغاء</button></div><button class="p" onclick="openBk()">نسخة احتياطية</button>
  <button class="dots" id="dots" onclick="toggleMenu()" aria-label="المزيد"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button>
  <div class="mn" id="mn" hidden><button onclick="openList()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>إحصائيات الطلاب</button>
+ <button onclick="$('mn').hidden=true;openWd()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/></svg>استيراد من Word</button>
  <button onclick="$('mn').hidden=true;askSec()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>إضافة شعبة</button>
  <button onclick="$('mn').hidden=true;startColEdit()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="15.5" cy="10" r="1"/></svg>تغيير الألوان</button></div></div><div class="scw"><div id="sc" class="sc"></div></div><div id="secs"></div><p class="ht">اضغط مرتين على اسم الطالب لفتح ملاحظاته</p></div>
 <div id="stu" hidden><div class="top2"><button class="bk" onclick="home()" aria-label="رجوع"></button><h2 id="sn"></h2><div class="sv" id="sv" hidden><button class="p" onclick="saveCol()">حفظ</button><button onclick="cancelCol()">إلغاء</button></div></div>
@@ -148,6 +150,14 @@ td .sts{justify-content:center}
 <input id="smn" placeholder="اسم الشعبة" style="border:1px solid var(--ln);border-radius:10px;padding:12px;font-size:18px;color:var(--ink2);background:transparent">
 <button class="p" onclick="renSec()">تعديل اسم الشعبة</button><button class="d" onclick="askDelSec2()">حذف الشعبة</button><span id="smm"></span></div>
 <div class="mb"><button onclick="$('sm').hidden=true">إغلاق</button></div></div></div>
+<div class="md" id="wd" hidden><div class="mc"><h3>استيراد أسماء من Word</h3><div class="col">
+<select id="ws"></select>
+<button onclick="$('wf').click()">اختيار ملف Word (.docx)</button>
+<input type="file" id="wf" accept=".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
+<textarea id="wt" placeholder="تظهر الأسماء هنا، اسم في كل سطر. يمكنك التعديل أو اللصق"></textarea>
+<button class="p" onclick="wdAdd()">إضافة الأسماء</button><span id="wm"></span></div>
+<div class="mb"><button onclick="$('wd').hidden=true">إغلاق</button></div></div></div>
+<div class="md" id="dp" hidden><div class="mc"><h3 id="dpt"></h3><p id="dpm" style="line-height:1.8"></p><div class="mb" id="dpb" style="flex-wrap:wrap"></div></div></div>
 <div id="toast" hidden></div>
 <div id="kp" hidden></div>
 <script>
@@ -342,6 +352,47 @@ function stOf(r){return(r.h&&r.h[dayKey()])||""}
 function tally(r){const c={p:0,a:0,l:0};Object.values(r.h||{}).forEach(v=>{if(c[v]!==undefined)c[v]++});return c}
 function stBtns(s,i,r){const t=stOf(r);return["p","a","l"].map(k=>`<button class="st st-${k}${t===k?" on":""}" onclick="setSt(${s},${i},'${k}')" aria-label="${STN[k]}">${SV(STI[k])}</button>`).join("")}
 function refreshSt(s,i){const tr=document.querySelector(`#sec${s} tr[data-row="${i}"]`);if(!tr)return;const r=R(s,i),k=stOf(r),w=tr.querySelector(".sts");if(w)w.innerHTML=stBtns(s,i,r);const m=tr.querySelector(".nmc");if(m){const o=m.querySelector(".bdg");if(o)o.remove();if(k)m.insertAdjacentHTML("afterbegin",bdg(k))}}
+const nk=s=>norm(s).replace(/\s+/g," ");
+function dlg(t,h,btns){$("dpt").textContent=t;$("dpm").innerHTML=h;const b=$("dpb");b.innerHTML="";btns.forEach(([n,c,f])=>{const x=document.createElement("button");x.textContent=n;if(c)x.className=c;x.onclick=()=>{$("dp").hidden=true;if(f)f()};b.appendChild(x)});$("dp").hidden=false}
+function findDup(row,name){const k=nk(name);if(!k)return null;for(const S of D.sections)for(const r of S.rows)if(r!==row&&nk(r.n)===k)return S;return null}
+let dupRow=null;
+function dupEdit(){if(!dupRow)return;const s=D.sections.findIndex(S=>S.rows.includes(dupRow));if(s<0)return;const i=D.sections[s].rows.indexOf(dupRow),inp=document.querySelector(`input[data-s="${s}"][data-r="${i}"][data-f="n"]`);if(inp){inp.focus();inp.select()}}
+document.addEventListener("change",e=>{const d=e.target.dataset;if(d&&d.f==="n"&&d.r!==undefined){const row=R(d.s,d.r),S=findDup(row,row.n);if(S){dupRow=row;dlg("اسم مكرر",`الاسم <b>${esc(row.n.trim())}</b> موجود مسبقاً في شعبة ${esc(S.sec)}.`,[["تعديل الاسم","p",dupEdit],["إبقاؤه","",null]])}}});
+async function readDocx(file){
+ const buf=new Uint8Array(await file.arrayBuffer()),dv=new DataView(buf.buffer);
+ let e=buf.length-22;while(e>=0&&dv.getUint32(e,true)!==0x06054b50)e--;
+ if(e<0)throw 0;
+ const n=dv.getUint16(e+10,true);let p=dv.getUint32(e+16,true);
+ for(let i=0;i<n;i++){
+  if(dv.getUint32(p,true)!==0x02014b50)break;
+  const m=dv.getUint16(p+10,true),cs=dv.getUint32(p+20,true),nl=dv.getUint16(p+28,true),xl=dv.getUint16(p+30,true),cl=dv.getUint16(p+32,true),off=dv.getUint32(p+42,true);
+  const nm=new TextDecoder().decode(buf.subarray(p+46,p+46+nl));
+  if(nm==="word/document.xml"){
+   const st=off+30+dv.getUint16(off+26,true)+dv.getUint16(off+28,true),data=buf.subarray(st,st+cs);
+   if(m===0)return new TextDecoder().decode(data);
+   const ds=new DecompressionStream("deflate-raw"),w=ds.writable.getWriter();w.write(data);w.close();
+   return await new Response(ds.readable).text()}
+  p+=46+nl+xl+cl}
+ throw 0}
+function docxLines(xml){const x=new DOMParser().parseFromString(xml,"application/xml"),out=[];
+ [...x.getElementsByTagName("w:p")].forEach(p=>{
+  let t=[...p.getElementsByTagName("w:t")].map(n=>n.textContent).join("").replace(/\s+/g," ").trim();
+  t=t.replace(/^[\s\d٠-٩]+[.\-–)\]:،]+\s*/,"").trim();
+  if(!t||/^[\s\d٠-٩.\-–—()\/:,،]+$/.test(t)||/^(الاسم|اسم الطالب|أسماء الطلاب|اسماء الطلاب|م|الرقم|التسلسل)$/.test(t))return;
+  out.push(t)});return out}
+function openWd(){$("ws").innerHTML=D.sections.map((S,i)=>`<option value="${i}">شعبة ${esc(S.sec)}</option>`).join("");$("wt").value="";$("wm").textContent="";$("wd").hidden=false}
+$("wf").addEventListener("change",async e=>{const f=e.target.files[0];e.target.value="";if(!f)return;
+ try{const L=docxLines(await readDocx(f));$("wt").value=L.join("\n");$("wm").textContent=L.length?"وُجد "+L.length+" اسم. راجعها ثم اضغط «إضافة الأسماء»":"لم أجد أسماء في الملف"}
+ catch(err){$("wm").textContent="تعذّر قراءة الملف. تأكد أنه بصيغة docx (احفظه من Word بصيغة .docx)"}});
+function addNames(S,list){let j=0;list.forEach(n=>{while(j<S.rows.length&&S.rows[j].n)j++;if(j<S.rows.length)S.rows[j].n=n;else S.rows.push({...blank(S.rows.length),n});j++});
+ sortRows(S);renum(D.sections.indexOf(S));save();render();$("wd").hidden=true;toast("تمت إضافة "+list.length+" اسم ✓")}
+function wdAdd(){const S=D.sections[$("ws").value];if(!S)return;
+ const L=$("wt").value.split(/\r?\n/).map(x=>x.replace(/\s+/g," ").trim()).filter(Boolean);
+ if(!L.length){$("wm").textContent="لا توجد أسماء";return}
+ const seen=new Set(),dups=[],ok=[];
+ L.forEach(n=>{const k=nk(n);if(seen.has(k)||D.sections.some(T=>T.rows.some(r=>nk(r.n)===k)))dups.push(n);else ok.push(n);seen.add(k)});
+ if(dups.length)dlg("أسماء مكررة",`وُجد ${dups.length} اسم مكرر:<br>`+dups.slice(0,8).map(esc).join("<br>")+(dups.length>8?"<br>…":""),[["تخطي المكرر","p",()=>addNames(S,ok)],["إضافتها أيضاً","",()=>addNames(S,L)],["إلغاء","",null]]);
+ else addNames(S,L)}
 const dayKey=()=>{const d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()};
 function checkDay(){const k=dayKey();
  D.sections.forEach(S=>S.rows.forEach(r=>{if(r.st){r.h=r.h||{};r.h[D.stDay||k]=r.st;delete r.st}}));
