@@ -110,6 +110,10 @@ body.kp{padding-bottom:96px}
 button:disabled{opacity:.35}
 .qb{margin-bottom:6px}.qb input{border:1px solid #888;border-radius:10px;background:#fff;padding:10px;text-align:right;font-size:16px;max-width:340px}
 #toast{position:fixed;top:calc(env(safe-area-inset-top,0px) + 14px);left:50%;transform:translateX(-50%);z-index:60;background:#1f5c55;color:#fff;padding:12px 24px;border-radius:999px;font-weight:700;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.wrap .st{width:30px;height:30px}
+td .sts{justify-content:center}
+.cn{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:3px 10px 3px 8px;color:#fff;font-size:15px;font-weight:700}
+.cn svg{width:14px;height:14px}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -122,14 +126,14 @@ button:disabled{opacity:.35}
 <body>
 <div class="er" id="er" hidden>تعذّر الحفظ على هذا الجهاز! أنشئ نسخة احتياطية الآن.</div><div id="main"><div class="btns"><div class="sv2" id="cs" hidden><button class="p" onclick="saveColors()">حفظ</button><button onclick="cancelColors()">إلغاء</button></div><button class="p" onclick="openBk()">نسخة احتياطية</button>
  <button class="dots" id="dots" onclick="toggleMenu()" aria-label="المزيد"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button>
- <div class="mn" id="mn" hidden><button onclick="openList()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M17 14c2.5 0 4.5 2 4.5 4.5"/></svg>قائمة الطلاب</button>
+ <div class="mn" id="mn" hidden><button onclick="openList()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>إحصائيات الطلاب</button>
  <button onclick="$('mn').hidden=true;askSec()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>إضافة شعبة</button>
  <button onclick="$('mn').hidden=true;startColEdit()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="15.5" cy="10" r="1"/></svg>تغيير الألوان</button></div></div><div class="scw"><div id="sc" class="sc"></div></div><div id="secs"></div><p class="ht">اضغط مرتين على اسم الطالب لفتح ملاحظاته</p></div>
 <div id="stu" hidden><div class="top2"><button class="bk" onclick="home()" aria-label="رجوع"></button><h2 id="sn"></h2><div class="sv" id="sv" hidden><button class="p" onclick="saveCol()">حفظ</button><button onclick="cancelCol()">إلغاء</button></div></div>
 <div class="crow"><span>لون الطالب</span><span id="pv" class="cc" onclick="toggleCp()" title="تغيير اللون"></span></div>
 <div id="cpn" hidden><div id="sw" class="sw"></div><div class="mb" style="align-items:center"><label>لون مخصص <input type="color" id="cc"></label><button onclick="pickCol('')">بدون لون</button></div></div>
 <div class="tabs"><span class="tab">الملاحظات</span><div style="margin-inline-start:auto;display:flex;gap:6px"><button class="an" style="margin:0" onclick="openMove()">نقل الطالب</button><button class="an" style="margin:0" onclick="openNote()">+ إضافة ملاحظة</button></div></div><div id="nl"></div></div>
-<div id="lst" hidden><div class="top2"><button class="bk" onclick="home()" aria-label="رجوع"></button><h2>قائمة الطلاب</h2></div><div id="ll"></div></div>
+<div id="lst" hidden><div class="top2"><button class="bk" onclick="home()" aria-label="رجوع"></button><h2>إحصائيات الطلاب</h2></div><div id="ll"></div></div>
 <div class="md" id="md" hidden><div class="mc"><h3 id="mh"></h3><textarea id="nt" placeholder="اكتب الملاحظة"></textarea>
 <div class="mb"><button class="p" onclick="saveNote()">حفظ</button><button onclick="closeNote()">إلغاء</button><button class="d" id="dn" onclick="delNote()" hidden style="margin-inline-start:auto">حذف</button></div></div></div>
 
@@ -177,9 +181,10 @@ function secHTML(S,si){
  h+="</thead><tbody>";
  S.rows.forEach((r,i)=>{
   const a=`data-s="${si}" data-r="${i}"`,cb=r.cl?`style="background:${r.cl}"`:"";
-  h+=`<tr data-row="${i}"><td ${cb}><div class="nmc">${r.st?bdg(r.st):""}<input ${a} data-f="n" value="${esc(r.n)}" placeholder="اسم الطالب"><button class="x" title="حذف الصف" onclick="delRow(${si},${i})">✕</button></div></td><td class="nc" ${cb}><input ${a} data-f="num" inputmode="none" data-dg="i" value="${esc(r.num)}"></td>`;
+  h+=`<tr data-row="${i}"><td ${cb}><div class="nmc">${stOf(r)?bdg(stOf(r)):""}<input ${a} data-f="n" value="${esc(r.n)}" placeholder="اسم الطالب"><button class="x" title="حذف الصف" onclick="delRow(${si},${i})">✕</button></div></td><td class="nc" ${cb}><input ${a} data-f="num" inputmode="none" data-dg="i" value="${esc(r.num)}"></td>`;
   D.cols.forEach(c=>{const bg=`style="background:${c.c}"`;
    if(c.tot)h+=`<td ${bg}>`+(r.ok?`<div class="tc"><input ${a} data-f="tot" inputmode="none" data-dg="1" value="${esc(r.tot??sumRow(r))}" style="font-weight:700"><button class="rb" title="تعديل الدرجات" onclick="reopen(${si},${i})">✎</button></div>`:`<button class="ok" onclick="confirmRow(${si},${i})">✓ تأكيد</button>`)+"</td>";
+   else if(c.txt)h+=`<td ${bg}><span class="sts">${stBtns(si,i,r)}</span></td>`;
    else h+=`<td ${bg}><input ${a} data-k="${c.k}" ${c.txt?"":'inputmode="none" data-dg="1"'} value="${esc(r.s[c.k]??"")}"></td>`});
   h+="</tr>"});
  return h+"</tbody></table></div></div>";
@@ -228,7 +233,7 @@ document.addEventListener("pointerup",e=>{const d=e.target.dataset;if(d&&d.f==="
 function openStu(s,i){cs=s;ci=i;ed=false;show("stu");renderStu();colorUI()}
 const nts=()=>R(cs,ci).notes||(R(cs,ci).notes=[]);
 function fmt(t){try{return new Date(t).toLocaleString("ar",{calendar:"gregory",weekday:"long",day:"numeric",month:"long",hour:"numeric",minute:"2-digit"})}catch(e){return""}}
-function renderStu(){const r=R(cs,ci);$("sn").innerHTML=esc(r.n||"طالب رقم "+r.num)+(r.st?" "+bdg(r.st):"");
+function renderStu(){const r=R(cs,ci);$("sn").innerHTML=esc(r.n||"طالب رقم "+r.num)+(stOf(r)?" "+bdg(stOf(r)):"");
  $("nl").innerHTML=nts().length?nts().map((n,i)=>`<div class="nc2" onclick="openNote(${i})">${esc(n.t)}<small>${fmt(n.d)}</small></div>`).join(""):'<div class="emp">لا توجد ملاحظات بعد</div>'}
 function openNote(i=-1){en=i;$("mh").textContent=i<0?"إضافة ملاحظة":"تعديل الملاحظة";$("nt").value=i<0?"":nts()[i].t;$("dn").hidden=i<0;$("dn").textContent="حذف";$("md").hidden=false;$("nt").focus()}
 function closeNote(){$("md").hidden=true}
@@ -236,8 +241,8 @@ function saveNote(){const t=$("nt").value.trim();if(t){if(en<0)nts().unshift({t,
 function delNote(){const b=$("dn");if(b.textContent==="حذف"){b.textContent="تأكيد الحذف";return}nts().splice(en,1);save();renderStu();closeNote()}
 function openList(){$("mn").hidden=true;show("lst");buildList()}
 const STI={p:'<path d="M5 12l5 5 9-10"/>',a:'<path d="M6 6l12 12M18 6L6 18"/>',l:'<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>'},STN={p:"حاضر",a:"غائب",l:"متأخر"};
-function buildList(){$("ll").innerHTML=D.sections.map((S,si)=>`<div class="lc"><div class="ht2">شعبة ${esc(S.sec)}</div>`+S.rows.map((r,i)=>`<div class="lr"><span class="ln">${esc(r.n)||'<i style="color:var(--mut)">بدون اسم</i>'}</span><span class="sts">`+["p","a","l"].map(k=>`<button class="st st-${k}${r.st===k?" on":""}" onclick="setSt(${si},${i},'${k}')" aria-label="${STN[k]}">${SV(STI[k])}</button>`).join("")+"</span></div>").join("")+"</div>").join("")}
-function setSt(s,i,k){const r=R(s,i);r.st=r.st===k?"":k;save();buildList()}
+function buildList(){$("ll").innerHTML=D.sections.map(S=>`<div class="lc"><div class="ht2">شعبة ${esc(S.sec)}</div>`+S.rows.map(r=>{const c=tally(r);return `<div class="lr"><span class="ln">${esc(r.n)||'<i style="color:var(--mut)">بدون اسم</i>'}</span><span class="sts">`+["p","a","l"].map(k=>`<span class="cn st-${k}" title="${STN[k]}">${SV(STI[k])}<b>${c[k]}</b></span>`).join("")+"</span></div>"}).join("")+"</div>").join("")}
+function setSt(s,i,k){const r=R(s,i),t=dayKey();r.h=r.h||{};if(r.h[t]===k)delete r.h[t];else r.h[t]=k;save();refreshSt(s,i)}
 const bdg=k=>`<span class="bdg st-${k}" title="${STN[k]}">${SV(STI[k])}</span>`;
 function startDrag(e){e.preventDefault();drag=e.currentTarget.closest("li");drag.classList.add("dg");document.addEventListener("pointermove",moveDrag);document.addEventListener("pointerup",endDrag,{once:true});document.addEventListener("pointercancel",endDrag,{once:true})}
 function moveDrag(e){const el=document.elementFromPoint(e.clientX,e.clientY),li=el&&el.closest("#ll li");if(!li||li===drag||li.parentNode!==drag.parentNode)return;const r=li.getBoundingClientRect();e.clientY<r.top+r.height/2?li.before(drag):li.after(drag)}
@@ -298,19 +303,19 @@ if(window.visualViewport){let ph=visualViewport.height;visualViewport.addEventLi
 function goSec(i){const e=document.getElementById("sec"+i);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})}
 function buildSc(){$("sc").innerHTML=D.sections.map((S,i)=>`<button data-i="${i}">شعبة ${esc(S.sec)}</button>`).join("")}
 const kpEl=$("kp");
-kpEl.innerHTML=["1","2","3","4","5","6","7","8","9","0"].map(k=>`<button data-kp="${k}">${k}</button>`).join("")+'<button id="kdot" data-kp=".">.</button><button class="kx" data-kp="bs">⌫</button><button class="kx" id="kdn" data-kp="dn">↓</button><button class="kx" id="knx" data-kp="nx">التالي</button><button class="kx" data-kp="ok">تم</button>';
-function showKp(el){kpEl.hidden=false;document.body.classList.add("kp");const g=!!el.dataset.k;$("kdn").hidden=!g;$("knx").hidden=!g;$("kdot").hidden=el.dataset.dg==="i";setTimeout(()=>el.scrollIntoView({block:"center",behavior:"smooth"}),60)}
+kpEl.innerHTML=["1","2","3","4","5","6","7","8","9","0"].map(k=>`<button data-kp="${k}">${k}</button>`).join("")+'<button id="kdot" data-kp=".">.</button><button class="kx" data-kp="bs">⌫</button><button class="kx" id="kup" data-kp="up">↑</button><button class="kx" id="kdn" data-kp="dn">↓</button><button class="kx" data-kp="ok">تم</button>';
+function showKp(el){kpEl.hidden=false;document.body.classList.add("kp");const g=el.dataset.r!==undefined;$("kdn").hidden=!g;$("kup").hidden=!g;$("kdot").hidden=el.dataset.dg==="i";setTimeout(()=>el.scrollIntoView({block:"center",behavior:"smooth"}),60)}
 function hideKp(){kpEl.hidden=true;document.body.classList.remove("kp")}
 const ke=()=>{const a=document.activeElement;return a&&a.dataset&&a.dataset.dg?a:null};
 document.addEventListener("focusin",e=>{const t=e.target;if(t.dataset&&t.dataset.dg)showKp(t);else if(!kpEl.contains(t))hideKp()});
 document.addEventListener("focusout",()=>setTimeout(()=>{if(!ke())hideKp()},150));
-kpEl.addEventListener("pointerdown",e=>{e.preventDefault();const b=e.target.closest("button");if(b)kpPress(b.dataset.kp)});
+kpEl.addEventListener("pointerdown",e=>e.preventDefault());
+kpEl.addEventListener("click",e=>{e.preventDefault();const b=e.target.closest("button");if(b)kpPress(b.dataset.kp)});
 function kpPress(k){const el=ke();if(!el)return;
  if(k==="ok"){el.blur();hideKp();return}
- if(k==="nx"||k==="dn"){const d=el.dataset;let n=null;
-  if(k==="dn")n=document.querySelector(`input[data-s="${d.s}"][data-r="${+d.r+1}"][data-k="${d.k}"]`);
-  else{const L=[...document.querySelectorAll("input[data-k][data-dg]")];n=L[L.indexOf(el)+1]}
-  if(n)n.focus();else{el.blur();hideKp()}return}
+ if(k==="up"||k==="dn"){const d=el.dataset,dir=k==="up"?-1:1,col=d.k?`[data-k="${d.k}"]`:`[data-f="${d.f}"]`,len=D.sections[d.s].rows.length;
+  for(let r=+d.r+dir;r>=0&&r<len;r+=dir){const n=document.querySelector(`input[data-s="${d.s}"][data-r="${r}"]${col}`);if(n&&!n.closest("tr").hidden){n.focus();return}}
+  return}
  const s=el.selectionStart??el.value.length,e2=el.selectionEnd??s;
  if(k==="bs"){if(s!==e2)el.setRangeText("",s,e2,"end");else if(s>0)el.setRangeText("",s-1,s,"end");else return}
  else el.setRangeText(k,s,e2,"end");
@@ -333,11 +338,15 @@ function toast(t){const e=$("toast");e.textContent=t;e.hidden=false;clearTimeout
 function norm(s){return String(s||"").replace(/[\u064B-\u0652\u0640]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").trim().toLowerCase()}
 function filt(si){const q=QO.has(si)?norm(QS[si]):"";document.querySelectorAll(`#sec${si} tbody tr`).forEach(tr=>{const r=D.sections[si]&&D.sections[si].rows[tr.dataset.row];tr.hidden=!!q&&!!r&&!norm(r.n).includes(q)})}
 function toggleQ(si){const b=$("qb"+si);if(QO.has(si)){QO.delete(si);QS[si]="";b.hidden=true;$("q"+si).value=""}else{QO.add(si);b.hidden=false;$("q"+si).focus()}filt(si)}
+function stOf(r){return(r.h&&r.h[dayKey()])||""}
+function tally(r){const c={p:0,a:0,l:0};Object.values(r.h||{}).forEach(v=>{if(c[v]!==undefined)c[v]++});return c}
+function stBtns(s,i,r){const t=stOf(r);return["p","a","l"].map(k=>`<button class="st st-${k}${t===k?" on":""}" onclick="setSt(${s},${i},'${k}')" aria-label="${STN[k]}">${SV(STI[k])}</button>`).join("")}
+function refreshSt(s,i){const tr=document.querySelector(`#sec${s} tr[data-row="${i}"]`);if(!tr)return;const r=R(s,i),k=stOf(r),w=tr.querySelector(".sts");if(w)w.innerHTML=stBtns(s,i,r);const m=tr.querySelector(".nmc");if(m){const o=m.querySelector(".bdg");if(o)o.remove();if(k)m.insertAdjacentHTML("afterbegin",bdg(k))}}
 const dayKey=()=>{const d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()};
 function checkDay(){const k=dayKey();
- if(!D.stDay){D.stDay=k;save();return}
+ D.sections.forEach(S=>S.rows.forEach(r=>{if(r.st){r.h=r.h||{};r.h[D.stDay||k]=r.st;delete r.st}}));
  if(D.stDay===k)return;
- D.sections.forEach(S=>S.rows.forEach(r=>{r.st=""}));D.stDay=k;save();render();
+ D.stDay=k;save();render();
  if(!$("lst").hidden)buildList();if(!$("stu").hidden)renderStu()}
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkDay()});
 setInterval(checkDay,60000);
