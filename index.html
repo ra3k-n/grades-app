@@ -115,6 +115,11 @@ td .sts{justify-content:center}
 .cn{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:3px 10px 3px 8px;color:#fff;font-size:15px;font-weight:700}
 .cn svg{width:14px;height:14px}
 #wt{min-height:150px}
+.wbtn{background:#2b579a;border-color:#2b579a;color:#fff;font-weight:700;display:inline-flex;align-items:center;gap:8px;border-radius:10px}
+.wlogo{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:5px;background:#fff;color:#2b579a;font:900 16px Georgia,serif}
+.sc2{margin:12px 0 16px}
+.lc{scroll-margin-top:100px}
+#ptr{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:50%;transform:translateX(-50%);z-index:70;background:#1f4e8c;color:#fff;padding:10px 22px;border-radius:999px;font-weight:700;box-shadow:0 4px 16px rgba(0,0,0,.3)}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -125,17 +130,16 @@ td .sts{justify-content:center}
 <meta name="theme-color" content="#1f5c55">
 </head>
 <body>
-<div class="er" id="er" hidden>تعذّر الحفظ على هذا الجهاز! أنشئ نسخة احتياطية الآن.</div><div id="main"><div class="btns"><div class="sv2" id="cs" hidden><button class="p" onclick="saveColors()">حفظ</button><button onclick="cancelColors()">إلغاء</button></div><button class="p" onclick="openBk()">نسخة احتياطية</button>
+<div class="er" id="er" hidden>تعذّر الحفظ على هذا الجهاز! أنشئ نسخة احتياطية الآن.</div><div id="main"><div class="btns"><div class="sv2" id="cs" hidden><button class="p" onclick="saveColors()">حفظ</button><button onclick="cancelColors()">إلغاء</button></div><button class="p" onclick="openBk()">نسخة احتياطية</button><button class="wbtn" onclick="openWd()"><span class="wlogo">W</span>استيراد من Word</button>
  <button class="dots" id="dots" onclick="toggleMenu()" aria-label="المزيد"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button>
  <div class="mn" id="mn" hidden><button onclick="openList()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>إحصائيات الطلاب</button>
- <button onclick="$('mn').hidden=true;openWd()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5"/></svg>استيراد من Word</button>
  <button onclick="$('mn').hidden=true;askSec()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>إضافة شعبة</button>
- <button onclick="$('mn').hidden=true;startColEdit()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="15.5" cy="10" r="1"/></svg>تغيير الألوان</button></div></div><div class="scw"><div id="sc" class="sc"></div></div><div id="secs"></div><p class="ht">اضغط مرتين على اسم الطالب لفتح ملاحظاته</p></div>
+ <button onclick="$('mn').hidden=true;startColEdit()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="15.5" cy="10" r="1"/></svg>تغيير الألوان</button></div></div><div class="scw"><div id="sc" class="sc"></div></div><div id="secs"></div><p class="ht">اضغط مرتين على اسم الطالب لفتح ملاحظاته · الإصدار 16</p></div>
 <div id="stu" hidden><div class="top2"><button class="bk" onclick="home()" aria-label="رجوع"></button><h2 id="sn"></h2><div class="sv" id="sv" hidden><button class="p" onclick="saveCol()">حفظ</button><button onclick="cancelCol()">إلغاء</button></div></div>
 <div class="crow"><span>لون الطالب</span><span id="pv" class="cc" onclick="toggleCp()" title="تغيير اللون"></span></div>
 <div id="cpn" hidden><div id="sw" class="sw"></div><div class="mb" style="align-items:center"><label>لون مخصص <input type="color" id="cc"></label><button onclick="pickCol('')">بدون لون</button></div></div>
 <div class="tabs"><span class="tab">الملاحظات</span><div style="margin-inline-start:auto;display:flex;gap:6px"><button class="an" style="margin:0" onclick="openMove()">نقل الطالب</button><button class="an" style="margin:0" onclick="openNote()">+ إضافة ملاحظة</button></div></div><div id="nl"></div></div>
-<div id="lst" hidden><div class="top2"><button class="bk" onclick="home()" aria-label="رجوع"></button><h2>إحصائيات الطلاب</h2></div><div id="ll"></div></div>
+<div id="lst" hidden><div class="top2"><button class="bk" onclick="home()" aria-label="رجوع"></button><h2>إحصائيات الطلاب</h2></div><div id="sc2" class="sc sc2"></div><div id="ll"></div></div>
 <div class="md" id="md" hidden><div class="mc"><h3 id="mh"></h3><textarea id="nt" placeholder="اكتب الملاحظة"></textarea>
 <div class="mb"><button class="p" onclick="saveNote()">حفظ</button><button onclick="closeNote()">إلغاء</button><button class="d" id="dn" onclick="delNote()" hidden style="margin-inline-start:auto">حذف</button></div></div></div>
 
@@ -158,6 +162,7 @@ td .sts{justify-content:center}
 <button class="p" onclick="wdAdd()">إضافة الأسماء</button><span id="wm"></span></div>
 <div class="mb"><button onclick="$('wd').hidden=true">إغلاق</button></div></div></div>
 <div class="md" id="dp" hidden><div class="mc"><h3 id="dpt"></h3><p id="dpm" style="line-height:1.8"></p><div class="mb" id="dpb" style="flex-wrap:wrap"></div></div></div>
+<div id="ptr" hidden></div>
 <div id="toast" hidden></div>
 <div id="kp" hidden></div>
 <script>
@@ -251,7 +256,7 @@ function saveNote(){const t=$("nt").value.trim();if(t){if(en<0)nts().unshift({t,
 function delNote(){const b=$("dn");if(b.textContent==="حذف"){b.textContent="تأكيد الحذف";return}nts().splice(en,1);save();renderStu();closeNote()}
 function openList(){$("mn").hidden=true;show("lst");buildList()}
 const STI={p:'<path d="M5 12l5 5 9-10"/>',a:'<path d="M6 6l12 12M18 6L6 18"/>',l:'<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>'},STN={p:"حاضر",a:"غائب",l:"متأخر"};
-function buildList(){$("ll").innerHTML=D.sections.map(S=>`<div class="lc"><div class="ht2">شعبة ${esc(S.sec)}</div>`+S.rows.map(r=>{const c=tally(r);return `<div class="lr"><span class="ln">${esc(r.n)||'<i style="color:var(--mut)">بدون اسم</i>'}</span><span class="sts">`+["p","a","l"].map(k=>`<span class="cn st-${k}" title="${STN[k]}">${SV(STI[k])}<b>${c[k]}</b></span>`).join("")+"</span></div>"}).join("")+"</div>").join("")}
+function buildList(){$("ll").innerHTML=D.sections.map((S,si)=>`<div class="lc" id="lc${si}"><div class="ht2">شعبة ${esc(S.sec)}</div>`+S.rows.map(r=>{const c=tally(r);return `<div class="lr"><span class="ln">${esc(r.n)||'<i style="color:var(--mut)">بدون اسم</i>'}</span><span class="sts">`+["p","a","l"].map(k=>`<span class="cn st-${k}" title="${STN[k]}">${SV(STI[k])}<b>${c[k]}</b></span>`).join("")+"</span></div>"}).join("")+"</div>").join("")}
 function setSt(s,i,k){const r=R(s,i),t=dayKey();r.h=r.h||{};if(r.h[t]===k)delete r.h[t];else r.h[t]=k;save();refreshSt(s,i)}
 const bdg=k=>`<span class="bdg st-${k}" title="${STN[k]}">${SV(STI[k])}</span>`;
 function startDrag(e){e.preventDefault();drag=e.currentTarget.closest("li");drag.classList.add("dg");document.addEventListener("pointermove",moveDrag);document.addEventListener("pointerup",endDrag,{once:true});document.addEventListener("pointercancel",endDrag,{once:true})}
@@ -311,7 +316,7 @@ document.addEventListener("input",e=>{const d=e.target.dataset;if(d&&d.f==="n"&&
 document.addEventListener("focusout",()=>{setTimeout(()=>{const a=document.activeElement;if(!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)))doSort()},120)});
 if(window.visualViewport){let ph=visualViewport.height;visualViewport.addEventListener("resize",()=>{const h=visualViewport.height;if(h>ph+80&&dirty!==null){const a=document.activeElement;if(a&&a.dataset&&a.dataset.f==="n")a.blur();setTimeout(doSort,80)}ph=h})}
 function goSec(i){const e=document.getElementById("sec"+i);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})}
-function buildSc(){$("sc").innerHTML=D.sections.map((S,i)=>`<button data-i="${i}">شعبة ${esc(S.sec)}</button>`).join("")}
+function buildSc(){const h=D.sections.map((S,i)=>`<button data-i="${i}">شعبة ${esc(S.sec)}</button>`).join("");$("sc").innerHTML=h;$("sc2").innerHTML=h}
 const kpEl=$("kp");
 kpEl.innerHTML=["1","2","3","4","5","6","7","8","9","0"].map(k=>`<button data-kp="${k}">${k}</button>`).join("")+'<button id="kdot" data-kp=".">.</button><button class="kx" data-kp="bs">⌫</button><button class="kx" id="kup" data-kp="up">↑</button><button class="kx" id="kdn" data-kp="dn">↓</button><button class="kx" data-kp="ok">تم</button>';
 function showKp(el){kpEl.hidden=false;document.body.classList.add("kp");const g=el.dataset.r!==undefined;$("kdn").hidden=!g;$("kup").hidden=!g;$("kdot").hidden=el.dataset.dg==="i";setTimeout(()=>el.scrollIntoView({block:"center",behavior:"smooth"}),60)}
@@ -336,13 +341,26 @@ function saveColors(){colEd=false;document.body.classList.remove("pick");$("cs")
 function cancelColors(){D.cols.forEach((c,i)=>c.c=colBak[i]);colEd=false;document.body.classList.remove("pick");$("cs").hidden=true;save();render()}
 let smI=0,lpT=null,lpF=false;
 function openSecMenu(i){smI=i;const S=D.sections[i];$("smt").textContent="شعبة "+S.sec;$("smn").value=S.sec;$("smm").innerHTML="";$("sm").hidden=false}
-function renSec(){const v=$("smn").value.trim();if(!v)return;D.sections[smI].sec=v;save();render();$("sm").hidden=true}
-function askDelSec2(){ask2("smm","حذف الشعبة كاملة مع طلابها؟",()=>{D.sections.splice(smI,1);OP.clear();save();render();$("sm").hidden=true})}
-const scEl=$("sc");
-scEl.addEventListener("pointerdown",e=>{const b=e.target.closest("button");if(!b)return;lpF=false;clearTimeout(lpT);lpT=setTimeout(()=>{lpF=true;openSecMenu(+b.dataset.i)},600)});
-["pointerup","pointerleave","pointercancel"].forEach(t=>scEl.addEventListener(t,()=>clearTimeout(lpT)));
-scEl.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(lpF){lpF=false;return}goSec(+b.dataset.i)});
-scEl.addEventListener("contextmenu",e=>e.preventDefault());
+function renSec(){const v=$("smn").value.trim();if(!v)return;D.sections[smI].sec=v;save();render();if(!$("lst").hidden)buildList();$("sm").hidden=true}
+function askDelSec2(){ask2("smm","حذف الشعبة كاملة مع طلابها؟",()=>{D.sections.splice(smI,1);OP.clear();save();render();if(!$("lst").hidden)buildList();$("sm").hidden=true})}
+function bindSc(el,tap){
+ el.addEventListener("pointerdown",e=>{const b=e.target.closest("button");if(!b)return;lpF=false;clearTimeout(lpT);lpT=setTimeout(()=>{lpF=true;openSecMenu(+b.dataset.i)},600)});
+ ["pointerup","pointerleave","pointercancel"].forEach(t=>el.addEventListener(t,()=>clearTimeout(lpT)));
+ el.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(lpF){lpF=false;return}tap(+b.dataset.i)});
+ el.addEventListener("contextmenu",e=>e.preventDefault())}
+bindSc($("sc"),goSec);bindSc($("sc2"),i=>{const e=$("lc"+i);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})});
+let py=0,pd=0,pulling=false;
+function showPull(d){const p=$("ptr");p.hidden=false;p.style.opacity=Math.min(1,d/70);p.textContent=d>90?"أفلت للتحديث":"اسحب للأسفل للتحديث"}
+function hidePull(){$("ptr").hidden=true}
+document.addEventListener("touchstart",e=>{if(window.scrollY<=0&&e.touches.length===1&&!document.body.classList.contains("kp")&&!document.querySelector(".md:not([hidden])")){py=e.touches[0].clientY;pulling=true;pd=0}},{passive:true});
+document.addEventListener("touchmove",e=>{if(!pulling)return;pd=e.touches[0].clientY-py;if(pd>12&&window.scrollY<=0)showPull(pd);else hidePull()},{passive:true});
+document.addEventListener("touchend",()=>{if(!pulling)return;pulling=false;if(pd>90)doRefresh();else hidePull()});
+async function doRefresh(){const p=$("ptr");p.style.opacity=1;p.hidden=false;
+ if(!navigator.onLine){p.textContent="لا يوجد اتصال بالإنترنت";setTimeout(hidePull,1800);return}
+ p.textContent="جارٍ التحديث…";
+ try{const reg=await navigator.serviceWorker.getRegistration();if(reg){await reg.update();await new Promise(r=>setTimeout(r,2500))}
+  checkDay();p.textContent="لديك أحدث إصدار ✓"}catch(e){p.textContent="تعذّر التحديث"}
+ setTimeout(hidePull,1800)}
 D.sections.forEach((S,i)=>{sortRows(S);renum(i)});save();
 function toast(t){const e=$("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>{e.hidden=true},2400)}
 function norm(s){return String(s||"").replace(/[\u064B-\u0652\u0640]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").trim().toLowerCase()}

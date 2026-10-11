@@ -1,4 +1,4 @@
-const C="grades-v15",F=["./","./index.html","./manifest.webmanifest","./icon-180.png","./icon-192.png","./icon-512.png"];
+const C="grades-v16",F=["./","./index.html","./manifest.webmanifest","./icon-180.png","./icon-192.png","./icon-512.png"];
 const clean=async r=>r.redirected?new Response(await r.blob(),{status:200,headers:r.headers}):r;
 self.addEventListener("install",e=>{e.waitUntil((async()=>{const c=await caches.open(C);
  for(const u of F){try{const r=await fetch(u,{cache:"reload"});if(!r.ok)throw new Error(u);await c.put(u,await clean(r))}catch(err){if(u==="./"||u==="./index.html")throw err}}
