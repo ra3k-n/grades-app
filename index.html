@@ -120,6 +120,27 @@ td .sts{justify-content:center}
 .sc2{margin:12px 0 16px}
 .lc{scroll-margin-top:100px}
 #ptr{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);left:50%;transform:translateX(-50%);z-index:70;background:#1f4e8c;color:#fff;padding:10px 22px;border-radius:999px;font-weight:700;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.theme{margin-inline-start:auto}
+.btns .dots{margin-inline-start:0}
+:root[data-theme="light"] body{color:#1d1d1d}
+:root[data-theme="dark"] body{color:#e8e8e8}
+.wrap{overflow:visible}
+table{border-collapse:separate;border-spacing:0}
+th,td{border:0;border-bottom:1px solid var(--line);border-left:1px solid var(--line)}
+th:last-child,td:last-child{border-left:0}
+thead tr:first-child th{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--scwh,64px));z-index:5}
+.wrap .st{width:22px;height:22px}
+.wrap .st svg{width:13px;height:13px}
+.sts{gap:3px}
+.sec{scroll-margin-top:130px}
+.scw .theme,.scw .dots{margin-inline-start:0}
+.scw .mn,.scw .sv2{top:calc(100% + 6px)}
+.addsec{background:#6d28d9;border-color:#6d28d9;color:#fff;font-weight:700;border-radius:999px;padding:7px 16px;flex:none;font-size:16px}
+.stbtn{display:block;margin:3px auto;padding:2px 8px;font-size:12px;border-radius:6px}
+.pk{display:block;width:100%;text-align:right;margin-bottom:6px;padding:10px;font-size:16px}
+#ll{display:block;max-width:560px;margin:0 auto}
+input.ro{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.stbtn{background:#fff;color:#1d1d1d;border-color:#888}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -128,18 +149,16 @@ td .sts{justify-content:center}
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="سجل الدرجات">
 <meta name="theme-color" content="#1f5c55">
+<script>try{var t=localStorage.getItem("gradesheet_theme");if(t)document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
 </head>
 <body>
-<div class="er" id="er" hidden>تعذّر الحفظ على هذا الجهاز! أنشئ نسخة احتياطية الآن.</div><div id="main"><div class="btns"><div class="sv2" id="cs" hidden><button class="p" onclick="saveColors()">حفظ</button><button onclick="cancelColors()">إلغاء</button></div><button class="p" onclick="openBk()">نسخة احتياطية</button><button class="wbtn" onclick="openWd()"><span class="wlogo">W</span>استيراد من Word</button>
- <button class="dots" id="dots" onclick="toggleMenu()" aria-label="المزيد"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button>
- <div class="mn" id="mn" hidden><button onclick="openList()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>إحصائيات الطلاب</button>
- <button onclick="$('mn').hidden=true;askSec()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>إضافة شعبة</button>
- <button onclick="$('mn').hidden=true;startColEdit()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="15.5" cy="10" r="1"/></svg>تغيير الألوان</button></div></div><div class="scw"><div id="sc" class="sc"></div></div><div id="secs"></div><p class="ht">اضغط مرتين على اسم الطالب لفتح ملاحظاته · الإصدار 16</p></div>
+<div class="er" id="er" hidden>تعذّر الحفظ على هذا الجهاز! أنشئ نسخة احتياطية الآن.</div><div id="main"><div class="btns"><button class="p" onclick="openBk()">نسخة احتياطية</button><button class="wbtn" onclick="openWd()"><span class="wlogo">W</span>استيراد من Word</button>
+ </div><div class="scw" id="scw"><div id="sc" class="sc"></div><button class="addsec" onclick="askSec()">+ شعبة</button><button class="ib theme" id="th" onclick="toggleTheme()" aria-label="المظهر"></button><button class="dots" id="dots" onclick="toggleMenu()" aria-label="المزيد"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button><div class="mn" id="mn" hidden><button onclick="$('mn').hidden=true;startColEdit()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="15.5" cy="10" r="1"/></svg>تغيير الألوان</button></div><div class="sv2" id="cs" hidden><button class="p" onclick="saveColors()">حفظ</button><button onclick="cancelColors()">إلغاء</button></div></div><div id="secs"></div><p class="ht">الإصدار 19</p></div>
 <div id="stu" hidden><div class="top2"><button class="bk" onclick="home()" aria-label="رجوع"></button><h2 id="sn"></h2><div class="sv" id="sv" hidden><button class="p" onclick="saveCol()">حفظ</button><button onclick="cancelCol()">إلغاء</button></div></div>
 <div class="crow"><span>لون الطالب</span><span id="pv" class="cc" onclick="toggleCp()" title="تغيير اللون"></span></div>
 <div id="cpn" hidden><div id="sw" class="sw"></div><div class="mb" style="align-items:center"><label>لون مخصص <input type="color" id="cc"></label><button onclick="pickCol('')">بدون لون</button></div></div>
 <div class="tabs"><span class="tab">الملاحظات</span><div style="margin-inline-start:auto;display:flex;gap:6px"><button class="an" style="margin:0" onclick="openMove()">نقل الطالب</button><button class="an" style="margin:0" onclick="openNote()">+ إضافة ملاحظة</button></div></div><div id="nl"></div></div>
-<div id="lst" hidden><div class="top2"><button class="bk" onclick="home()" aria-label="رجوع"></button><h2>إحصائيات الطلاب</h2></div><div id="sc2" class="sc sc2"></div><div id="ll"></div></div>
+<div id="lst" hidden><div class="top2"><button class="bk" onclick="home()" aria-label="رجوع"></button><h2 id="lt">إحصائيات الطلاب</h2></div><div id="ll"></div></div>
 <div class="md" id="md" hidden><div class="mc"><h3 id="mh"></h3><textarea id="nt" placeholder="اكتب الملاحظة"></textarea>
 <div class="mb"><button class="p" onclick="saveNote()">حفظ</button><button onclick="closeNote()">إلغاء</button><button class="d" id="dn" onclick="delNote()" hidden style="margin-inline-start:auto">حذف</button></div></div></div>
 
@@ -166,10 +185,10 @@ td .sts{justify-content:center}
 <div id="toast" hidden></div>
 <div id="kp" hidden></div>
 <script>
-const KEY="gradesheet_v3",OP=new Set(),QO=new Set(),QS={};try{localStorage.removeItem("gradesheet_v2")}catch(e){}
+const KEY="gradesheet_v3",OP=new Set(),QO=new Set(),QS={},QM={};try{localStorage.removeItem("gradesheet_v2")}catch(e){}
 const blank=i=>({n:"",num:String(i+1),s:{},tot:null,ok:false,notes:[]});
 const newSec=(sec,n)=>({sec,title:"كفايات لغوية",level:"1",rows:Array.from({length:n},(_,i)=>blank(i))});
-const COLS=()=>[{k:"act",t:"نشاط صفي",m:"15",c:"#e2e2d2",s:1},{k:"par",t:"مشاركة",m:"10",c:"#e2e2d2",s:1},{k:"hw",t:"واجب",m:"15",c:"#f4d3d6",s:1},{k:"tot",t:"المجموع",c:"#f6d9c8",tot:1},{k:"t1",t:"اختبار الفترة الأولى /",m:"20",c:"#f0eecf"},{k:"t2",t:"اختبار الفترة الثانية /",m:"20",c:"#cfe2ee"},{k:"nt",t:"م",c:"#cfe2ee",txt:1}];
+const COLS=()=>[{k:"act",t:"نشاط صفي",m:"15",c:"#e2e2d2",s:1},{k:"par",t:"مشاركة",m:"10",c:"#e2e2d2",s:1},{k:"hw",t:"واجب",m:"15",c:"#f4d3d6",s:1},{k:"tot",t:"المجموع",c:"#f6d9c8",tot:1},{k:"t1",t:"اختبار الفترة الأولى /",m:"20",c:"#f0eecf"},{k:"t2",t:"اختبار الفترة الثانية /",m:"20",c:"#cfe2ee"},{k:"nt",t:"تحضير",c:"#cfe2ee",txt:1}];
 let D=null;try{D=JSON.parse(localStorage.getItem(KEY))}catch(e){}
 if(!D)D={cols:COLS(),totM:null,sections:["101","102","103","104","206"].map(x=>newSec(x,5))};
 if(!D.sections){D.sections=[{sec:D.sec,title:D.title,level:D.level,rows:D.rows||[]}];delete D.rows}
@@ -180,23 +199,23 @@ const sumRow=r=>D.cols.reduce((a,c)=>a+(c.s?num(r.s[c.k]):0),0);
 const sumMax=()=>D.cols.reduce((a,c)=>a+(c.s?num(c.m):0),0);
 const SV=d=>`<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg>`;
 document.querySelectorAll(".bk").forEach(b=>b.innerHTML=SV('<path d="M9 5l7 7-7 7"/>'));
-function render(){hideKp();buildSc();$("secs").innerHTML=D.sections.map(secHTML).join("");D.sections.forEach((S,i)=>filt(i))}
+function render(){hideKp();buildSc();$("secs").innerHTML=D.sections.map(secHTML).join("");D.sections.forEach((S,i)=>filt(i));setScwh()}
 function secHTML(S,si){
- let h=`<div class="sec" id="sec${si}"><div class="sb"><button onclick="togglePanel(${si})">✎ تعديل الطلاب</button><button class="p" onclick="addRow(${si})">+ إضافة طالب</button><button onclick="toggleQ(${si})" aria-label="بحث">${SV('<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>')}</button></div>
- <div class="qb" id="qb${si}" ${QO.has(si)?"":"hidden"}><input id="q${si}" placeholder="ابحث عن اسم" value="${esc(QS[si]||"")}" oninput="QS[${si}]=this.value;filt(${si})"></div>
- <div class="pn" id="pn${si}" ${OP.has(si)?"":"hidden"}><label>عدد الطلاب</label><input id="cnt${si}" data-dg="i" inputmode="none" value="${S.rows.length}"><button class="p" onclick="applyCnt(${si})">تطبيق</button><button class="d" onclick="askDelAll(${si})">حذف كل الطلاب</button><span id="msg${si}"></span></div>
+ let h=`<div class="sec" id="sec${si}"><div class="sb"><button onclick="togglePanel(${si})">تعديل</button><button class="p" onclick="addRow(${si})">+ إضافة طالب</button></div>
+ <div class="qb" id="qb${si}" ${QO.has(si)?"":"hidden"}><input id="q${si}" ${QM[si]==="u"?'data-dg="i" inputmode="none" placeholder="رقم الطالب"':'placeholder="ابحث بالاسم"'} value="${esc(QS[si]||"")}" oninput="QS[${si}]=this.value;filt(${si})"></div>
+ <div class="pn" id="pn${si}" ${OP.has(si)?"":"hidden"}><button onclick="pickColorStu(${si})">لون طالب</button><button class="d" onclick="askDelAll(${si})">حذف كل الطلاب</button><button onclick="toggleQ(${si},'n')">بحث بالاسم</button><button onclick="toggleQ(${si},'u')">بحث بالأرقام</button><span id="msg${si}"></span></div>
  <div class="wrap"><table><thead><tr><th colspan="2" class="hd">شعبة ( <input data-s="${si}" data-f="sec" value="${esc(S.sec)}" aria-label="رقم الشعبة"> )<br><input data-s="${si}" data-f="title" style="width:120px" value="${esc(S.title)}"> <input data-s="${si}" data-f="level" style="width:36px" value="${esc(S.level)}"></th>`;
  D.cols.forEach((c,i)=>{
   let mx="";
   if(c.tot)mx=`<div class="mx">(<input data-c="${i}" data-f="tm" inputmode="none" data-dg="1" value="${esc(D.totM??sumMax())}">)</div>`;
   else if(!c.txt)mx=`<div class="mx">(<input data-c="${i}" data-f="m" inputmode="none" data-dg="1" value="${esc(c.m)}">)</div>`;
-  h+=`<th style="background:${c.c}"><input data-c="${i}" data-f="t" value="${esc(c.t)}">${mx}</th>`});
+  h+=`<th style="background:${c.c}">${c.txt?`<button class="stbtn" onclick="openStats(${si})">إحصائيات الطلاب</button>`:""}<input data-c="${i}" data-f="t" value="${esc(c.t)}">${mx}</th>`});
  h+="</tr>";
  if(si===0)h+=`<tr class="cr"><td colspan="2">لون العمود:</td>`+D.cols.map((c,i)=>`<td><input type="color" data-c="${i}" data-f="c" value="${c.c}"></td>`).join("")+"</tr>";
  h+="</thead><tbody>";
  S.rows.forEach((r,i)=>{
   const a=`data-s="${si}" data-r="${i}"`,cb=r.cl?`style="background:${r.cl}"`:"";
-  h+=`<tr data-row="${i}"><td ${cb}><div class="nmc">${stOf(r)?bdg(stOf(r)):""}<input ${a} data-f="n" value="${esc(r.n)}" placeholder="اسم الطالب"><button class="x" title="حذف الصف" onclick="delRow(${si},${i})">✕</button></div></td><td class="nc" ${cb}><input ${a} data-f="num" inputmode="none" data-dg="i" value="${esc(r.num)}"></td>`;
+  h+=`<tr data-row="${i}"><td ${cb}><div class="nmc">${stOf(r)?bdg(stOf(r)):""}<input ${a} data-f="n" class="ro" readonly value="${esc(r.n)}" placeholder="اسم الطالب"></div></td><td class="nc" ${cb}><input ${a} data-f="num" inputmode="none" data-dg="i" value="${esc(r.num)}"></td>`;
   D.cols.forEach(c=>{const bg=`style="background:${c.c}"`;
    if(c.tot)h+=`<td ${bg}>`+(r.ok?`<div class="tc"><input ${a} data-f="tot" inputmode="none" data-dg="1" value="${esc(r.tot??sumRow(r))}" style="font-weight:700"><button class="rb" title="تعديل الدرجات" onclick="reopen(${si},${i})">✎</button></div>`:`<button class="ok" onclick="confirmRow(${si},${i})">✓ تأكيد</button>`)+"</td>";
    else if(c.txt)h+=`<td ${bg}><span class="sts">${stBtns(si,i,r)}</span></td>`;
@@ -244,7 +263,7 @@ function home(){show("main");render()}
 function toggleMenu(){$("mn").hidden=!$("mn").hidden}
 document.addEventListener("click",e=>{if(!e.target.closest("#mn,#dots"))$("mn").hidden=true});
 let lt=0,lr="",cs=0,ci=0,en=-1,drag=null;
-document.addEventListener("pointerup",e=>{const d=e.target.dataset;if(d&&d.f==="n"&&d.r!==undefined){const n=Date.now(),k=d.s+"-"+d.r;if(lr===k&&n-lt<400){lt=0;openStu(+d.s,+d.r)}else{lt=n;lr=k}}});
+
 function openStu(s,i){cs=s;ci=i;ed=false;show("stu");renderStu();colorUI()}
 const nts=()=>R(cs,ci).notes||(R(cs,ci).notes=[]);
 function fmt(t){try{return new Date(t).toLocaleString("ar",{calendar:"gregory",weekday:"long",day:"numeric",month:"long",hour:"numeric",minute:"2-digit"})}catch(e){return""}}
@@ -256,7 +275,8 @@ function saveNote(){const t=$("nt").value.trim();if(t){if(en<0)nts().unshift({t,
 function delNote(){const b=$("dn");if(b.textContent==="حذف"){b.textContent="تأكيد الحذف";return}nts().splice(en,1);save();renderStu();closeNote()}
 function openList(){$("mn").hidden=true;show("lst");buildList()}
 const STI={p:'<path d="M5 12l5 5 9-10"/>',a:'<path d="M6 6l12 12M18 6L6 18"/>',l:'<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>'},STN={p:"حاضر",a:"غائب",l:"متأخر"};
-function buildList(){$("ll").innerHTML=D.sections.map((S,si)=>`<div class="lc" id="lc${si}"><div class="ht2">شعبة ${esc(S.sec)}</div>`+S.rows.map(r=>{const c=tally(r);return `<div class="lr"><span class="ln">${esc(r.n)||'<i style="color:var(--mut)">بدون اسم</i>'}</span><span class="sts">`+["p","a","l"].map(k=>`<span class="cn st-${k}" title="${STN[k]}">${SV(STI[k])}<b>${c[k]}</b></span>`).join("")+"</span></div>"}).join("")+"</div>").join("")}
+function buildList(){if(statSec>=D.sections.length)statSec=0;const S=D.sections[statSec];$("lt").textContent=S?"إحصائيات الطلاب — شعبة "+S.sec:"إحصائيات الطلاب";
+ $("ll").innerHTML=S?`<div class="lc"><div class="ht2">شعبة ${esc(S.sec)}</div>`+S.rows.map(r=>{const c=tally(r);return `<div class="lr"><span class="ln">${esc(r.n)||'<i style="color:var(--mut)">بدون اسم</i>'}</span><span class="sts">`+["p","a","l"].map(k=>`<span class="cn st-${k}" title="${STN[k]}">${SV(STI[k])}<b>${c[k]}</b></span>`).join("")+"</span></div>"}).join("")+"</div>":""}
 function setSt(s,i,k){const r=R(s,i),t=dayKey();r.h=r.h||{};if(r.h[t]===k)delete r.h[t];else r.h[t]=k;save();refreshSt(s,i)}
 const bdg=k=>`<span class="bdg st-${k}" title="${STN[k]}">${SV(STI[k])}</span>`;
 function startDrag(e){e.preventDefault();drag=e.currentTarget.closest("li");drag.classList.add("dg");document.addEventListener("pointermove",moveDrag);document.addEventListener("pointerup",endDrag,{once:true});document.addEventListener("pointercancel",endDrag,{once:true})}
@@ -285,7 +305,7 @@ function openBk(){$("bm").textContent="";lbText();$("bk").hidden=false}
 async function mkBackup(){const ok=await shareFile("grades-backup-"+today()+".json",JSON.stringify(D),"application/json");if(ok){D.lb=Date.now();save();$("bk").hidden=true;toast("تم إنشاء النسخة ✓")}}
 $("rf").addEventListener("change",async e=>{const f=e.target.files[0];e.target.value="";if(!f)return;
  try{const o=JSON.parse(await f.text());if(!Array.isArray(o.sections)||!Array.isArray(o.cols)||!o.sections.every(x=>Array.isArray(x.rows)))throw 0;
-  ask2("bm","سيتم استبدال كل البيانات الحالية بالنسخة. متأكد؟",()=>{try{localStorage.setItem(KEY+"_prev",JSON.stringify(D))}catch(e){}D=o;OP.clear();D.sections.forEach((S,i)=>{sortRows(S);renum(i)});save();render();$("bk").hidden=true;toast("تمت استعادة النسخة ✓")})}
+  ask2("bm","سيتم استبدال كل البيانات الحالية بالنسخة. متأكد؟",()=>{try{localStorage.setItem(KEY+"_prev",JSON.stringify(D))}catch(e){}D=o;fixCols();OP.clear();D.sections.forEach((S,i)=>{sortRows(S);renum(i)});save();render();$("bk").hidden=true;toast("تمت استعادة النسخة ✓")})}
  catch(err){$("bm").textContent="الملف غير صالح"}});
 function openEx(){$("xs").innerHTML=D.sections.map((S,i)=>`<option value="${i}">شعبة ${esc(S.sec)}</option>`).join("");$("xm").textContent="";$("ex").hidden=false}
 function exportCsv(){
@@ -316,7 +336,7 @@ document.addEventListener("input",e=>{const d=e.target.dataset;if(d&&d.f==="n"&&
 document.addEventListener("focusout",()=>{setTimeout(()=>{const a=document.activeElement;if(!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)))doSort()},120)});
 if(window.visualViewport){let ph=visualViewport.height;visualViewport.addEventListener("resize",()=>{const h=visualViewport.height;if(h>ph+80&&dirty!==null){const a=document.activeElement;if(a&&a.dataset&&a.dataset.f==="n")a.blur();setTimeout(doSort,80)}ph=h})}
 function goSec(i){const e=document.getElementById("sec"+i);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})}
-function buildSc(){const h=D.sections.map((S,i)=>`<button data-i="${i}">شعبة ${esc(S.sec)}</button>`).join("");$("sc").innerHTML=h;$("sc2").innerHTML=h}
+function buildSc(){const h=D.sections.map((S,i)=>`<button data-i="${i}">شعبة ${esc(S.sec)}</button>`).join("");$("sc").innerHTML=h}
 const kpEl=$("kp");
 kpEl.innerHTML=["1","2","3","4","5","6","7","8","9","0"].map(k=>`<button data-kp="${k}">${k}</button>`).join("")+'<button id="kdot" data-kp=".">.</button><button class="kx" data-kp="bs">⌫</button><button class="kx" id="kup" data-kp="up">↑</button><button class="kx" id="kdn" data-kp="dn">↓</button><button class="kx" data-kp="ok">تم</button>';
 function showKp(el){kpEl.hidden=false;document.body.classList.add("kp");const g=el.dataset.r!==undefined;$("kdn").hidden=!g;$("kup").hidden=!g;$("kdot").hidden=el.dataset.dg==="i";setTimeout(()=>el.scrollIntoView({block:"center",behavior:"smooth"}),60)}
@@ -348,7 +368,7 @@ function bindSc(el,tap){
  ["pointerup","pointerleave","pointercancel"].forEach(t=>el.addEventListener(t,()=>clearTimeout(lpT)));
  el.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(lpF){lpF=false;return}tap(+b.dataset.i)});
  el.addEventListener("contextmenu",e=>e.preventDefault())}
-bindSc($("sc"),goSec);bindSc($("sc2"),i=>{const e=$("lc"+i);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})});
+bindSc($("sc"),goSec);
 let py=0,pd=0,pulling=false;
 function showPull(d){const p=$("ptr");p.hidden=false;p.style.opacity=Math.min(1,d/70);p.textContent=d>90?"أفلت للتحديث":"اسحب للأسفل للتحديث"}
 function hidePull(){$("ptr").hidden=true}
@@ -364,8 +384,8 @@ async function doRefresh(){const p=$("ptr");p.style.opacity=1;p.hidden=false;
 D.sections.forEach((S,i)=>{sortRows(S);renum(i)});save();
 function toast(t){const e=$("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>{e.hidden=true},2400)}
 function norm(s){return String(s||"").replace(/[\u064B-\u0652\u0640]/g,"").replace(/[أإآ]/g,"ا").replace(/ى/g,"ي").replace(/ة/g,"ه").trim().toLowerCase()}
-function filt(si){const q=QO.has(si)?norm(QS[si]):"";document.querySelectorAll(`#sec${si} tbody tr`).forEach(tr=>{const r=D.sections[si]&&D.sections[si].rows[tr.dataset.row];tr.hidden=!!q&&!!r&&!norm(r.n).includes(q)})}
-function toggleQ(si){const b=$("qb"+si);if(QO.has(si)){QO.delete(si);QS[si]="";b.hidden=true;$("q"+si).value=""}else{QO.add(si);b.hidden=false;$("q"+si).focus()}filt(si)}
+function filt(si){const on=QO.has(si),m=QM[si],q=on?(m==="u"?String(QS[si]||"").replace(/\D/g,""):norm(QS[si])):"";document.querySelectorAll(`#sec${si} tbody tr`).forEach(tr=>{const r=D.sections[si]&&D.sections[si].rows[tr.dataset.row];tr.hidden=!!q&&!!r&&!(m==="u"?String(r.num).startsWith(q):norm(r.n).includes(q))})}
+function toggleQ(si,m){const open=QO.has(si)&&QM[si]===m;if(open){QO.delete(si);QS[si]=""}else{QO.add(si);QM[si]=m;QS[si]=""}render();if(!open){const q=$("q"+si);if(q)q.focus()}}
 function stOf(r){return(r.h&&r.h[dayKey()])||""}
 function tally(r){const c={p:0,a:0,l:0};Object.values(r.h||{}).forEach(v=>{if(c[v]!==undefined)c[v]++});return c}
 function stBtns(s,i,r){const t=stOf(r);return["p","a","l"].map(k=>`<button class="st st-${k}${t===k?" on":""}" onclick="setSt(${s},${i},'${k}')" aria-label="${STN[k]}">${SV(STI[k])}</button>`).join("")}
@@ -374,7 +394,7 @@ const nk=s=>norm(s).replace(/\s+/g," ");
 function dlg(t,h,btns){$("dpt").textContent=t;$("dpm").innerHTML=h;const b=$("dpb");b.innerHTML="";btns.forEach(([n,c,f])=>{const x=document.createElement("button");x.textContent=n;if(c)x.className=c;x.onclick=()=>{$("dp").hidden=true;if(f)f()};b.appendChild(x)});$("dp").hidden=false}
 function findDup(row,name){const k=nk(name);if(!k)return null;for(const S of D.sections)for(const r of S.rows)if(r!==row&&nk(r.n)===k)return S;return null}
 let dupRow=null;
-function dupEdit(){if(!dupRow)return;const s=D.sections.findIndex(S=>S.rows.includes(dupRow));if(s<0)return;const i=D.sections[s].rows.indexOf(dupRow),inp=document.querySelector(`input[data-s="${s}"][data-r="${i}"][data-f="n"]`);if(inp){inp.focus();inp.select()}}
+function dupEdit(){if(!dupRow)return;const s=D.sections.findIndex(S=>S.rows.includes(dupRow));if(s<0)return;const i=D.sections[s].rows.indexOf(dupRow),inp=document.querySelector(`input[data-s="${s}"][data-r="${i}"][data-f="n"]`);if(inp){editName(inp);inp.select()}}
 document.addEventListener("change",e=>{const d=e.target.dataset;if(d&&d.f==="n"&&d.r!==undefined){const row=R(d.s,d.r),S=findDup(row,row.n);if(S){dupRow=row;dlg("اسم مكرر",`الاسم <b>${esc(row.n.trim())}</b> موجود مسبقاً في شعبة ${esc(S.sec)}.`,[["تعديل الاسم","p",dupEdit],["إبقاؤه","",null]])}}});
 async function readDocx(file){
  const buf=new Uint8Array(await file.arrayBuffer()),dv=new DataView(buf.buffer);
@@ -411,8 +431,8 @@ function wdAdd(){const S=D.sections[$("ws").value];if(!S)return;
  L.forEach(n=>{const k=nk(n);if(seen.has(k)||D.sections.some(T=>T.rows.some(r=>nk(r.n)===k)))dups.push(n);else ok.push(n);seen.add(k)});
  if(dups.length)dlg("أسماء مكررة",`وُجد ${dups.length} اسم مكرر:<br>`+dups.slice(0,8).map(esc).join("<br>")+(dups.length>8?"<br>…":""),[["تخطي المكرر","p",()=>addNames(S,ok)],["إضافتها أيضاً","",()=>addNames(S,L)],["إلغاء","",null]]);
  else addNames(S,L)}
-const dayKey=()=>{const d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()};
-function checkDay(){const k=dayKey();
+const dayKey=()=>{const d=new Date(Date.now()-350*60000);return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()};
+function checkDay(){fixCols();const k=dayKey();
  D.sections.forEach(S=>S.rows.forEach(r=>{if(r.st){r.h=r.h||{};r.h[D.stDay||k]=r.st;delete r.st}}));
  if(D.stDay===k)return;
  D.stDay=k;save();render();
@@ -420,6 +440,32 @@ function checkDay(){const k=dayKey();
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkDay()});
 setInterval(checkDay,60000);
 checkDay();
+const SUN='<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',MOON='<path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/>';
+function curTheme(){const t=document.documentElement.dataset.theme;return t||(matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light")}
+function paintTheme(){const t=curTheme(),b=$("th");b.innerHTML=SV(t==="dark"?MOON:SUN);b.style.color=t==="dark"?"#fff":"#000"}
+function toggleTheme(){const t=curTheme()==="dark"?"light":"dark";document.documentElement.dataset.theme=t;try{localStorage.setItem("gradesheet_theme",t)}catch(e){}paintTheme()}
+try{matchMedia("(prefers-color-scheme:dark)").addEventListener("change",paintTheme)}catch(e){}
+paintTheme();
+let statSec=0,rowLP=false,rlt=null,rsx=0,rsy=0;
+function fixCols(){D.cols.forEach(c=>{if(c.k==="nt"&&c.t==="م")c.t="تحضير"})}
+function setScwh(){const b=$("scw");if(b)document.documentElement.style.setProperty("--scwh",b.offsetHeight+"px")}
+addEventListener("resize",setScwh);
+function openStats(si){statSec=si;$("mn").hidden=true;show("lst");buildList()}
+function pickColorStu(si){const S=D.sections[si];dlg("اختر الطالب",S.rows.map((r,i)=>`<button class="pk" onclick="pickStu(${si},${i})">${esc(r.n)||"طالب رقم "+esc(r.num)}</button>`).join(""),[["إغلاق","",null]])}
+function pickStu(s,i){$("dp").hidden=true;openStu(s,i);toggleCp()}
+function openRowMenu(s,i){const r=R(s,i),n=(r.notes||[]).length;
+ dlg(r.n||("طالب رقم "+r.num),"",[["حذف الطالب","d",()=>askDelRow(s,i)],[n?"ملاحظات الطالب ("+n+")":"إضافة ملاحظة","p",()=>{openStu(s,i);if(!n)openNote()}],["إغلاق","",null]])}
+function askDelRow(s,i){const r=R(s,i);dlg("حذف الطالب",`هل تريد حذف <b>${esc(r.n||"هذا الطالب")}</b> مع درجاته وملاحظاته؟`,[["تأكيد الحذف","d",()=>delRow(s,i)],["إلغاء","",null]])}
+const secsEl=$("secs");
+secsEl.addEventListener("pointerdown",e=>{const el=e.target;if(!(el.dataset&&el.dataset.f==="n"&&el.dataset.r!==undefined))return;rowLP=false;rsx=e.clientX;rsy=e.clientY;clearTimeout(rlt);
+ rlt=setTimeout(()=>{rowLP=true;el.blur();try{getSelection().removeAllRanges()}catch(x){}openRowMenu(+el.dataset.s,+el.dataset.r)},550)});
+secsEl.addEventListener("pointermove",e=>{if(rlt&&Math.hypot(e.clientX-rsx,e.clientY-rsy)>10){clearTimeout(rlt);rlt=null}});
+["pointerup","pointercancel","pointerleave"].forEach(t=>secsEl.addEventListener(t,()=>clearTimeout(rlt)));
+secsEl.addEventListener("contextmenu",e=>{if(e.target.dataset&&e.target.dataset.f==="n")e.preventDefault()});
+function editName(el){el.dataset.ed="1";el.readOnly=false;el.classList.remove("ro");el.blur();el.focus();const n=el.value.length;try{el.setSelectionRange(n,n)}catch(x){}delete el.dataset.ed}
+secsEl.addEventListener("click",e=>{const el=e.target;if(!(el.dataset&&el.dataset.f==="n"&&el.dataset.r!==undefined))return;if(rowLP){rowLP=false;return}if(el.readOnly)editName(el)});
+document.addEventListener("focusout",e=>{const t=e.target;if(t.dataset&&t.dataset.f==="n"&&t.dataset.r!==undefined&&!t.dataset.ed){t.readOnly=true;t.classList.add("ro")}});
+fixCols();setScwh();
 render();
 </script>
 <script>
