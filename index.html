@@ -135,7 +135,7 @@ thead tr:first-child th{position:sticky;top:calc(env(safe-area-inset-top,0px) + 
 .sec{scroll-margin-top:130px}
 .scw .theme,.scw .dots{margin-inline-start:0}
 .scw .mn,.scw .sv2{top:calc(100% + 6px)}
-.addsec{background:#6d28d9;border-color:#6d28d9;color:#fff;font-weight:700;border-radius:999px;padding:7px 16px;flex:none;font-size:16px}
+.addsec{background:#b8860b;border-color:#b8860b;color:#fff;font-weight:700;border-radius:999px;padding:7px 16px;flex:none;font-size:16px}
 .stbtn{display:block;margin:3px auto;padding:2px 8px;font-size:12px;border-radius:6px}
 .pk{display:block;width:100%;text-align:right;margin-bottom:6px;padding:10px;font-size:16px}
 #ll{display:block;max-width:560px;margin:0 auto}
@@ -153,7 +153,7 @@ input.ro{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 </head>
 <body>
 <div class="er" id="er" hidden>تعذّر الحفظ على هذا الجهاز! أنشئ نسخة احتياطية الآن.</div><div id="main"><div class="btns"><button class="p" onclick="openBk()">نسخة احتياطية</button><button class="wbtn" onclick="openWd()"><span class="wlogo">W</span>استيراد من Word</button>
- </div><div class="scw" id="scw"><div id="sc" class="sc"></div><button class="addsec" onclick="askSec()">+ شعبة</button><button class="ib theme" id="th" onclick="toggleTheme()" aria-label="المظهر"></button><button class="dots" id="dots" onclick="toggleMenu()" aria-label="المزيد"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button><div class="mn" id="mn" hidden><button onclick="$('mn').hidden=true;startColEdit()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="15.5" cy="10" r="1"/></svg>تغيير الألوان</button></div><div class="sv2" id="cs" hidden><button class="p" onclick="saveColors()">حفظ</button><button onclick="cancelColors()">إلغاء</button></div></div><div id="secs"></div><p class="ht">الإصدار 19</p></div>
+ </div><div class="scw" id="scw"><div id="sc" class="sc"></div><button class="ib theme" id="th" onclick="toggleTheme()" aria-label="المظهر"></button><button class="dots" id="dots" onclick="toggleMenu()" aria-label="المزيد"><svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></button><div class="mn" id="mn" hidden><button onclick="$('mn').hidden=true;startColEdit()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><circle cx="8.5" cy="10" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="15.5" cy="10" r="1"/></svg>تغيير الألوان</button></div><div class="sv2" id="cs" hidden><button class="p" onclick="saveColors()">حفظ</button><button onclick="cancelColors()">إلغاء</button></div></div><div id="secs"></div><p class="ht">الإصدار 19</p></div>
 <div id="stu" hidden><div class="top2"><button class="bk" onclick="home()" aria-label="رجوع"></button><h2 id="sn"></h2><div class="sv" id="sv" hidden><button class="p" onclick="saveCol()">حفظ</button><button onclick="cancelCol()">إلغاء</button></div></div>
 <div class="crow"><span>لون الطالب</span><span id="pv" class="cc" onclick="toggleCp()" title="تغيير اللون"></span></div>
 <div id="cpn" hidden><div id="sw" class="sw"></div><div class="mb" style="align-items:center"><label>لون مخصص <input type="color" id="cc"></label><button onclick="pickCol('')">بدون لون</button></div></div>
@@ -336,7 +336,7 @@ document.addEventListener("input",e=>{const d=e.target.dataset;if(d&&d.f==="n"&&
 document.addEventListener("focusout",()=>{setTimeout(()=>{const a=document.activeElement;if(!(a&&/^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)))doSort()},120)});
 if(window.visualViewport){let ph=visualViewport.height;visualViewport.addEventListener("resize",()=>{const h=visualViewport.height;if(h>ph+80&&dirty!==null){const a=document.activeElement;if(a&&a.dataset&&a.dataset.f==="n")a.blur();setTimeout(doSort,80)}ph=h})}
 function goSec(i){const e=document.getElementById("sec"+i);if(e)e.scrollIntoView({behavior:"smooth",block:"start"})}
-function buildSc(){const h=D.sections.map((S,i)=>`<button data-i="${i}">شعبة ${esc(S.sec)}</button>`).join("");$("sc").innerHTML=h}
+function buildSc(){const h=D.sections.map((S,i)=>`<button data-i="${i}">شعبة ${esc(S.sec)}</button>`).join("")+'<button class="addsec" onclick="askSec()">+ شعبة</button>';$("sc").innerHTML=h}
 const kpEl=$("kp");
 kpEl.innerHTML=["1","2","3","4","5","6","7","8","9","0"].map(k=>`<button data-kp="${k}">${k}</button>`).join("")+'<button id="kdot" data-kp=".">.</button><button class="kx" data-kp="bs">⌫</button><button class="kx" id="kup" data-kp="up">↑</button><button class="kx" id="kdn" data-kp="dn">↓</button><button class="kx" data-kp="ok">تم</button>';
 function showKp(el){kpEl.hidden=false;document.body.classList.add("kp");const g=el.dataset.r!==undefined;$("kdn").hidden=!g;$("kup").hidden=!g;$("kdot").hidden=el.dataset.dg==="i";setTimeout(()=>el.scrollIntoView({block:"center",behavior:"smooth"}),60)}
@@ -364,9 +364,9 @@ function openSecMenu(i){smI=i;const S=D.sections[i];$("smt").textContent="شعب
 function renSec(){const v=$("smn").value.trim();if(!v)return;D.sections[smI].sec=v;save();render();if(!$("lst").hidden)buildList();$("sm").hidden=true}
 function askDelSec2(){ask2("smm","حذف الشعبة كاملة مع طلابها؟",()=>{D.sections.splice(smI,1);OP.clear();save();render();if(!$("lst").hidden)buildList();$("sm").hidden=true})}
 function bindSc(el,tap){
- el.addEventListener("pointerdown",e=>{const b=e.target.closest("button");if(!b)return;lpF=false;clearTimeout(lpT);lpT=setTimeout(()=>{lpF=true;openSecMenu(+b.dataset.i)},600)});
+ el.addEventListener("pointerdown",e=>{const b=e.target.closest("button");if(!b||b.dataset.i===undefined)return;lpF=false;clearTimeout(lpT);lpT=setTimeout(()=>{lpF=true;openSecMenu(+b.dataset.i)},600)});
  ["pointerup","pointerleave","pointercancel"].forEach(t=>el.addEventListener(t,()=>clearTimeout(lpT)));
- el.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;if(lpF){lpF=false;return}tap(+b.dataset.i)});
+ el.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||b.dataset.i===undefined)return;if(lpF){lpF=false;return}tap(+b.dataset.i)});
  el.addEventListener("contextmenu",e=>e.preventDefault())}
 bindSc($("sc"),goSec);
 let py=0,pd=0,pulling=false;
