@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>سجل الدرجات</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231f5c55'/%3E%3Ctext x='16' y='24' font-size='20' font-weight='900' text-anchor='middle' fill='%23fff' font-family='sans-serif'%3E%D8%B3%3C/text%3E%3C/svg%3E">
 <style>
 :root{box-sizing:border-box;--bg:#f3f3f0;--ink:#1d1d1d;--line:#555;--btn:#fff;--acc:#1f5c55}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#161a19;--btn:#242b29}}
@@ -12,7 +13,7 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--card:#242b29;--ink2:#e8e8e8;--mut:#9aa8a5;--blue:#8dbbf5;--ln:#3a4543}}
 :root[data-theme="dark"]{--card:#242b29;--ink2:#e8e8e8;--mut:#9aa8a5;--blue:#8dbbf5;--ln:#3a4543}
 html{scroll-padding-top:140px}
-body{margin:0;background:var(--bg);font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",Arial,sans-serif;padding:12px;padding-top:calc(70px + env(safe-area-inset-top,0px));padding-bottom:calc(80px + env(safe-area-inset-bottom,0px));color:#e8e8e8}
+body{margin:0;background:var(--bg);font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",Arial,sans-serif;padding:12px;padding-top:calc(70px + env(safe-area-inset-top,0px));padding-bottom:calc(90px + env(safe-area-inset-bottom,0px));color:#e8e8e8}
 @media (prefers-color-scheme:light){body{color:#1d1d1d}}
 :root[data-theme="light"] body{color:#1d1d1d}
 :root[data-theme="dark"] body{color:#e8e8e8}
@@ -165,33 +166,37 @@ th:last-child,td:last-child{border-left:0}
   background:#fff;
 }
 
-/* 🆕 زر تيليجرام — position:fixed مع أولوية عالية */
-#tgFloat{
-  position:fixed !important;
-  bottom:20px !important;
-  left:50% !important;
-  margin-left:-29px !important;
-  top:auto !important;
-  right:auto !important;
-  width:58px !important;
-  height:58px !important;
-  border-radius:50% !important;
-  background:linear-gradient(135deg,#2AABEE,#229ED9) !important;
-  display:flex !important;
-  align-items:center !important;
-  justify-content:center !important;
-  box-shadow:0 8px 24px rgba(34,158,217,.55) !important;
-  text-decoration:none !important;
-  border:2px solid rgba(255,255,255,.35) !important;
-  z-index:2147483647 !important;
-  padding:0 !important;
-  transition:box-shadow .2s,filter .2s !important;
-  transform:none !important;
-  -webkit-transform:none !important;
+/* 🆕 زر تيليجرام — بطريقة الحاوية الثابتة */
+#tgHost{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  pointer-events:none;
+  z-index:2147483647;
 }
-#tgFloat:hover{box-shadow:0 10px 30px rgba(34,158,217,.8) !important;filter:brightness(1.1) !important}
-#tgFloat:active{filter:brightness(.9) !important}
-#tgFloat svg{width:32px !important;height:32px !important;fill:#fff !important;display:block !important;pointer-events:none !important}
+#tgHost a{
+  position:absolute;
+  bottom:24px;
+  left:50%;
+  margin-left:-29px;
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#2AABEE,#229ED9);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  box-shadow:0 8px 24px rgba(34,158,217,.55);
+  text-decoration:none;
+  border:2px solid rgba(255,255,255,.35);
+  pointer-events:auto;
+  transition:box-shadow .2s,filter .2s;
+}
+#tgHost a:hover{box-shadow:0 10px 30px rgba(34,158,217,.8);filter:brightness(1.1)}
+#tgHost a:active{filter:brightness(.9)}
+#tgHost svg{width:32px;height:32px;fill:#fff;display:block}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -235,7 +240,7 @@ th:last-child,td:last-child{border-left:0}
   </div>
 
   <div id="secs"></div>
-  <p class="ht" style="text-align:center">الإصدار 30</p>
+  <p class="ht" style="text-align:center">الإصدار 32</p>
 </div>
 
 <div id="stu" hidden>
@@ -419,24 +424,16 @@ th:last-child,td:last-child{border-left:0}
 <div id="toast" hidden></div>
 <div id="kp" hidden></div>
 
-<!-- 🔵 زر تيليجرام -->
-<a id="tgFloat" href="https://t.me/ra3k_n" target="_blank" rel="noopener">
-  <svg viewBox="0 0 24 24">
-    <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
-  </svg>
-</a>
+<!-- 🔵 زر تيليجرام — داخل حاوية ثابتة -->
+<div id="tgHost">
+  <a href="https://t.me/ra3k_n" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24">
+      <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
+    </svg>
+  </a>
+</div>
 
 <script>
-/* 🆕 إزالة Service Workers قديمة تلقائياً عند التحديث */
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.getRegistrations().then(regs => {
-    regs.forEach(reg => {
-      // اسمح لها بالعمل لكن سجل تحديث
-      reg.update();
-    });
-  });
-}
-
 const KEY="gradesheet_v3",OP=new Set(),QO=new Set(),QS={};
 try{localStorage.removeItem("gradesheet_v2")}catch(e){}
 const blank=i=>({n:"",num:String(i+1),s:{},tot:null,ok:false,notes:[],zoom:1});
