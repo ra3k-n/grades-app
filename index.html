@@ -165,17 +165,33 @@ th:last-child,td:last-child{border-left:0}
   background:#fff;
 }
 
-/* 🆕 iframe شفاف لزر تيليجرام */
-#tgFrame{
-  position:fixed;
-  inset:0;
-  width:100vw;
-  height:100vh;
-  border:0;
-  background:transparent;
-  pointer-events:none;
-  z-index:2147483647;
+/* 🆕 زر تيليجرام — position:fixed مع أولوية عالية */
+#tgFloat{
+  position:fixed !important;
+  bottom:20px !important;
+  left:50% !important;
+  margin-left:-29px !important;
+  top:auto !important;
+  right:auto !important;
+  width:58px !important;
+  height:58px !important;
+  border-radius:50% !important;
+  background:linear-gradient(135deg,#2AABEE,#229ED9) !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  box-shadow:0 8px 24px rgba(34,158,217,.55) !important;
+  text-decoration:none !important;
+  border:2px solid rgba(255,255,255,.35) !important;
+  z-index:2147483647 !important;
+  padding:0 !important;
+  transition:box-shadow .2s,filter .2s !important;
+  transform:none !important;
+  -webkit-transform:none !important;
 }
+#tgFloat:hover{box-shadow:0 10px 30px rgba(34,158,217,.8) !important;filter:brightness(1.1) !important}
+#tgFloat:active{filter:brightness(.9) !important}
+#tgFloat svg{width:32px !important;height:32px !important;fill:#fff !important;display:block !important;pointer-events:none !important}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -219,7 +235,7 @@ th:last-child,td:last-child{border-left:0}
   </div>
 
   <div id="secs"></div>
-  <p class="ht" style="text-align:center">الإصدار 26</p>
+  <p class="ht" style="text-align:center">الإصدار 30</p>
 </div>
 
 <div id="stu" hidden>
@@ -403,33 +419,24 @@ th:last-child,td:last-child{border-left:0}
 <div id="toast" hidden></div>
 <div id="kp" hidden></div>
 
-<!-- 🔵 زر تيليجرام — iframe شفاف يغطي الشاشة -->
-<iframe id="tgFrame" title="تيليجرام" scrolling="no"
-  srcdoc='<!DOCTYPE html><html><head><meta charset="utf-8"><style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{height:100%;width:100%;background:transparent;overflow:hidden}
-body{display:flex;align-items:flex-end;justify-content:center;padding-bottom:20px;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
-a{
-  width:58px;height:58px;border-radius:50%;
-  background:linear-gradient(135deg,#2AABEE,#229ED9);
-  display:flex;align-items:center;justify-content:center;
-  box-shadow:0 8px 24px rgba(34,158,217,.55);
-  text-decoration:none;
-  border:2px solid rgba(255,255,255,.35);
-  transition:box-shadow .2s,filter .2s;
-}
-a:hover{box-shadow:0 10px 30px rgba(34,158,217,.8);filter:brightness(1.1)}
-a:active{filter:brightness(.9)}
-svg{width:32px;height:32px;fill:#fff;display:block}
-</style></head><body>
-<a href="https://t.me/ra3k_n" target="_blank" rel="noopener">
-<svg viewBox="0 0 24 24">
-<path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
-</svg></a>
-</body></html>'>
-</iframe>
+<!-- 🔵 زر تيليجرام -->
+<a id="tgFloat" href="https://t.me/ra3k_n" target="_blank" rel="noopener">
+  <svg viewBox="0 0 24 24">
+    <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
+  </svg>
+</a>
 
 <script>
+/* 🆕 إزالة Service Workers قديمة تلقائياً عند التحديث */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    regs.forEach(reg => {
+      // اسمح لها بالعمل لكن سجل تحديث
+      reg.update();
+    });
+  });
+}
+
 const KEY="gradesheet_v3",OP=new Set(),QO=new Set(),QS={};
 try{localStorage.removeItem("gradesheet_v2")}catch(e){}
 const blank=i=>({n:"",num:String(i+1),s:{},tot:null,ok:false,notes:[],zoom:1});
@@ -1078,13 +1085,17 @@ document.addEventListener("keydown",e=>{
 render();
 </script>
 <script>
+/* تسجيل Service Worker */
 if("serviceWorker" in navigator){
-  const had=!!navigator.serviceWorker.controller;let rl=false;
-  navigator.serviceWorker.addEventListener("controllerchange",()=>{if(had&&!rl){rl=true;location.reload()}});
-  window.addEventListener("load",()=>navigator.serviceWorker.register("sw.js").then(r=>{
-    r.update();
-    document.addEventListener("visibilitychange",()=>{if(!document.hidden)r.update()});
-  }).catch(()=>{}));
+  let rl = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if(!rl){ rl = true; location.reload(); }
+  });
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js").then(reg => {
+      reg.update();
+    }).catch(() => {});
+  });
 }
 </script>
 </body>
