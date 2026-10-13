@@ -1,15 +1,10 @@
-/* Service Worker — نسخة 30 — Network-first لضمان التحديث الفوري */
-const CACHE = 'grades-v30';
+/* Service Worker — نسخة 32 */
+const CACHE = 'grades-v32';
 const ASSETS = [
   './',
-  './index.html',
-  './manifest.webmanifest',
-  './icon-180.png',
-  './icon-192.png',
-  './icon-512.png'
+  './index.html'
 ];
 
-/* تثبيت — حمّل الملفات الأساسية */
 self.addEventListener('install', e => {
   self.skipWaiting();
   e.waitUntil((async () => {
@@ -18,12 +13,11 @@ self.addEventListener('install', e => {
       try {
         const r = await fetch(url, { cache: 'reload' });
         if (r.ok) await cache.put(url, r.clone());
-      } catch (err) { /* تجاهل */ }
+      } catch (err) {}
     }
   })());
 });
 
-/* تنشيط — احذف كل الكاش القديم */
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
@@ -32,11 +26,9 @@ self.addEventListener('activate', e => {
   );
 });
 
-/* جلب — Network-first يعني: جرّب الإنترنت أولاً، وإذا فشل استخدم الكاش */
 self.addEventListener('fetch', e => {
   const req = e.request;
   if (req.method !== 'GET') return;
-
   e.respondWith((async () => {
     try {
       const fresh = await fetch(req);
