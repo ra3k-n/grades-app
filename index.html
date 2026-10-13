@@ -88,8 +88,16 @@ input{touch-action:manipulation}
 .sc button{flex:none;font-size:16px;font-weight:700;padding:7px 20px;border-radius:999px;background:#1f4e8c;border-color:#1f4e8c;color:#fff;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .sc button.addsec{background:#b8860b!important;border-color:#b8860b!important;color:#fff!important;font-weight:700;border-radius:999px;padding:12px 24px;flex:none;font-size:20px;box-shadow:0 3px 10px rgba(184,134,11,.45)}
 
-/* ✅ شريط الشعب — غير ثابت (يتحرك مع التمرير) */
-.scw{display:flex;align-items:center;gap:8px;padding:8px 4px;margin-bottom:6px}
+/* ✅ شريط الشعب — غير ثابت، يتحرك مع التمرير */
+.scw{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 4px;
+  margin-bottom:6px;
+  position:relative;
+  background:transparent;
+}
 .scw .ib{width:42px;height:42px;border-radius:50%;padding:0;display:inline-flex;align-items:center;justify-content:center;flex:none;background:var(--card);box-shadow:0 2px 8px rgba(0,0,0,.08);border:1px solid var(--ln)}
 .scw .dots{margin-inline-start:0;padding:8px 10px;background:var(--card);border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.08);border:1px solid var(--ln)}
 .scw .mn,.scw .sv2{position:absolute;top:calc(100% + 6px)}
@@ -150,7 +158,9 @@ th:last-child,td:last-child{border-left:0}
 .dropZone p{margin:4px 0;font-size:14px}
 .dropZone b{color:var(--blue)}
 
-/* ✅ التذييل الثابت في الأسفل */
+/* ✅ رأس الجدول — غير ثابت، يتحرك مع التمرير (تم إزالة sticky) */
+
+/* ✅ التذييل الثابت في الأسفل فقط */
 #verFoot{
   position:fixed;
   bottom:0;
@@ -215,7 +225,7 @@ th:last-child,td:last-child{border-left:0}
     <button class="wbtn" id="wordBtn" onclick="openWd()">استيراد من Word</button>
   </div>
 
-  <div class="scw" id="scw" style="position:relative">
+  <div class="scw" id="scw">
     <div id="sc" class="sc"></div>
     <button class="ib theme" id="th" onclick="toggleTheme()" aria-label="المظهر"></button>
     <button class="dots" id="dots" onclick="toggleMenu()" aria-label="المزيد">
@@ -419,7 +429,7 @@ th:last-child,td:last-child{border-left:0}
 
 <!-- ✅ التذييل الثابت مع زر تيليجرام + النص -->
 <footer id="verFoot">
-  <span class="ver-text">محدّث لإصدار v33</span>
+  <span class="ver-text">محدّث لإصدار v34</span>
   <a class="tg-btn" href="https://t.me/ra3k_n" target="_blank" rel="noopener" aria-label="تواصل على تيليجرام">
     <svg viewBox="0 0 24 24">
       <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
