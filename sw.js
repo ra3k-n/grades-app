@@ -1,9 +1,55 @@
-const C="grades-v19",F=["./","./index.html","./manifest.webmanifest","./icon-180.png","./icon-192.png","./icon-512.png"];
-const clean=async r=>r.redirected?new Response(await r.blob(),{status:200,headers:r.headers}):r;
-self.addEventListener("install",e=>{e.waitUntil((async()=>{const c=await caches.open(C);
- for(const u of F){try{const r=await fetch(u,{cache:"reload"});if(!r.ok)throw new Error(u);await c.put(u,await clean(r))}catch(err){if(u==="./"||u==="./index.html")throw err}}
- await self.skipWaiting()})())});
-self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
-self.addEventListener("fetch",e=>{const q=e.request;if(q.method!=="GET")return;
- e.respondWith((async()=>{const m=await caches.match(q,{ignoreSearch:true});if(m)return m;
-  try{return await fetch(q)}catch(err){if(q.mode==="navigate")return(await caches.match("./index.html"))||(await caches.match("./"));throw err}})())});
+/* Service Worker — نسخة 30 — Network-first لضمان التحديث الفوري */
+const CACHE = 'grades-v30';
+const ASSETS = [
+  './',
+  './index.html',
+  './manifest.webmanifest',
+  './icon-180.png',
+  './icon-192.png',
+  './icon-512.png'
+];
+
+/* تثبيت — حمّل الملفات الأساسية */
+self.addEventListener('install', e => {
+  self.skipWaiting();
+  e.waitUntil((async () => {
+    const cache = await caches.open(CACHE);
+    for (const url of ASSETS) {
+      try {
+        const r = await fetch(url, { cache: 'reload' });
+        if (r.ok) await cache.put(url, r.clone());
+      } catch (err) { /* تجاهل */ }
+    }
+  })());
+});
+
+/* تنشيط — احذف كل الكاش القديم */
+self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys()
+      .then(names => Promise.all(names.filter(n => n !== CACHE).map(n => caches.delete(n))))
+      .then(() => self.clients.claim())
+  );
+});
+
+/* جلب — Network-first يعني: جرّب الإنترنت أولاً، وإذا فشل استخدم الكاش */
+self.addEventListener('fetch', e => {
+  const req = e.request;
+  if (req.method !== 'GET') return;
+
+  e.respondWith((async () => {
+    try {
+      const fresh = await fetch(req);
+      if (fresh && fresh.ok) {
+        const cache = await caches.open(CACHE);
+        cache.put(req, fresh.clone()).catch(() => {});
+      }
+      return fresh;
+    } catch (err) {
+      const cached = await caches.match(req, { ignoreSearch: true });
+      if (cached) return cached;
+      if (req.mode === 'navigate') return caches.match('./index.html');
+      throw err;
+    }
+  })());
+});
