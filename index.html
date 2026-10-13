@@ -12,8 +12,18 @@
 :root{--card:#fff;--ink2:#1d1d1d;--mut:#6b6b6b;--blue:#1f4e8c;--ln:#d9d9d4}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--card:#242b29;--ink2:#e8e8e8;--mut:#9aa8a5;--blue:#8dbbf5;--ln:#3a4543}}
 :root[data-theme="dark"]{--card:#242b29;--ink2:#e8e8e8;--mut:#9aa8a5;--blue:#8dbbf5;--ln:#3a4543}
-html{scroll-padding-top:20px}
-body{margin:0;background:var(--bg);font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",Arial,sans-serif;padding:12px;padding-bottom:calc(90px + env(safe-area-inset-bottom,0px));color:#e8e8e8}
+
+html{scroll-padding-top:80px}
+
+body{
+  margin:0;
+  background:var(--bg);
+  font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",Arial,sans-serif;
+  padding:12px;
+  padding-top:calc(72px + env(safe-area-inset-top,0px));
+  padding-bottom:calc(90px + env(safe-area-inset-bottom,0px));
+  color:#e8e8e8;
+}
 @media (prefers-color-scheme:light){body{color:#1d1d1d}}
 :root[data-theme="light"] body{color:#1d1d1d}
 :root[data-theme="dark"] body{color:#e8e8e8}
@@ -34,7 +44,7 @@ button.wbtn.dragover{background:#1e4080;transform:scale(1.02);box-shadow:0 0 0 3
 .pnBtn svg{width:18px;height:18px;flex:none}
 .pnBtn.on{background:var(--acc);color:#fff;border-color:var(--acc)}
 
-.wrap{border:1px solid var(--line);background:#fff;color:var(--ink)}
+.wrap{border:1px solid var(--line);background:#fff;color:var(--ink);overflow-x:auto}
 table{border-collapse:collapse;width:100%}
 th,td{border:1px solid var(--line);padding:0;text-align:center;color:var(--ink)}
 input{font:inherit;color:#1d1d1d;background:transparent;border:0;padding:6px 2px;text-align:center;width:100%;box-sizing:border-box}
@@ -58,7 +68,7 @@ th input{font-weight:700}
 [hidden]{display:none!important}
 input{touch-action:manipulation}
 .dots{padding:8px 10px}
-.mn{position:absolute;left:0;top:46px;z-index:20;background:var(--card);color:var(--ink2);border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.28);padding:6px;min-width:200px}
+.mn{position:absolute;left:0;top:46px;z-index:200;background:var(--card);color:var(--ink2);border-radius:14px;box-shadow:0 6px 24px rgba(0,0,0,.28);padding:6px;min-width:200px}
 .mn button{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;padding:12px;font-size:17px;color:inherit}
 .top2{display:flex;align-items:center;justify-content:center;position:relative;min-height:44px;margin-bottom:6px}
 .top2 .bk{position:absolute;right:0;border:0;background:transparent;padding:8px;color:inherit}
@@ -72,7 +82,7 @@ input{touch-action:manipulation}
 .ht{color:var(--mut);font-size:14px;margin:8px 0 6px}
 #ll{display:block;max-width:560px;margin:0 auto}
 .ht2{font-weight:700;color:var(--blue);margin:14px 0 2px}
-.md{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;padding:16px;z-index:30}
+.md{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;padding:16px;z-index:300}
 .mc{background:var(--card);color:var(--ink2);border-radius:16px;padding:16px;width:100%;max-width:440px;max-height:90vh;overflow:auto}
 .mc h3{margin:0 0 10px}
 .mc textarea{width:100%;box-sizing:border-box;min-height:110px;font:inherit;border:1px solid var(--ln);border-radius:10px;padding:10px;background:transparent;color:inherit}
@@ -82,22 +92,31 @@ input{touch-action:manipulation}
 .sb button{padding:6px 12px}
 .col{display:flex;flex-direction:column;gap:8px}
 .er{background:#b4372f;color:#fff;padding:8px 12px;border-radius:8px;margin-bottom:8px}
-#toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:60;background:#1f5c55;color:#fff;padding:12px 24px;border-radius:999px;font-weight:700;box-shadow:0 4px 16px rgba(0,0,0,.3)}
-.sc{display:flex;gap:14px;overflow-x:auto;padding:8px 0;flex:1;min-width:0;scrollbar-width:none}
+#toast{position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:400;background:#1f5c55;color:#fff;padding:12px 24px;border-radius:999px;font-weight:700;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+
+/* ============ شريط الشعب — ثابت في الأعلى ============ */
+.scw{
+  position:fixed;
+  top:0;
+  left:0;
+  right:0;
+  z-index:150;
+  background:var(--bg);
+  padding:8px 12px;
+  padding-top:calc(8px + env(safe-area-inset-top,0px));
+  border-bottom:1px solid var(--ln);
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+  display:flex;
+  align-items:center;
+  gap:8px;
+  max-width:100vw;
+  box-sizing:border-box;
+}
+.sc{display:flex;gap:14px;overflow-x:auto;padding:4px 0;flex:1;min-width:0;scrollbar-width:none;-ms-overflow-style:none}
 .sc::-webkit-scrollbar{display:none}
 .sc button{flex:none;font-size:16px;font-weight:700;padding:7px 20px;border-radius:999px;background:#1f4e8c;border-color:#1f4e8c;color:#fff;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .sc button.addsec{background:#b8860b!important;border-color:#b8860b!important;color:#fff!important;font-weight:700;border-radius:999px;padding:12px 24px;flex:none;font-size:20px;box-shadow:0 3px 10px rgba(184,134,11,.45)}
 
-/* شريط الشعب — غير ثابت */
-.scw{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:8px 4px;
-  margin-bottom:6px;
-  position:relative;
-  background:transparent;
-}
 .scw .ib{width:42px;height:42px;border-radius:50%;padding:0;display:inline-flex;align-items:center;justify-content:center;flex:none;background:var(--card);box-shadow:0 2px 8px rgba(0,0,0,.08);border:1px solid var(--ln)}
 .scw .dots{margin-inline-start:0;padding:8px 10px;background:var(--card);border-radius:50%;box-shadow:0 2px 8px rgba(0,0,0,.08);border:1px solid var(--ln)}
 .scw .mn,.scw .sv2{position:absolute;top:calc(100% + 6px)}
@@ -125,8 +144,8 @@ th:last-child,td:last-child{border-left:0}
 .st-p{background:#34c759}.st-a{background:#ff3b30}.st-l{background:#ff9500}
 .bdg{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;color:#fff;flex:none;margin-inline:4px;vertical-align:middle}
 .bdg svg{width:14px;height:14px}
-#ptr{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:70;background:#1f4e8c;color:#fff;padding:10px 22px;border-radius:999px;font-weight:700;box-shadow:0 4px 16px rgba(0,0,0,.3)}
-#kp{position:fixed;left:0;right:0;bottom:0;z-index:50;display:flex;gap:6px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:#d3d6d4;border-top:1px solid #888;direction:ltr}
+#ptr{position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:400;background:#1f4e8c;color:#fff;padding:10px 22px;border-radius:999px;font-weight:700;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+#kp{position:fixed;left:0;right:0;bottom:0;z-index:180;display:flex;gap:6px;padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));background:#d3d6d4;border-top:1px solid #888;direction:ltr}
 #kp[hidden]{display:none}
 #kp button{flex:1;font-size:22px;padding:12px 0;border-radius:8px;background:#fff;color:#111;border:1px solid #999;touch-action:manipulation;user-select:none;-webkit-user-select:none}
 #kp button.kx{background:#e9ecea;font-size:17px;flex:1.3}
@@ -157,7 +176,22 @@ th:last-child,td:last-child{border-left:0}
 .dropZone p{margin:4px 0;font-size:14px}
 .dropZone b{color:var(--blue)}
 
-/* التذييل الثابت أسفل الصفحة */
+/* ============ رأس الجدول — ثابت تحت شريط الشعب ============ */
+.sec table thead tr:first-child > th{
+  position:sticky;
+  top:calc(58px + env(safe-area-inset-top,0px));
+  z-index:80;
+  background-clip:padding-box;
+  box-shadow:0 2px 6px rgba(0,0,0,.08);
+}
+.pick .sec table thead tr:nth-child(2) > th{
+  position:sticky;
+  top:calc(58px + env(safe-area-inset-top,0px) + 60px);
+  z-index:79;
+  background:#fff;
+}
+
+/* ============ التذييل الثابت أسفل الصفحة ============ */
 #verFoot{
   position:fixed;
   bottom:0;
@@ -175,20 +209,11 @@ th:last-child,td:last-child{border-left:0}
   gap:14px;
   direction:rtl;
 }
-#verFoot .ver-text{
-  font-size:13px;
-  color:var(--mut);
-  font-weight:700;
-  letter-spacing:.3px;
-}
+#verFoot .ver-text{font-size:13px;color:var(--mut);font-weight:700;letter-spacing:.3px}
 #verFoot .tg-btn{
-  width:44px;
-  height:44px;
-  border-radius:50%;
+  width:44px;height:44px;border-radius:50%;
   background:linear-gradient(135deg,#2AABEE,#229ED9);
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  display:flex;align-items:center;justify-content:center;
   box-shadow:0 4px 12px rgba(34,158,217,.5);
   text-decoration:none;
   border:2px solid rgba(255,255,255,.4);
@@ -212,16 +237,6 @@ th:last-child,td:last-child{border-left:0}
 <div class="er" id="er" hidden>تعذّر الحفظ على هذا الجهاز! أنشئ نسخة احتياطية الآن.</div>
 
 <div id="main">
-  <div class="pageHeader">
-    <h1>سجل الدرجات</h1>
-    <p>نظام إدارة الدرجات والحضور</p>
-  </div>
-
-  <div class="btns">
-    <button class="p" onclick="openBk()">نسخة احتياطية</button>
-    <button class="wbtn" id="wordBtn" onclick="openWd()">استيراد من Word</button>
-  </div>
-
   <div class="scw" id="scw">
     <div id="sc" class="sc"></div>
     <button class="ib theme" id="th" onclick="toggleTheme()" aria-label="المظهر"></button>
@@ -238,6 +253,16 @@ th:last-child,td:last-child{border-left:0}
       <button class="p" onclick="saveColors()">حفظ</button>
       <button onclick="cancelColors()">إلغاء</button>
     </div>
+  </div>
+
+  <div class="pageHeader">
+    <h1>سجل الدرجات</h1>
+    <p>نظام إدارة الدرجات والحضور</p>
+  </div>
+
+  <div class="btns">
+    <button class="p" onclick="openBk()">نسخة احتياطية</button>
+    <button class="wbtn" id="wordBtn" onclick="openWd()">استيراد من Word</button>
   </div>
 
   <div id="secs"></div>
@@ -420,7 +445,7 @@ th:last-child,td:last-child{border-left:0}
 <div id="kp" hidden></div>
 
 <footer id="verFoot">
-  <span class="ver-text">محدّث لإصدار v35</span>
+  <span class="ver-text">محدّث لإصدار v36</span>
   <a class="tg-btn" href="https://t.me/ra3k_n" target="_blank" rel="noopener" aria-label="تواصل على تيليجرام">
     <svg viewBox="0 0 24 24">
       <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
@@ -1058,9 +1083,7 @@ async function doRefresh(){
   const p=$("ptr");p.style.opacity=1;p.hidden=false;
   if(!navigator.onLine){p.textContent="لا يوجد اتصال بالإنترنت";setTimeout(hidePull,1800);return}
   p.textContent="جارٍ التحديث…";
-  try{const reg=await navigator.serviceWorker.getRegistration();if(reg){await reg.update();await new Promise(r=>setTimeout(r,2500))}checkDay();p.textContent="لديك أحدث إصدار ✓"}
-  catch(e){p.textContent="تعذّر التحديث"}
-  setTimeout(hidePull,1800);
+  setTimeout(()=>{p.textContent="تم ✓";setTimeout(hidePull,800)},600);
 }
 
 D.sections.forEach((S,i)=>{sortRows(S);renum(i)});save();
