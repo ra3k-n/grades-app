@@ -87,7 +87,29 @@ input{touch-action:manipulation}
 .sc button{flex:none;font-size:16px;font-weight:700;padding:7px 20px;border-radius:999px;background:#1f4e8c;border-color:#1f4e8c;color:#fff;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .sc button.addsec{background:#b8860b!important;border-color:#b8860b!important;color:#fff!important;font-weight:700;border-radius:999px;padding:12px 24px;flex:none;font-size:20px;box-shadow:0 3px 10px rgba(184,134,11,.45)}
 
-.scw{position:fixed;top:0;left:0;right:0;z-index:100;background:var(--bg);padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top,0px));border-bottom:1px solid var(--ln);display:flex;align-items:center;gap:8px;box-shadow:0 2px 8px rgba(0,0,0,.08);max-width:100vw;box-sizing:border-box}
+/* 🔧 الشريط العلوي شفاف مع blur */
+.scw{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(255,255,255,.55);
+  backdrop-filter:blur(14px) saturate(180%);
+  -webkit-backdrop-filter:blur(14px) saturate(180%);
+  padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top,0px));
+  border-bottom:1px solid rgba(0,0,0,.06);
+  display:flex;align-items:center;gap:8px;
+  box-shadow:0 2px 12px rgba(0,0,0,.05);
+  max-width:100vw;box-sizing:border-box;
+}
+:root[data-theme="dark"] .scw{
+  background:rgba(22,26,25,.55);
+  border-bottom-color:rgba(255,255,255,.08);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .scw{
+    background:rgba(22,26,25,.55);
+    border-bottom-color:rgba(255,255,255,.08);
+  }
+}
+
 .scw .ib{width:42px;height:42px;border-radius:50%;padding:0;display:inline-flex;align-items:center;justify-content:center;flex:none}
 .scw .dots{margin-inline-start:0;padding:8px 10px}
 .scw .mn,.scw .sv2{position:absolute;top:calc(100% + 6px)}
@@ -161,24 +183,28 @@ th:last-child,td:last-child{border-left:0}
   background:#fff;
 }
 
-/* 🔵 زر تيليجرام العائم — أيقونة فقط بدون نص */
+/* 🔧 زر تيليجرام — ثابت تماماً */
 #tgFloat{
-  position:fixed;
-  bottom:calc(14px + env(safe-area-inset-bottom,0px));
-  left:50%;
-  transform:translateX(-50%);
-  z-index:80;
-  width:56px;height:56px;
+  position:fixed !important;
+  bottom:calc(16px + env(safe-area-inset-bottom,0px)) !important;
+  left:50% !important;
+  top:auto !important;
+  right:auto !important;
+  transform:translateX(-50%) translateZ(0) !important;
+  z-index:99999 !important;
+  width:58px;height:58px;
   border-radius:50%;
   background:linear-gradient(135deg,#2AABEE,#229ED9);
   display:flex;align-items:center;justify-content:center;
-  box-shadow:0 6px 22px rgba(34,158,217,.55);
+  box-shadow:0 8px 24px rgba(34,158,217,.5);
   text-decoration:none;
-  transition:.2s;
-  border:2px solid rgba(255,255,255,.3);
+  transition:transform .2s;
+  border:2px solid rgba(255,255,255,.35);
+  will-change:transform;
+  pointer-events:auto;
 }
-#tgFloat:hover{transform:translateX(-50%) scale(1.1);box-shadow:0 8px 28px rgba(34,158,217,.75)}
-#tgFloat:active{transform:translateX(-50%) scale(.92)}
+#tgFloat:hover{transform:translateX(-50%) translateZ(0) scale(1.1) !important;box-shadow:0 10px 30px rgba(34,158,217,.75)}
+#tgFloat:active{transform:translateX(-50%) translateZ(0) scale(.92) !important}
 #tgFloat svg{width:32px;height:32px;fill:#fff}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
@@ -223,7 +249,7 @@ th:last-child,td:last-child{border-left:0}
   </div>
 
   <div id="secs"></div>
-  <p class="ht" style="text-align:center">الإصدار 22</p>
+  <p class="ht" style="text-align:center">الإصدار 23</p>
 </div>
 
 <div id="stu" hidden>
