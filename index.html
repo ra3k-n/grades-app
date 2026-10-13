@@ -88,7 +88,7 @@ input{touch-action:manipulation}
 .sc button{flex:none;font-size:16px;font-weight:700;padding:7px 20px;border-radius:999px;background:#1f4e8c;border-color:#1f4e8c;color:#fff;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .sc button.addsec{background:#b8860b!important;border-color:#b8860b!important;color:#fff!important;font-weight:700;border-radius:999px;padding:12px 24px;flex:none;font-size:20px;box-shadow:0 3px 10px rgba(184,134,11,.45)}
 
-/* ✅ شريط الشعب — غير ثابت، يتحرك مع التمرير */
+/* شريط الشعب — غير ثابت */
 .scw{
   display:flex;
   align-items:center;
@@ -117,7 +117,6 @@ th:last-child,td:last-child{border-left:0}
 .stbtn{display:block;margin:3px auto;padding:2px 8px;font-size:12px;border-radius:6px;background:#fff;color:#1d1d1d;border-color:#888}
 .pk{display:block;width:100%;text-align:right;margin-bottom:6px;padding:10px;font-size:16px}
 #wt{min-height:150px}
-.lc{scroll-margin-top:20px}
 .lc .ht2{margin-top:0;padding-bottom:6px;border-bottom:2px solid var(--blue)}
 .lr{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:8px 2px;border-bottom:1px solid var(--ln)}
 .ln{font-size:15px;line-height:1.4;overflow-wrap:anywhere}
@@ -158,9 +157,7 @@ th:last-child,td:last-child{border-left:0}
 .dropZone p{margin:4px 0;font-size:14px}
 .dropZone b{color:var(--blue)}
 
-/* ✅ رأس الجدول — غير ثابت، يتحرك مع التمرير (تم إزالة sticky) */
-
-/* ✅ التذييل الثابت في الأسفل فقط */
+/* التذييل الثابت أسفل الصفحة */
 #verFoot{
   position:fixed;
   bottom:0;
@@ -398,24 +395,19 @@ th:last-child,td:last-child{border-left:0}
 <div class="md" id="zoomDlg" hidden><div class="mc">
   <h3>🔍 تكبير الأسماء</h3>
   <p class="ht" id="zoomScopeText"></p>
-
   <div class="zoomScope">
     <label><input type="radio" name="zoomScopeR" value="all" onchange="onZoomScopeChange()"> كل الأسماء في الشعبة</label>
     <label><input type="radio" name="zoomScopeR" value="one" onchange="onZoomScopeChange()"> اسم واحد فقط</label>
   </div>
-
   <div id="zoomOneBox" hidden>
     <select id="zoomStudent" onchange="onZoomStudentChange()"></select>
   </div>
-
   <div class="preview" id="zoomPreview">محمد أحمد</div>
-
   <div class="zoomCtrls">
     <button onclick="zoomStep(-10)">−</button>
     <span class="zoomLvl" id="zoomLvl">100%</span>
     <button onclick="zoomStep(10)">+</button>
   </div>
-
   <div class="mb">
     <button class="p" onclick="saveZoom()">حفظ</button>
     <button onclick="resetZoom()">افتراضي</button>
@@ -427,9 +419,8 @@ th:last-child,td:last-child{border-left:0}
 <div id="toast" hidden></div>
 <div id="kp" hidden></div>
 
-<!-- ✅ التذييل الثابت مع زر تيليجرام + النص -->
 <footer id="verFoot">
-  <span class="ver-text">محدّث لإصدار v34</span>
+  <span class="ver-text">محدّث لإصدار v35</span>
   <a class="tg-btn" href="https://t.me/ra3k_n" target="_blank" rel="noopener" aria-label="تواصل على تيليجرام">
     <svg viewBox="0 0 24 24">
       <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
@@ -1084,20 +1075,6 @@ document.addEventListener("keydown",e=>{
 });
 
 render();
-</script>
-<script>
-/* تسجيل Service Worker */
-if("serviceWorker" in navigator){
-  let rl = false;
-  navigator.serviceWorker.addEventListener("controllerchange", () => {
-    if(!rl){ rl = true; location.reload(); }
-  });
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("sw.js").then(reg => {
-      reg.update();
-    }).catch(() => {});
-  });
-}
 </script>
 </body>
 </html>
