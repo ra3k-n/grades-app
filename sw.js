@@ -1,5 +1,5 @@
-/* Service Worker — نسخة 33 */
-const CACHE = 'grades-v33';
+/* Service Worker — نسخة 34 */
+const CACHE = 'grades-v34';
 const ASSETS = ['./', './index.html'];
 
 self.addEventListener('install', e => {
