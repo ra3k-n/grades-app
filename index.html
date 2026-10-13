@@ -12,7 +12,7 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--card:#242b29;--ink2:#e8e8e8;--mut:#9aa8a5;--blue:#8dbbf5;--ln:#3a4543}}
 :root[data-theme="dark"]{--card:#242b29;--ink2:#e8e8e8;--mut:#9aa8a5;--blue:#8dbbf5;--ln:#3a4543}
 html{scroll-padding-top:140px}
-body{margin:0;background:var(--bg);font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",Arial,sans-serif;padding:12px;padding-top:calc(70px + env(safe-area-inset-top,0px));padding-bottom:calc(80px + env(safe-area-inset-bottom,0px));color:#e8e8e8;transform:none}
+body{margin:0;background:var(--bg);font-family:"Segoe UI",Tahoma,"Noto Naskh Arabic",Arial,sans-serif;padding:12px;padding-top:calc(70px + env(safe-area-inset-top,0px));padding-bottom:calc(80px + env(safe-area-inset-bottom,0px));color:#e8e8e8}
 @media (prefers-color-scheme:light){body{color:#1d1d1d}}
 :root[data-theme="light"] body{color:#1d1d1d}
 :root[data-theme="dark"] body{color:#e8e8e8}
@@ -87,16 +87,7 @@ input{touch-action:manipulation}
 .sc button{flex:none;font-size:16px;font-weight:700;padding:7px 20px;border-radius:999px;background:#1f4e8c;border-color:#1f4e8c;color:#fff;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
 .sc button.addsec{background:#b8860b!important;border-color:#b8860b!important;color:#fff!important;font-weight:700;border-radius:999px;padding:12px 24px;flex:none;font-size:20px;box-shadow:0 3px 10px rgba(184,134,11,.45)}
 
-/* 🆕 الشريط العلوي شفاف تماماً بدون blur */
-.scw{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  background:transparent;
-  padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top,0px));
-  border-bottom:none;
-  box-shadow:none;
-  display:flex;align-items:center;gap:8px;
-  max-width:100vw;box-sizing:border-box;
-}
+.scw{position:fixed;top:0;left:0;right:0;z-index:100;background:transparent;padding:8px 12px;padding-top:calc(8px + env(safe-area-inset-top,0px));border-bottom:none;box-shadow:none;display:flex;align-items:center;gap:8px;max-width:100vw;box-sizing:border-box}
 .scw .ib{width:42px;height:42px;border-radius:50%;padding:0;display:inline-flex;align-items:center;justify-content:center;flex:none;background:rgba(255,255,255,.9);box-shadow:0 2px 8px rgba(0,0,0,.1)}
 :root[data-theme="dark"] .scw .ib{background:rgba(36,43,41,.9)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .scw .ib{background:rgba(36,43,41,.9)}}
@@ -174,18 +165,17 @@ th:last-child,td:last-child{border-left:0}
   background:#fff;
 }
 
-/* 🆕 زر تيليجرام ثابت أسفل الشاشة — بطريقة margin-left */
+/* زر تيليجرام — التنسيق الكامل بدون transform */
 #tgFloat{
   position:fixed;
   bottom:16px;
   bottom:calc(16px + env(safe-area-inset-bottom,0px));
-  left:50%;
-  margin-left:-29px;
-  top:auto;
-  right:auto;
-  z-index:2147483647;
+  left:0;
+  right:0;
   width:58px;
   height:58px;
+  margin:0 auto;
+  z-index:2147483647;
   border-radius:50%;
   background:linear-gradient(135deg,#2AABEE,#229ED9);
   display:flex;
@@ -193,14 +183,12 @@ th:last-child,td:last-child{border-left:0}
   justify-content:center;
   box-shadow:0 8px 24px rgba(34,158,217,.5);
   text-decoration:none;
-  transition:box-shadow .2s,filter .2s;
   border:2px solid rgba(255,255,255,.35);
-  -webkit-backface-visibility:hidden;
-  backface-visibility:hidden;
+  transition:box-shadow .2s,filter .2s;
 }
 #tgFloat:hover{box-shadow:0 10px 30px rgba(34,158,217,.75);filter:brightness(1.1)}
 #tgFloat:active{filter:brightness(.92)}
-#tgFloat svg{width:32px;height:32px;fill:#fff;display:block}
+#tgFloat svg{width:32px;height:32px;fill:#fff;display:block;pointer-events:none}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -244,7 +232,7 @@ th:last-child,td:last-child{border-left:0}
   </div>
 
   <div id="secs"></div>
-  <p class="ht" style="text-align:center">الإصدار 24</p>
+  <p class="ht" style="text-align:center">الإصدار 25</p>
 </div>
 
 <div id="stu" hidden>
@@ -428,12 +416,42 @@ th:last-child,td:last-child{border-left:0}
 <div id="toast" hidden></div>
 <div id="kp" hidden></div>
 
-<!-- 🔵 زر تيليجرام — ثابت أسفل الشاشة -->
+<!-- 🔵 زر تيليجرام — ثابت -->
 <a id="tgFloat" href="https://t.me/ra3k_n" target="_blank" rel="noopener">
   <svg viewBox="0 0 24 24">
     <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
   </svg>
 </a>
+
+<script>
+/* 🆕 تثبيت زر تيليجرام إجبارياً كل 200ms — حل مضمون */
+(function(){
+  const tg = document.getElementById('tgFloat');
+  if(!tg) return;
+  function fix(){
+    const s = tg.style;
+    s.cssText = 'position:fixed !important;top:auto !important;bottom:16px !important;left:0 !important;right:0 !important;margin:0 auto !important;width:58px !important;height:58px !important;z-index:2147483647 !important;border-radius:50% !important;background:linear-gradient(135deg,#2AABEE,#229ED9) !important;display:flex !important;align-items:center !important;justify-content:center !important;box-shadow:0 8px 24px rgba(34,158,217,.5) !important;text-decoration:none !important;border:2px solid rgba(255,255,255,.35) !important;transform:none !important;pointer-events:auto !important;visibility:visible !important;opacity:1 !important';
+  }
+  fix();
+  window.addEventListener('scroll',fix,{passive:true});
+  window.addEventListener('resize',fix);
+  window.addEventListener('orientationchange',fix);
+  setInterval(fix,200);
+  // مراقبة أي تغيير في DOM
+  if(window.MutationObserver){
+    new MutationObserver(fix).observe(document.body,{attributes:true,attributeFilter:['style','class']});
+  }
+})();
+
+/* 🆕 إجبار المتصفح على تحديث الكاش */
+if('serviceWorker' in navigator){
+  window.addEventListener('load',()=>{
+    navigator.serviceWorker.getRegistrations().then(regs=>{
+      regs.forEach(r=>r.update());
+    });
+  });
+}
+</script>
 
 <script>
 const KEY="gradesheet_v3",OP=new Set(),QO=new Set(),QS={};
@@ -485,7 +503,6 @@ function secHTML(S,si){
   h+=`<button onclick="togglePanel(${si})">تعديل</button>`;
   h+=`<button class="p" onclick="addRow(${si})">+ إضافة طالب</button>`;
   h+=`</div>`;
-
   h+=`<div class="pn" id="pn${si}" ${OP.has(si)?"":"hidden"}>`;
   h+=`<button class="pnBtn ${QO.has(si)?'on':''}" onclick="toggleSearch(${si})">${ICON_SEARCH} بحث بالرقم</button>`;
   h+=`<button class="pnBtn" onclick="openFont(${si})">${ICON_FONT} تنسيق الخط</button>`;
@@ -493,11 +510,9 @@ function secHTML(S,si){
   h+=`<button class="d" onclick="askDelAll(${si})">حذف كل الطلاب</button>`;
   h+=`<span id="msg${si}"></span>`;
   h+=`</div>`;
-
   if(QO.has(si)){
     h+=`<div class="searchRow"><input id="q${si}" inputmode="none" data-dg="i" placeholder="ابحث برقم الطالب..." value="${esc(QS[si]||"")}" oninput="QS[${si}]=this.value;filt(${si})"></div>`;
   }
-
   h+=`<div class="wrap"><table style="${fs}"><thead><tr><th colspan="2" class="hd">شعبة ( <input data-s="${si}" data-f="sec" value="${esc(S.sec)}" aria-label="رقم الشعبة"> )<br><input data-s="${si}" data-f="title" style="width:120px" value="${esc(S.title)}"> <input data-s="${si}" data-f="level" style="width:36px" value="${esc(S.level)}"></th>`;
   D.cols.forEach((c,i)=>{
     let mx="";
