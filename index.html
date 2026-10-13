@@ -165,30 +165,17 @@ th:last-child,td:last-child{border-left:0}
   background:#fff;
 }
 
-/* زر تيليجرام — التنسيق الكامل بدون transform */
-#tgFloat{
+/* 🆕 iframe شفاف لزر تيليجرام */
+#tgFrame{
   position:fixed;
-  bottom:16px;
-  bottom:calc(16px + env(safe-area-inset-bottom,0px));
-  left:0;
-  right:0;
-  width:58px;
-  height:58px;
-  margin:0 auto;
+  inset:0;
+  width:100vw;
+  height:100vh;
+  border:0;
+  background:transparent;
+  pointer-events:none;
   z-index:2147483647;
-  border-radius:50%;
-  background:linear-gradient(135deg,#2AABEE,#229ED9);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  box-shadow:0 8px 24px rgba(34,158,217,.5);
-  text-decoration:none;
-  border:2px solid rgba(255,255,255,.35);
-  transition:box-shadow .2s,filter .2s;
 }
-#tgFloat:hover{box-shadow:0 10px 30px rgba(34,158,217,.75);filter:brightness(1.1)}
-#tgFloat:active{filter:brightness(.92)}
-#tgFloat svg{width:32px;height:32px;fill:#fff;display:block;pointer-events:none}
 </style>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon-180.png">
@@ -232,7 +219,7 @@ th:last-child,td:last-child{border-left:0}
   </div>
 
   <div id="secs"></div>
-  <p class="ht" style="text-align:center">الإصدار 25</p>
+  <p class="ht" style="text-align:center">الإصدار 26</p>
 </div>
 
 <div id="stu" hidden>
@@ -416,42 +403,31 @@ th:last-child,td:last-child{border-left:0}
 <div id="toast" hidden></div>
 <div id="kp" hidden></div>
 
-<!-- 🔵 زر تيليجرام — ثابت -->
-<a id="tgFloat" href="https://t.me/ra3k_n" target="_blank" rel="noopener">
-  <svg viewBox="0 0 24 24">
-    <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
-  </svg>
-</a>
-
-<script>
-/* 🆕 تثبيت زر تيليجرام إجبارياً كل 200ms — حل مضمون */
-(function(){
-  const tg = document.getElementById('tgFloat');
-  if(!tg) return;
-  function fix(){
-    const s = tg.style;
-    s.cssText = 'position:fixed !important;top:auto !important;bottom:16px !important;left:0 !important;right:0 !important;margin:0 auto !important;width:58px !important;height:58px !important;z-index:2147483647 !important;border-radius:50% !important;background:linear-gradient(135deg,#2AABEE,#229ED9) !important;display:flex !important;align-items:center !important;justify-content:center !important;box-shadow:0 8px 24px rgba(34,158,217,.5) !important;text-decoration:none !important;border:2px solid rgba(255,255,255,.35) !important;transform:none !important;pointer-events:auto !important;visibility:visible !important;opacity:1 !important';
-  }
-  fix();
-  window.addEventListener('scroll',fix,{passive:true});
-  window.addEventListener('resize',fix);
-  window.addEventListener('orientationchange',fix);
-  setInterval(fix,200);
-  // مراقبة أي تغيير في DOM
-  if(window.MutationObserver){
-    new MutationObserver(fix).observe(document.body,{attributes:true,attributeFilter:['style','class']});
-  }
-})();
-
-/* 🆕 إجبار المتصفح على تحديث الكاش */
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>{
-    navigator.serviceWorker.getRegistrations().then(regs=>{
-      regs.forEach(r=>r.update());
-    });
-  });
+<!-- 🔵 زر تيليجرام — iframe شفاف يغطي الشاشة -->
+<iframe id="tgFrame" title="تيليجرام" scrolling="no"
+  srcdoc='<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;width:100%;background:transparent;overflow:hidden}
+body{display:flex;align-items:flex-end;justify-content:center;padding-bottom:20px;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px))}
+a{
+  width:58px;height:58px;border-radius:50%;
+  background:linear-gradient(135deg,#2AABEE,#229ED9);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 8px 24px rgba(34,158,217,.55);
+  text-decoration:none;
+  border:2px solid rgba(255,255,255,.35);
+  transition:box-shadow .2s,filter .2s;
 }
-</script>
+a:hover{box-shadow:0 10px 30px rgba(34,158,217,.8);filter:brightness(1.1)}
+a:active{filter:brightness(.9)}
+svg{width:32px;height:32px;fill:#fff;display:block}
+</style></head><body>
+<a href="https://t.me/ra3k_n" target="_blank" rel="noopener">
+<svg viewBox="0 0 24 24">
+<path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
+</svg></a>
+</body></html>'>
+</iframe>
 
 <script>
 const KEY="gradesheet_v3",OP=new Set(),QO=new Set(),QS={};
