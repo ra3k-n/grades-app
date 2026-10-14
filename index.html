@@ -466,7 +466,7 @@ textarea.form-field{min-height:110px; resize:vertical}
 /* إشعار */
 .toast{
   position:fixed;
-  bottom:calc(var(--bot) + env(safe-area-inset-bottom,0px) + 14px);
+  top:calc(var(--top-total) + env(safe-area-inset-top,0px) + 16px);
   left:50%; transform:translateX(-50%);
   background:var(--accent); color:#fff;
   padding:12px 22px; border-radius:999px;
@@ -572,7 +572,7 @@ textarea.form-field{min-height:110px; resize:vertical}
 
 /* Pull to refresh */
 .pull-indicator{
-  position:fixed; top:calc(var(--top-total) + env(safe-area-inset-top,0px) + 10px);
+  position:fixed; top:calc(var(--top-total) + env(safe-area-inset-top,0px) + 65px);
   left:50%; transform:translateX(-50%);
   background:var(--accent); color:#fff;
   padding:10px 22px; border-radius:999px;
