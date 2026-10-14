@@ -28,7 +28,7 @@
   --shadow:0 2px 8px rgba(0,0,0,.06);
   --shadow2:0 4px 16px rgba(0,0,0,.1);
   --topbar-h:68px;
-  --bottombar {-h:64px;
+  --bottombar-h:64px;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
@@ -523,7 +523,7 @@ td.att-cell{padding:4px 2px}
 /* =========================================================
    الشريط السفلي - ثابت
    ========================================================= */
-..bottombar {
+.bottombar {
   position: fixed !important;
   left: 0;
   right: 0;
@@ -541,7 +541,7 @@ td.att-cell{padding:4px 2px}
   border-top: 1px solid var(--line);
   z-index: 9999;
 }
-.bottombar { .ver-text{
+..ver-text{
   font-size:13px;
   font-weight:700;
   color:var(--mut);
