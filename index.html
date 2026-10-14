@@ -233,7 +233,7 @@ body{
 }
 
 /* =========================================================
-   لوحة الأدوات (تظهر عند الضغط على "تعديل")
+   لوحة الأدوات
    ========================================================= */
 .tools-panel{
   display:flex;
@@ -334,15 +334,19 @@ thead th .max-mark input{
   font-weight:700;
 }
 
-/* خلية "شعبة 101" + "كفايات لغوية" - العمود الأول */
+/* خلية العمود الأول */
 th.sec-col{
   background:linear-gradient(180deg,#e4e4e4,#d8d8d4);
   font-weight:800;
   min-width:200px;
 }
-:root[data-theme="dark"] th.sec-col,
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) th.sec-col}{
+:root[data-theme="dark"] th.sec-col{
   background:linear-gradient(180deg,#2d3835,#263130);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) th.sec-col{
+    background:linear-gradient(180deg,#2d3835,#263130);
+  }
 }
 th.sec-col input{
   border-bottom:1px dashed #888;
@@ -353,7 +357,7 @@ th.sec-col input{
 th.sec-col .sub-line{font-size:12px;color:var(--mut);margin-top:2px}
 th.sec-col .sub-line input{width:110px;font-size:12px;font-weight:600;color:var(--ink2)}
 
-/* أعمدة الألوان */
+/* ألوان الأعمدة */
 th.col-act{background:#e9ece4}
 th.col-par{background:#e9ece4}
 th.col-hw {background:#f4dadd}
@@ -361,6 +365,7 @@ th.col-tot{background:#f5dcc8}
 th.col-t1 {background:#f2eecf}
 th.col-t2 {background:#cfe2ee}
 th.col-att{background:#cfe2ee}
+
 :root[data-theme="dark"] th.col-act,
 :root[data-theme="dark"] th.col-par,
 :root[data-theme="dark"] th.col-hw,
@@ -405,7 +410,7 @@ td.name-cell input{
   min-width:0;
 }
 td.name-cell input:not([readonly]){background:var(--bg2);box-shadow:inset 0 0 0 2px var(--accent)}
-td.num-cell{width:52px;background:var(--bg2);font-weight:700;font-size:13px;color:var(--muted)}
+td.num-cell{width:52px;background:var(--bg2);font-weight:700;font-size:13px}
 td.num-cell input{
   width:100%;
   border:none;
@@ -469,7 +474,7 @@ td.total-cell .edit-btn{
 }
 td.total-cell .edit-btn:hover{background:var(--bg2)}
 
-/* خلية التحضير - أزرار الحضور */
+/* خلية التحضير */
 td.att-cell{padding:4px 2px}
 .att-group{
   display:flex;
@@ -499,7 +504,7 @@ td.att-cell{padding:4px 2px}
 .att-btn.late{background:var(--orange)}
 .att-btn:hover{opacity:.85}
 
-/* شارة الحضور بجانب الاسم */
+/* شارة الحضور */
 .att-badge{
   display:inline-flex;
   align-items:center;
@@ -564,7 +569,6 @@ td.att-cell{padding:4px 2px}
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.5);
-  backdrop-filter:blur(3px);
   display:flex;
   align-items:center;
   justify-content:center;
@@ -615,7 +619,6 @@ td.att-cell{padding:4px 2px}
 }
 .modal-actions .btn{flex:1;justify-content:center}
 
-/* قائمة خيارات (dropdown) */
 .menu-list{display:flex;flex-direction:column;gap:6px}
 .menu-item{
   display:flex;
@@ -639,7 +642,6 @@ td.att-cell{padding:4px 2px}
 .menu-item.danger:hover{background:var(--red);color:#fff;border-color:var(--red)}
 .menu-item svg{width:18px;height:18px;flex:none}
 
-/* إشعار */
 .toast{
   position:fixed;
   bottom:calc(var(--bottombar-h) + env(safe-area-inset-bottom,0px) + 14px);
@@ -657,9 +659,6 @@ td.att-cell{padding:4px 2px}
   pointer-events:none;
 }
 
-/* =========================================================
-   إحصائيات الطلاب
-   ========================================================= */
 .stats-list{
   display:flex;
   flex-direction:column;
@@ -700,9 +699,6 @@ td.att-cell{padding:4px 2px}
 .stat-pill.absent{background:var(--red)}
 .stat-pill.late{background:var(--orange)}
 
-/* =========================================================
-   لوحة الكيبورد الرقمي
-   ========================================================= */
 .num-keypad{
   position:fixed;
   bottom:0;left:0;right:0;
@@ -733,9 +729,6 @@ td.att-cell{padding:4px 2px}
 .num-keypad button:active{transform:scale(.95);background:var(--accent);color:#fff}
 .num-keypad button.kx{background:var(--bg2);font-size:16px;flex:1.2}
 
-/* =========================================================
-   استيراد Word
-   ========================================================= */
 .drop-zone{
   border:2px dashed var(--blue);
   border-radius:12px;
@@ -751,9 +744,6 @@ td.att-cell{padding:4px 2px}
 .drop-zone p{font-size:14px;color:var(--mut);margin:3px 0}
 .drop-zone b{color:var(--blue);font-size:15px}
 
-/* =========================================================
-   استجابة الجوال
-   ========================================================= */
 @media (max-width:600px){
   :root{--topbar-h:60px;--bottombar-h:60px}
   body{padding-inline:6px}
@@ -793,7 +783,6 @@ try{
 </head>
 <body>
 
-<!-- ==================== الشريط العلوي - ثابت ==================== -->
 <header class="topbar">
   <div class="sections-strip" id="sectionsStrip"></div>
   <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" aria-label="تبديل المظهر">
@@ -803,13 +792,11 @@ try{
   </button>
 </header>
 
-<!-- ==================== رأس الصفحة ==================== -->
 <div class="page-header">
   <h1>سجل الدرجات</h1>
   <p>نظام إدارة الدرجات والحضور</p>
 </div>
 
-<!-- ==================== أزرار عامة ==================== -->
 <div class="actions">
   <button class="btn primary" onclick="openBackupDialog()">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
@@ -821,10 +808,8 @@ try{
   </button>
 </div>
 
-<!-- ==================== حاوية الأقسام ==================== -->
 <main id="sectionsContainer"></main>
 
-<!-- ==================== الشريط السفلي - ثابت ==================== -->
 <footer class="bottombar">
   <span class="ver-text">الإصدار v1.0</span>
   <a class="tg-btn" href="https://t.me/ra3k_n" target="_blank" rel="noopener" aria-label="تواصل على تيليجرام">
@@ -834,9 +819,6 @@ try{
   </a>
 </footer>
 
-<!-- ==================== النوافذ المنبثقة ==================== -->
-
-<!-- نافذة خيارات (ضغط مطول على الاسم) -->
 <div class="modal" id="rowMenuModal" hidden>
   <div class="modal-content">
     <h3 id="rowMenuTitle">خيارات الطالب</h3>
@@ -847,7 +829,6 @@ try{
   </div>
 </div>
 
-<!-- نافذة إضافة شعبة -->
 <div class="modal" id="addSectionModal" hidden>
   <div class="modal-content">
     <h3>إضافة شعبة جديدة</h3>
@@ -859,7 +840,6 @@ try{
   </div>
 </div>
 
-<!-- نافذة تعديل شعبة -->
 <div class="modal" id="editSectionModal" hidden>
   <div class="modal-content">
     <h3>تعديل الشعبة</h3>
@@ -872,7 +852,6 @@ try{
   </div>
 </div>
 
-<!-- نافذة الملاحظات -->
 <div class="modal" id="notesModal" hidden>
   <div class="modal-content">
     <h3 id="notesTitle">ملاحظات الطالب</h3>
@@ -885,7 +864,6 @@ try{
   </div>
 </div>
 
-<!-- نافذة إحصائيات الشعبة -->
 <div class="modal" id="statsModal" hidden>
   <div class="modal-content">
     <h3 id="statsTitle">إحصائيات الطلاب</h3>
@@ -896,7 +874,6 @@ try{
   </div>
 </div>
 
-<!-- نافذة تعديل الألوان -->
 <div class="modal" id="colorsModal" hidden>
   <div class="modal-content">
     <h3>تغيير ألوان الأعمدة</h3>
@@ -908,7 +885,6 @@ try{
   </div>
 </div>
 
-<!-- نافذة استيراد Word -->
 <div class="modal" id="wordModal" hidden>
   <div class="modal-content">
     <h3>استيراد أسماء من Word</h3>
@@ -931,7 +907,6 @@ try{
   </div>
 </div>
 
-<!-- نافذة نسخة احتياطية -->
 <div class="modal" id="backupModal" hidden>
   <div class="modal-content">
     <h3>النسخة الاحتياطية</h3>
@@ -953,7 +928,6 @@ try{
   </div>
 </div>
 
-<!-- نافذة تأكيد -->
 <div class="modal" id="confirmModal" hidden>
   <div class="modal-content">
     <h3 id="confirmTitle">تأكيد</h3>
@@ -965,10 +939,7 @@ try{
   </div>
 </div>
 
-<!-- كيبورد الأرقام -->
 <div class="num-keypad" id="numKeypad" hidden></div>
-
-<!-- إشعار -->
 <div id="toastBox" hidden></div>
 
 <script>
@@ -996,13 +967,9 @@ let searchText = {};
 let currentSectionForMenu = -1;
 let currentRowForMenu = -1;
 
-/* =========================================================
-   التخزين
-   ========================================================= */
 function save(){
   try{
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    document.getElementById('er')?.setAttribute('hidden','');
   }catch(e){
     console.warn('فشل الحفظ',e);
     showToast('تعذّر الحفظ على هذا الجهاز');
@@ -1051,9 +1018,6 @@ if(!state){
   };
 }
 
-/* =========================================================
-   دوال مساعدة
-   ========================================================= */
 function todayKey(){
   const d = new Date(Date.now() - 350*60000);
   return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
@@ -1074,9 +1038,6 @@ function showToast(msg){
 function closeModal(id){ $(id).hidden = true; }
 function openModal(id){ $(id).hidden = false; }
 
-/* =========================================================
-   عرض واجهة التطبيق
-   ========================================================= */
 function render(){
   renderSectionsStrip();
   renderSectionsContainer();
@@ -1122,7 +1083,6 @@ function buildSectionCard(section, si){
   card.className = 'section-card';
   card.id = 'section_' + si;
 
-  // شريط رأس البطاقة
   const header = document.createElement('div');
   header.className = 'sec-header';
   header.innerHTML = `
@@ -1132,7 +1092,6 @@ function buildSectionCard(section, si){
   `;
   card.appendChild(header);
 
-  // لوحة الأدوات
   const tools = document.createElement('div');
   tools.className = 'tools-panel';
   tools.id = 'tools_' + si;
@@ -1157,7 +1116,6 @@ function buildSectionCard(section, si){
   `;
   card.appendChild(tools);
 
-  // شريط البحث
   if(searchOpen.has(si)){
     const sr = document.createElement('div');
     sr.className = 'search-row';
@@ -1172,7 +1130,6 @@ function buildSectionCard(section, si){
     card.appendChild(sr);
   }
 
-  // الجدول
   card.appendChild(buildTable(section, si));
   return card;
 }
@@ -1184,7 +1141,6 @@ function buildTable(section, si){
   const thead = document.createElement('thead');
   const tr = document.createElement('tr');
 
-  // رأس العمود الأول: شعبة + كفايات
   const th0 = document.createElement('th');
   th0.className = 'sec-col';
   th0.innerHTML = `
@@ -1199,7 +1155,6 @@ function buildTable(section, si){
   `;
   tr.appendChild(th0);
 
-  // باقي الأعمدة
   state.columns.forEach((col, ci) => {
     const th = document.createElement('th');
     th.className = 'col-' + col.key;
@@ -1220,7 +1175,6 @@ function buildTable(section, si){
   thead.appendChild(tr);
   tbl.appendChild(thead);
 
-  // الأجسام
   const tbody = document.createElement('tbody');
   section.students.forEach((stu, ri) => {
     tbody.appendChild(buildStudentRow(stu, si, ri));
@@ -1235,7 +1189,6 @@ function buildStudentRow(stu, si, ri){
   tr.dataset.si = si;
   tr.dataset.ri = ri;
 
-  // خلية الاسم
   const tdName = document.createElement('td');
   tdName.className = 'name-cell';
   const attStatus = stu.attendance[state.day] || '';
@@ -1247,13 +1200,11 @@ function buildStudentRow(stu, si, ri){
   attachNameHandlers(tdName, si, ri);
   tr.appendChild(tdName);
 
-  // خلية الرقم
   const tdNum = document.createElement('td');
   tdNum.className = 'num-cell';
   tdNum.innerHTML = `<input readonly data-si="${si}" data-ri="${ri}" data-field="num" value="${esc(stu.num)}" inputmode="none" data-num="1">`;
   tr.appendChild(tdNum);
 
-  // خلايا الأعمدة
   state.columns.forEach((col, ci) => {
     const td = document.createElement('td');
     td.className = 'cell';
@@ -1313,9 +1264,6 @@ function attendanceButtonsHTML(si, ri, stu){
   `).join('');
 }
 
-/* =========================================================
-   معالجة الاسم (ضغط مطول + نقر للتحرير)
-   ========================================================= */
 function attachNameHandlers(td, si, ri){
   const inp = td.querySelector('.name-input');
   let lpTimer = null;
@@ -1347,9 +1295,7 @@ function attachNameHandlers(td, si, ri){
   });
 
   inp.addEventListener('click', e => {
-    if(!inp.readOnly){
-      return;
-    }
+    if(!inp.readOnly) return;
     e.preventDefault();
     inp.readOnly = false;
     inp.focus();
@@ -1387,9 +1333,6 @@ function sortStudents(section){
   section.students.forEach((stu, i) => stu.num = i + 1);
 }
 
-/* =========================================================
-   التفاعلات
-   ========================================================= */
 function toggleTools(si){
   if(openedTools.has(si)) openedTools.delete(si);
   else openedTools.add(si);
@@ -1467,9 +1410,6 @@ function toggleAttendance(si, ri, key){
   render();
 }
 
-/* =========================================================
-   قائمة خيارات الطالب
-   ========================================================= */
 function openRowMenu(si, ri){
   const stu = state.sections[si].students[ri];
   const notesCount = (stu.notes || []).length;
@@ -1531,9 +1471,6 @@ function moveStudent(fromSi, ri, toSi){
   showToast('تم نقل الطالب');
 }
 
-/* =========================================================
-   الملاحظات
-   ========================================================= */
 let notesContext = { si: -1, ri: -1 };
 function openNotesDialog(si, ri){
   notesContext = { si, ri };
@@ -1575,9 +1512,6 @@ function saveNote(){
   showToast('تم حفظ الملاحظة');
 }
 
-/* =========================================================
-   إحصائيات الطلاب
-   ========================================================= */
 function openStats(si){
   const section = state.sections[si];
   $('statsTitle').textContent = 'إحصائيات — شعبة ' + section.sec;
@@ -1604,9 +1538,6 @@ function openStats(si){
   openModal('statsModal');
 }
 
-/* =========================================================
-   إضافة/تعديل شعبة
-   ========================================================= */
 function openAddSectionDialog(){
   $('newSectionInput').value = '';
   openModal('addSectionModal');
@@ -1655,9 +1586,6 @@ function confirmDeleteAllStudents(si){
   });
 }
 
-/* =========================================================
-   تغيير الألوان
-   ========================================================= */
 function openColorsDialog(){
   const list = $('colorsList');
   list.innerHTML = state.columns.map((c, i) => `
@@ -1678,9 +1606,6 @@ function saveColors(){
   showToast('تم حفظ الألوان');
 }
 
-/* =========================================================
-   استيراد Word
-   ========================================================= */
 function openWordDialog(){
   $('wordStatus').textContent = '';
   $('wordImportBtn').hidden = true;
@@ -1807,9 +1732,6 @@ function extractLines(xml){
   return out;
 }
 
-/* =========================================================
-   النسخة الاحتياطية
-   ========================================================= */
 function openBackupDialog(){
   $('backupInfo').textContent = state.lastBackup
     ? 'آخر نسخة: ' + formatDate(state.lastBackup)
@@ -1861,9 +1783,6 @@ $('restoreFileInput').addEventListener('change', async (e) => {
   }
 });
 
-/* =========================================================
-   تأكيد عام
-   ========================================================= */
 function showConfirm(title, text, onYes){
   $('confirmTitle').textContent = title;
   $('confirmText').innerHTML = text;
@@ -1874,9 +1793,6 @@ function showConfirm(title, text, onYes){
   openModal('confirmModal');
 }
 
-/* =========================================================
-   المظهر (فاتح/داكن)
-   ========================================================= */
 function currentTheme(){
   const t = document.documentElement.getAttribute('data-theme');
   if(t) return t;
@@ -1902,9 +1818,6 @@ try{
   });
 }catch(e){}
 
-/* =========================================================
-   كيبورد الأرقام
-   ========================================================= */
 const keypad = $('numKeypad');
 (function buildKeypad(){
   const keys = ['1','2','3','4','5','6','7','8','9','.','0'];
@@ -1967,14 +1880,10 @@ keypad.addEventListener('click', (e) => {
   el.dispatchEvent(new Event('input', { bubbles: true }));
 });
 
-/* =========================================================
-   معالجة الإدخال في الجداول
-   ========================================================= */
 document.addEventListener('input', (e) => {
   const t = e.target;
   if(!t.dataset) return;
 
-  // فلترة الأرقام
   if(t.dataset.num){
     let v = t.value
       .replace(/[٠-٩]/g, x => '٠١٢٣٤٥٦٧٨٩'.indexOf(x))
@@ -1984,7 +1893,6 @@ document.addEventListener('input', (e) => {
     if(v !== t.value) t.value = v;
   }
 
-  // تعديل خلية
   const si = t.dataset.si;
   const ri = t.dataset.ri;
   const col = t.dataset.col;
@@ -1999,7 +1907,6 @@ document.addEventListener('input', (e) => {
     return;
   }
 
-  // تعديل رقم الطالب
   if(si !== undefined && ri !== undefined && field === 'num'){
     const stu = state.sections[si].students[ri];
     stu.num = t.value;
@@ -2007,7 +1914,6 @@ document.addEventListener('input', (e) => {
     return;
   }
 
-  // تعديل حقول الرأس
   if(si !== undefined && field){
     state.sections[si][field] = t.value;
     if(field === 'sec') renderSectionsStrip();
@@ -2029,9 +1935,6 @@ function updateTotalFor(si, ri){
   if(input) input.value = calcTotal(stu);
 }
 
-/* =========================================================
-   فتح ملف Word
-   ========================================================= */
 $('wordBtn').addEventListener('click', openWordDialog);
 const wordDrop = $('wordDrop');
 const wordInput = $('wordFileInput');
@@ -2050,9 +1953,6 @@ wordInput.addEventListener('change', e => {
   if(f) handleWordFile(f);
 });
 
-/* =========================================================
-   دورة اليوم
-   ========================================================= */
 function checkDay(){
   const k = todayKey();
   if(state.day === k) return;
@@ -2063,9 +1963,6 @@ function checkDay(){
 setInterval(checkDay, 60000);
 document.addEventListener('visibilitychange', () => { if(!document.hidden) checkDay(); });
 
-/* =========================================================
-   ESC لإغلاق النوافذ
-   ========================================================= */
 document.addEventListener('keydown', e => {
   if(e.key === 'Escape'){
     ['rowMenuModal','addSectionModal','editSectionModal','notesModal','statsModal','colorsModal','wordModal','backupModal','confirmModal'].forEach(id => {
@@ -2075,15 +1972,9 @@ document.addEventListener('keydown', e => {
   }
 });
 
-/* =========================================================
-   الحفظ التلقائي
-   ========================================================= */
 window.addEventListener('pagehide', save);
 document.addEventListener('visibilitychange', () => { if(document.hidden) save(); });
 
-/* =========================================================
-   التشغيل
-   ========================================================= */
 updateThemeIcon();
 render();
 </script>
