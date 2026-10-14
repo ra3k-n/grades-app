@@ -335,6 +335,7 @@ td.name-cell input:not([readonly]){
   box-shadow:inset 0 0 0 2px var(--accent);
 }
 td.num-cell{width:48px; background:var(--bg2); font-weight:700; font-size:13px}
+thead th.num-col{width:48px; background:var(--bg2)}
 td.num-cell input{
   width:100%; border:none; background:transparent;
   text-align:center; font:inherit; font-weight:700;
@@ -1213,6 +1214,11 @@ function buildTable(section, si){
     </div>
   `;
   tr.appendChild(th0);
+
+  const thNum = document.createElement('th');
+  thNum.className = 'num-col';
+  thNum.setAttribute('aria-hidden', 'true');
+  tr.appendChild(thNum);
 
   state.columns.forEach((col, ci) => {
     const th = document.createElement('th');
