@@ -5,803 +5,747 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>سجل الدرجات</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f5c55'/%3E%3Ctext x='32' y='46' font-size='38' font-weight='900' text-anchor='middle' fill='%23fff' font-family='sans-serif'%3E%D8%B3%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="سجل الدرجات">
+<meta name="theme-color" content="#1f5c55">
+<script>try{var t=localStorage.getItem('gradesheet_theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
 <style>
-/* ===== المتغيرات ===== */
 :root{
-  --bg:#f5f5f2;
-  --bg2:#ffffff;
-  --card:#ffffff;
-  --ink:#1a1a1a;
-  --ink2:#2d2d2d;
-  --mut:#6b6b6b;
-  --line:#d4d4cf;
-  --line2:#b8b8b0;
-  --accent:#1f5c55;
-  --accent2:#2a7a70;
-  --blue:#1f4e8c;
-  --gold:#b8860b;
-  --green:#22a854;
-  --red:#e63946;
-  --orange:#f59e0b;
+  --bg:#f5f5f2; --bg2:#ffffff; --card:#ffffff;
+  --ink:#1a1a1a; --ink2:#2d2d2d; --mut:#6b6b6b;
+  --line:#d4d4cf; --line2:#b8b8b0;
+  --accent:#1f5c55; --accent2:#2a7a70;
+  --blue:#1f4e8c; --green:#22a854; --greenBtn:#16a34a;
+  --red:#e63946; --orange:#f59e0b; --gold:#b8860b;
   --shadow:0 2px 8px rgba(0,0,0,.06);
   --shadow2:0 4px 16px rgba(0,0,0,.1);
-  --topbar-h:68px;
-  --bottombar-h:64px;
+  --top-1:56px; --top-2:60px;
+  --top-total:calc(var(--top-1) + var(--top-2));
+  --bot:56px;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
-    --bg:#0f1413;
-    --bg2:#1a1f1e;
-    --card:#1e2624;
-    --ink:#e8ede9;
-    --ink2:#d0d6d2;
-    --mut:#8a938f;
-    --line:#2d3835;
-    --line2:#3d4946;
-    --accent:#3a9a8c;
-    --accent2:#4aab9c;
+    --bg:#0f1413; --bg2:#1a1f1e; --card:#1e2624;
+    --ink:#e8ede9; --ink2:#d0d6d2; --mut:#8a938f;
+    --line:#2d3835; --line2:#3d4946;
+    --accent:#3a9a8c; --accent2:#4aab9c;
     --blue:#5b9be5;
-    --gold:#d4a017;
     --shadow:0 2px 8px rgba(0,0,0,.3);
     --shadow2:0 4px 16px rgba(0,0,0,.4);
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0f1413;
-  --bg2:#1a1f1e;
-  --card:#1e2624;
-  --ink:#e8ede9;
-  --ink2:#d0d6d2;
-  --mut:#8a938f;
-  --line:#2d3835;
-  --line2:#3d4946;
-  --accent:#3a9a8c;
-  --accent2:#4aab9c;
+  --bg:#0f1413; --bg2:#1a1f1e; --card:#1e2624;
+  --ink:#e8ede9; --ink2:#d0d6d2; --mut:#8a938f;
+  --line:#2d3835; --line2:#3d4946;
+  --accent:#3a9a8c; --accent2:#4aab9c;
   --blue:#5b9be5;
-  --gold:#d4a017;
   --shadow:0 2px 8px rgba(0,0,0,.3);
   --shadow2:0 4px 16px rgba(0,0,0,.4);
 }
-
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
 body{
   font-family:'Segoe UI',Tahoma,'Noto Naskh Arabic',system-ui,sans-serif;
-  background:var(--bg);
-  color:var(--ink);
-  padding-top:calc(var(--topbar-h) + env(safe-area-inset-top,0px) + 12px);
-  padding-bottom:calc(var(--bottombar-h) + env(safe-area-inset-bottom,0px) + 16px);
-  padding-inline:12px;
+  background:var(--bg); color:var(--ink);
+  padding-top:calc(var(--top-total) + env(safe-area-inset-top,0px) + 8px);
+  padding-bottom:calc(var(--bot) + env(safe-area-inset-bottom,0px) + 8px);
+  padding-inline:10px;
   transition:background-color .3s,color .3s;
   -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
 }
 
 /* ===== الشريط العلوي ===== */
 .topbar{
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  height:calc(var(--topbar-h) + env(safe-area-inset-top,0px));
+  position:fixed; top:0; left:0; right:0;
+  z-index:200;
   padding-top:env(safe-area-inset-top,0px);
   background:var(--card);
   border-bottom:1px solid var(--line);
   box-shadow:var(--shadow);
-  z-index:200;
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding-inline:10px;
-  transition:background-color .3s,border-color .3s;
 }
-.sections-strip{
-  flex:1;
-  display:flex;
-  gap:10px;
+.topbar-row-1{
+  height:var(--top-1);
+  display:flex; align-items:center; gap:8px;
+  padding-inline:10px;
+}
+.brand{
+  flex:1; min-width:0;
+  display:flex; align-items:center; gap:8px;
+  font-weight:800; font-size:15px; color:var(--ink);
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.brand-icon{
+  width:32px; height:32px; border-radius:8px; flex:none;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:grid; place-items:center; color:#fff; font-weight:900; font-size:16px;
+}
+.icon-btn{
+  width:42px; height:42px; border-radius:50%; flex:none;
+  background:var(--bg2); border:1px solid var(--line);
+  color:var(--ink); display:inline-flex; align-items:center; justify-content:center;
+  cursor:pointer; transition:.15s;
+}
+.icon-btn:hover{background:var(--accent); color:#fff; border-color:var(--accent)}
+.icon-btn:active{transform:scale(.92)}
+.icon-btn svg{width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
+.menu-dropdown{
+  position:absolute; top:calc(var(--top-1) + env(safe-area-inset-top,0px) + 6px);
+  left:12px; right:auto;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:14px; box-shadow:var(--shadow2);
+  padding:6px; min-width:210px; z-index:300;
+}
+.menu-dropdown[hidden]{display:none}
+.menu-dropdown button,
+.menu-dropdown a{
+  display:flex; align-items:center; gap:10px;
+  width:100%; padding:12px; border:none; background:transparent;
+  color:var(--ink); font:inherit; font-size:15px; font-weight:600;
+  border-radius:10px; cursor:pointer; text-decoration:none; text-align:right;
+}
+.menu-dropdown button:hover,
+.menu-dropdown a:hover{background:var(--accent); color:#fff}
+.menu-dropdown svg{width:20px; height:20px; flex:none; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
+
+.topbar-row-2{
+  height:var(--top-2);
+  display:flex; align-items:center; gap:8px;
+  padding-inline:10px;
+  border-top:1px solid var(--line);
   overflow-x:auto;
-  padding:4px 0;
   scrollbar-width:none;
-  align-items:center;
-  min-width:0;
+}
+.topbar-row-2::-webkit-scrollbar{display:none}
+.action-btn{
+  display:inline-flex; align-items:center; gap:6px;
+  padding:9px 16px; font:inherit; font-size:14px; font-weight:700;
+  border-radius:10px; cursor:pointer; border:1px solid var(--line);
+  background:var(--card); color:var(--ink);
+  white-space:nowrap; flex:none; transition:.15s;
+}
+.action-btn:active{transform:scale(.96)}
+.action-btn.primary{background:var(--accent); color:#fff; border-color:var(--accent)}
+.action-btn.blue{background:var(--blue); color:#fff; border-color:var(--blue)}
+.action-btn svg{width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex:none}
+
+/* ===== الهيرو ===== */
+.hero{
+  position:relative;
+  margin-top:8px;
+  padding:38px 16px 38px;
+  text-align:center;
+  border-radius:16px;
+  background-image:url('header-bg.png');
+  background-size:cover;
+  background-position:center;
+  overflow:hidden;
+}
+.hero::before{
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(180deg,
+    rgba(245,245,242,.85) 0%,
+    rgba(245,245,242,.55) 50%,
+    rgba(245,245,242,.85) 100%);
+  z-index:1;
+}
+:root[data-theme="dark"] .hero::before{
+  background:linear-gradient(180deg,
+    rgba(15,20,19,.88) 0%,
+    rgba(15,20,19,.6) 50%,
+    rgba(15,20,19,.88) 100%);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .hero::before{
+    background:linear-gradient(180deg,
+      rgba(15,20,19,.88) 0%,
+      rgba(15,20,19,.6) 50%,
+      rgba(15,20,19,.88) 100%);
+  }
+}
+.hero h1,.hero p{position:relative; z-index:2}
+.hero h1{font-size:30px; font-weight:900; margin:0; color:var(--accent); letter-spacing:-.5px}
+.hero p{margin:8px 0 0; color:var(--ink2); font-size:13px; font-weight:600}
+
+/* ===== شريط الشعب ===== */
+.sections-strip{
+  display:flex; gap:10px;
+  overflow-x:auto; padding:14px 4px 6px;
+  scrollbar-width:none; align-items:center;
+  margin-top:10px;
 }
 .sections-strip::-webkit-scrollbar{display:none}
 .sec-btn{
   flex:none;
-  background:var(--blue);
-  color:#fff;
-  border:none;
-  border-radius:999px;
-  padding:9px 22px;
-  font:inherit;
-  font-weight:700;
-  font-size:15px;
-  cursor:pointer;
-  white-space:nowrap;
-  transition:transform .15s,filter .15s;
-  -webkit-user-select:none;
-  user-select:none;
-  line-height:1;
+  background:var(--greenBtn); color:#fff; border:none;
+  border-radius:999px; padding:9px 22px;
+  font:inherit; font-weight:700; font-size:15px;
+  cursor:pointer; white-space:nowrap;
+  transition:transform .15s; user-select:none; -webkit-user-select:none; line-height:1;
 }
 .sec-btn:active{transform:scale(.95)}
-.sec-btn.add{
-  background:linear-gradient(135deg,var(--gold),#8a6508);
-  font-size:17px;
-  padding:9px 20px;
-  box-shadow:0 3px 10px rgba(184,134,11,.35);
-}
-.icon-btn{
-  width:42px;
-  height:42px;
-  border-radius:50%;
-  background:var(--bg2);
-  border:1px solid var(--line);
-  color:var(--ink);
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  flex:none;
-  transition:transform .15s,background-color .2s;
-}
-.icon-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
-.icon-btn:active{transform:scale(.92)}
-.icon-btn svg{width:20px;height:20px}
+.sec-btn.add{background:var(--blue); font-size:17px; padding:9px 20px}
 
-/* ===== رأس الصفحة ===== */
-.page-header{
-  text-align:center;
-  padding:12px 8px 20px;
-}
-.page-header h1{
-  font-size:28px;
-  font-weight:900;
-  margin:0;
-  background:linear-gradient(135deg,var(--blue),var(--accent));
-  -webkit-background-clip:text;
-  background-clip:text;
-  color:transparent;
-  letter-spacing:-.5px;
-}
-.page-header p{
-  margin:6px 0 0;
-  color:var(--mut);
-  font-size:13px;
-}
-
-/* ===== أزرار عامة ===== */
-.actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-bottom:14px;
-}
+/* ===== أزرار ===== */
 .btn{
-  font:inherit;
-  cursor:pointer;
-  border:1px solid var(--line);
-  background:var(--card);
-  color:var(--ink);
-  border-radius:10px;
-  padding:10px 18px;
-  font-size:14px;
-  font-weight:600;
-  transition:transform .12s,filter .15s,background-color .2s;
-  display:inline-flex;
-  align-items:center;
-  gap:8px;
+  font:inherit; cursor:pointer;
+  border:1px solid var(--line); background:var(--card); color:var(--ink);
+  border-radius:10px; padding:9px 16px;
+  font-size:13px; font-weight:700;
+  display:inline-flex; align-items:center; gap:6px;
+  transition:.15s;
 }
-.btn:hover{background:var(--bg2);filter:brightness(1.05)}
+.btn:hover{background:var(--bg2); filter:brightness(1.05)}
 .btn:active{transform:scale(.97)}
-.btn.primary{background:var(--accent);color:#fff;border-color:var(--accent)}
-.btn.primary:hover{background:var(--accent2)}
-.btn.blue{background:var(--blue);color:#fff;border-color:var(--blue)}
-.btn.danger{color:var(--red);border-color:var(--red)}
-.btn.danger:hover{background:var(--red);color:#fff}
+.btn.primary{background:var(--accent); color:#fff; border-color:var(--accent)}
+.btn.danger{color:var(--red); border-color:var(--red)}
+.btn.danger:hover{background:var(--red); color:#fff}
+.btn svg{width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex:none}
 
 /* ===== بطاقة الشعبة ===== */
 .section-card{
-  background:var(--card);
-  border:1px solid var(--line);
-  border-radius:14px;
-  margin-bottom:20px;
-  overflow:hidden;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:14px; margin-top:14px; overflow:hidden;
   box-shadow:var(--shadow);
-  transition:background-color .3s,border-color .3s;
 }
-.sec-header{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  align-items:center;
-  padding:12px 14px;
-  background:var(--bg2);
-  border-bottom:1px solid var(--line);
-}
-.sec-header .sec-title{
-  font-weight:800;
-  font-size:17px;
-  color:var(--accent);
-  margin-inline-end:auto;
+.section-top-actions{
+  display:flex; gap:8px; justify-content:flex-start;
+  padding:10px 12px; background:var(--bg2);
+  border-bottom:1px solid var(--line); flex-wrap:wrap;
 }
 
-/* ===== لوحة الأدوات ===== */
 .tools-panel{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  padding:10px 14px;
-  background:var(--bg2);
+  display:flex; gap:8px; flex-wrap:wrap;
+  padding:10px 12px; background:var(--bg2);
   border-bottom:1px solid var(--line);
 }
+.tools-panel[hidden]{display:none}
 .tool-btn{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  padding:8px 14px;
-  border-radius:9px;
-  background:var(--card);
-  border:1px solid var(--line);
-  color:var(--ink);
-  font:inherit;
-  font-size:13px;
-  font-weight:600;
+  display:inline-flex; align-items:center; gap:6px;
+  padding:8px 14px; border-radius:9px;
+  background:var(--card); border:1px solid var(--line);
+  color:var(--ink); font:inherit; font-size:13px; font-weight:600;
   cursor:pointer;
-  transition:.15s;
 }
-.tool-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
-.tool-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
-.tool-btn svg{width:16px;height:16px;flex:none}
+.tool-btn:hover{background:var(--accent); color:#fff; border-color:var(--accent)}
+.tool-btn.danger{color:var(--red)}
+.tool-btn.danger:hover{background:var(--red); color:#fff; border-color:var(--red)}
+.tool-btn svg{width:16px; height:16px; flex:none; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
 
 .search-row{
-  padding:10px 14px;
-  background:var(--bg2);
+  padding:10px 12px; background:var(--bg2);
   border-bottom:1px solid var(--line);
 }
 .search-row input{
-  width:100%;
-  padding:10px 14px;
-  font:inherit;
-  font-size:15px;
-  border:1px solid var(--line);
-  border-radius:10px;
-  background:var(--card);
-  color:var(--ink);
-  text-align:right;
-  outline:none;
+  width:100%; padding:10px 14px;
+  font:inherit; font-size:15px;
+  border:1px solid var(--line); border-radius:10px;
+  background:var(--card); color:var(--ink);
+  text-align:right; outline:none;
 }
 .search-row input:focus{border-color:var(--accent)}
 
 /* ===== الجدول ===== */
-.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
-table{
-  width:100%;
-  border-collapse:separate;
-  border-spacing:0;
-  min-width:900px;
-}
+.table-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch}
+table{width:100%; border-collapse:separate; border-spacing:0; min-width:900px}
 thead th{
   position:sticky;
-  top:calc(var(--topbar-h) + env(safe-area-inset-top,0px));
+  top:calc(var(--top-total) + env(safe-area-inset-top,0px));
   z-index:100;
   background:var(--bg2);
   border-bottom:2px solid var(--line2);
   border-left:1px solid var(--line);
   padding:8px 4px;
-  font-size:13px;
-  font-weight:700;
-  color:var(--ink);
-  text-align:center;
-  vertical-align:top;
+  font-size:13px; font-weight:700; color:var(--ink);
+  text-align:center; vertical-align:top;
 }
 thead th:last-child{border-left:none}
-thead th .th-inner{display:flex;flex-direction:column;align-items:center;gap:4px}
+thead th .th-inner{display:flex; flex-direction:column; align-items:center; gap:4px}
 thead th input{
-  width:90%;
-  border:none;
-  background:transparent;
-  font:inherit;
-  font-weight:700;
-  font-size:13px;
-  color:inherit;
-  text-align:center;
-  padding:2px;
-  border-bottom:1px dashed var(--line2);
-  outline:none;
+  width:88%; border:none; background:transparent;
+  font:inherit; font-weight:700; font-size:13px;
+  color:inherit; text-align:center; padding:2px;
+  border-bottom:1px dashed var(--line2); outline:none;
 }
-thead th .max-mark{
-  font-size:11px;
-  color:var(--red);
-  font-weight:700;
-}
+thead th .max-mark{font-size:11px; color:var(--red); font-weight:700}
 thead th .max-mark input{
-  width:38px;
-  display:inline-block;
-  text-align:center;
+  width:38px; display:inline-block; text-align:center;
   border-bottom:1px dashed var(--line2);
-  color:var(--red);
-  font-weight:700;
+  color:var(--red); font-weight:700;
+}
+:root[data-theme="dark"] thead th .max-mark,
+:root[data-theme="dark"] thead th .max-mark input{color:#fff}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) thead th .max-mark,
+  :root:not([data-theme="light"]) thead th .max-mark input{color:#fff}
 }
 
-th.sec-col{
-  background:linear-gradient(180deg,#e4e4e4,#d8d8d4);
-  font-weight:800;
-  min-width:200px;
-}
-:root[data-theme="dark"] th.sec-col{
-  background:linear-gradient(180deg,#2d3835,#263130);
-}
+th.sec-col{background:linear-gradient(180deg,#e4e4e4,#d8d8d4); min-width:190px}
+:root[data-theme="dark"] th.sec-col{background:linear-gradient(180deg,#2d3835,#263130)}
 @media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]) th.sec-col{
-    background:linear-gradient(180deg,#2d3835,#263130);
-  }
+  :root:not([data-theme="light"]) th.sec-col{background:linear-gradient(180deg,#2d3835,#263130)}
 }
-th.sec-col input{
-  border-bottom:1px dashed #888;
-  font-weight:800;
-  font-size:14px;
-  width:60px;
-}
-th.sec-col .sub-line{font-size:12px;color:var(--mut);margin-top:2px}
-th.sec-col .sub-line input{width:110px;font-size:12px;font-weight:600;color:var(--ink2)}
+th.sec-col input{border-bottom:1px dashed var(--line2); font-weight:800; font-size:14px; width:60px}
+th.sec-col .sub-line{font-size:12px; color:var(--mut); margin-top:2px; display:flex; gap:4px; justify-content:center; align-items:center; flex-wrap:wrap}
+th.sec-col .sub-line input{width:105px; font-size:12px; font-weight:600; color:var(--ink2)}
 
 th.col-act{background:#e9ece4}
 th.col-par{background:#e9ece4}
-th.col-hw {background:#f4dadd}
+th.col-hw{background:#f4dadd}
 th.col-tot{background:#f5dcc8}
-th.col-t1 {background:#f2eecf}
-th.col-t2 {background:#cfe2ee}
+th.col-t1{background:#f2eecf}
+th.col-t2{background:#cfe2ee}
 th.col-att{background:#cfe2ee}
-
 :root[data-theme="dark"] th.col-act,
 :root[data-theme="dark"] th.col-par,
 :root[data-theme="dark"] th.col-hw,
 :root[data-theme="dark"] th.col-tot,
 :root[data-theme="dark"] th.col-t1,
 :root[data-theme="dark"] th.col-t2,
-:root[data-theme="dark"] th.col-att{background:#2d3835;color:var(--ink)}
+:root[data-theme="dark"] th.col-att{background:#2d3835; color:var(--ink)}
 
 tbody tr{transition:background-color .15s}
 tbody tr:hover{background:rgba(31,92,85,.04)}
 tbody td{
   border-bottom:1px solid var(--line);
   border-left:1px solid var(--line);
-  padding:6px 4px;
-  text-align:center;
-  color:var(--ink);
-  font-size:14px;
+  padding:6px 4px; text-align:center;
+  color:var(--ink); font-size:14px;
 }
 tbody td:last-child{border-left:none}
 
 td.name-cell{
-  display:flex;
-  align-items:center;
-  gap:6px;
-  padding:6px 8px;
-  min-width:200px;
-  text-align:right;
+  display:flex; align-items:center; gap:6px;
+  padding:6px 8px; min-width:190px; text-align:right;
 }
 td.name-cell input{
-  flex:1;
-  border:none;
-  background:transparent;
-  font:inherit;
-  font-size:14px;
-  color:var(--ink);
-  text-align:right;
-  padding:4px 6px;
-  outline:none;
-  border-radius:6px;
+  flex:1; border:none; background:transparent;
+  font:inherit; font-size:14px; color:var(--ink);
+  text-align:right; padding:4px 6px;
+  outline:none; border-radius:6px; min-width:0;
   transition:background-color .15s;
-  min-width:0;
 }
-td.name-cell input:not([readonly]){background:var(--bg2);box-shadow:inset 0 0 0 2px var(--accent)}
-td.num-cell{width:52px;background:var(--bg2);font-weight:700;font-size:13px}
+td.name-cell input:not([readonly]){
+  background:var(--bg2);
+  box-shadow:inset 0 0 0 2px var(--accent);
+}
+td.num-cell{width:48px; background:var(--bg2); font-weight:700; font-size:13px}
 td.num-cell input{
-  width:100%;
-  border:none;
-  background:transparent;
-  text-align:center;
-  font:inherit;
-  font-weight:700;
-  font-size:13px;
-  color:var(--ink);
-  outline:none;
+  width:100%; border:none; background:transparent;
+  text-align:center; font:inherit; font-weight:700;
+  font-size:13px; color:var(--ink); outline:none;
 }
 td.cell input{
-  width:100%;
-  border:none;
-  background:transparent;
-  text-align:center;
-  font:inherit;
-  font-size:14px;
-  color:var(--ink);
-  padding:6px 2px;
-  outline:none;
-  border-radius:6px;
+  width:100%; border:none; background:transparent;
+  text-align:center; font:inherit; font-size:14px;
+  color:var(--ink); padding:6px 2px;
+  outline:none; border-radius:6px;
   transition:background-color .15s;
 }
-td.cell input:focus{background:var(--bg2);box-shadow:inset 0 0 0 2px var(--accent)}
-td.total-cell{background:#f5dcc8;font-weight:800}
+td.cell input:focus{background:var(--bg2); box-shadow:inset 0 0 0 2px var(--accent)}
+
+td.total-cell{background:#f5dcc8; font-weight:800}
 :root[data-theme="dark"] td.total-cell{background:#2d3835}
-td.total-cell .confirm-btn{
-  background:var(--green);
-  color:#fff;
-  border:none;
-  border-radius:8px;
-  padding:7px 14px;
-  font:inherit;
-  font-size:13px;
-  font-weight:700;
-  cursor:pointer;
-  width:100%;
-  transition:transform .12s;
+
+.confirm-btn{
+  width:34px; height:34px; border-radius:50%;
+  background:transparent; border:none; cursor:pointer; padding:0;
+  display:inline-flex; align-items:center; justify-content:center;
+  color:var(--green); transition:.15s;
 }
-td.total-cell .confirm-btn:active{transform:scale(.95)}
+.confirm-btn:hover{background:rgba(34,168,84,.12)}
+.confirm-btn:active{transform:scale(.9)}
+.confirm-btn svg{width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
+
 td.total-cell .total-display{
-  display:flex;
-  align-items:center;
-  gap:4px;
-  justify-content:center;
+  display:flex; align-items:center; gap:2px; justify-content:center;
 }
 td.total-cell .total-display input{
-  flex:1;
-  font-weight:800;
-  font-size:15px;
+  flex:1; min-width:0; font-weight:800; font-size:15px;
+  border:none; background:transparent;
+  color:var(--ink); text-align:center; outline:none;
 }
 td.total-cell .edit-btn{
-  border:none;
-  background:transparent;
-  color:var(--mut);
-  cursor:pointer;
-  padding:4px 6px;
-  border-radius:6px;
-  font-size:16px;
+  border:none; background:transparent;
+  color:var(--mut); cursor:pointer;
+  padding:4px; border-radius:6px;
+  display:inline-flex; align-items:center; justify-content:center;
 }
-td.total-cell .edit-btn:hover{background:var(--bg2)}
+td.total-cell .edit-btn:hover{background:var(--bg2); color:var(--ink)}
+td.total-cell .edit-btn svg{width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
 
 td.att-cell{padding:4px 2px}
-.att-group{
-  display:flex;
-  gap:4px;
-  justify-content:center;
-  align-items:center;
-}
+.att-group{display:flex; gap:4px; justify-content:center; align-items:center}
 .att-btn{
-  width:30px;
-  height:30px;
-  border-radius:50%;
+  width:30px; height:30px; border-radius:50%;
   border:2px solid transparent;
-  background:transparent;
-  color:#fff;
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  opacity:.35;
+  background:transparent; color:#fff;
+  display:inline-flex; align-items:center; justify-content:center;
+  cursor:pointer; opacity:.35; padding:0;
   transition:.15s;
-  padding:0;
 }
-.att-btn svg{width:16px;height:16px}
-.att-btn.on{opacity:1;outline:2px solid var(--ink);outline-offset:2px}
+.att-btn svg{width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
+.att-btn.on{opacity:1; outline:2px solid var(--ink); outline-offset:2px}
 .att-btn.present{background:var(--green)}
 .att-btn.absent{background:var(--red)}
 .att-btn.late{background:var(--orange)}
 .att-btn:hover{opacity:.85}
 
 .att-badge{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:22px;
-  height:22px;
-  border-radius:50%;
-  color:#fff;
-  flex:none;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:22px; height:22px; border-radius:50%; color:#fff; flex:none;
 }
-.att-badge svg{width:12px;height:12px}
+.att-badge svg{width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
 .att-badge.present{background:var(--green)}
 .att-badge.absent{background:var(--red)}
 .att-badge.late{background:var(--orange)}
 
-/* ===== الشريط السفلي — ثابت ===== */
+/* ===== الشريط السفلي ===== */
 .bottombar{
-  position:fixed !important;
-  left:0;
-  right:0;
-  bottom:0;
-  width:100%;
-  min-height:64px;
-  box-sizing:border-box;
-  padding:8px 16px;
-  padding-bottom:calc(8px + env(safe-area-inset-bottom, 0px));
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:16px;
+  position:fixed; left:0; right:0; bottom:0;
+  height:calc(var(--bot) + env(safe-area-inset-bottom,0px));
+  padding-bottom:env(safe-area-inset-bottom,0px);
   background:var(--card);
   border-top:1px solid var(--line);
-  z-index:9999;
+  box-shadow:0 -2px 12px rgba(0,0,0,.06);
+  display:flex; align-items:center; justify-content:center;
+  z-index:200;
 }
-.ver-text{
-  font-size:13px;
-  font-weight:700;
-  color:var(--mut);
-  letter-spacing:.3px;
-}
-.tg-btn{
-  width:46px;
-  height:46px;
-  border-radius:50%;
-  background:linear-gradient(135deg,#2AABEE,#229ED9);
-  border:2px solid rgba(255,255,255,.35);
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  cursor:pointer;
-  text-decoration:none;
-  box-shadow:0 4px 14px rgba(34,158,217,.45);
-  transition:transform .15s,box-shadow .2s;
-}
-.tg-btn:hover{transform:scale(1.08);box-shadow:0 6px 20px rgba(34,158,217,.7)}
-.tg-btn:active{transform:scale(.94)}
-.tg-btn svg{width:24px;height:24px;fill:#fff;display:block}
+.ver-text{font-size:13px; font-weight:800; color:var(--mut); letter-spacing:.5px}
 
-/* ===== النوافذ المنبثقة ===== */
+/* ===== مودالات ===== */
 .modal{
-  position:fixed;
-  inset:0;
+  position:fixed; inset:0;
   background:rgba(0,0,0,.5);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:16px;
-  z-index:500;
+  display:flex; align-items:center; justify-content:center;
+  padding:16px; z-index:500;
   animation:fade .2s;
 }
 .modal[hidden]{display:none}
-@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes fade{from{opacity:0} to{opacity:1}}
 .modal-content{
-  background:var(--card);
-  color:var(--ink);
-  border-radius:18px;
-  padding:20px;
-  width:100%;
-  max-width:460px;
-  max-height:88vh;
-  overflow:auto;
+  background:var(--card); color:var(--ink);
+  border-radius:18px; padding:20px;
+  width:100%; max-width:460px; max-height:88vh; overflow:auto;
   box-shadow:var(--shadow2);
   animation:slideUp .25s;
 }
-@keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:none;opacity:1}}
-.modal-content h3{
-  margin:0 0 14px;
-  font-size:18px;
-  font-weight:800;
-  color:var(--accent);
+@keyframes slideUp{from{transform:translateY(20px); opacity:0} to{transform:none; opacity:1}}
+.modal-content h3{margin:0 0 14px; font-size:18px; font-weight:800; color:var(--accent)}
+.form-field{
+  width:100%; padding:11px 14px;
+  font:inherit; font-size:15px;
+  border:1px solid var(--line); border-radius:10px;
+  background:var(--bg2); color:var(--ink);
+  margin-bottom:10px; outline:none;
 }
-.modal-content .form-field{
-  width:100%;
-  padding:11px 14px;
-  font:inherit;
-  font-size:15px;
-  border:1px solid var(--line);
-  border-radius:10px;
-  background:var(--bg2);
-  color:var(--ink);
-  margin-bottom:10px;
-  outline:none;
-}
-.modal-content .form-field:focus{border-color:var(--accent)}
-.modal-content textarea.form-field{min-height:110px;resize:vertical}
-.modal-actions{
-  display:flex;
-  gap:8px;
-  flex-wrap:wrap;
-  margin-top:8px;
-}
-.modal-actions .btn{flex:1;justify-content:center}
+.form-field:focus{border-color:var(--accent)}
+textarea.form-field{min-height:110px; resize:vertical}
+.modal-actions{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
+.modal-actions .btn{flex:1; justify-content:center}
 
-.menu-list{display:flex;flex-direction:column;gap:6px}
+.menu-list{display:flex; flex-direction:column; gap:6px}
 .menu-item{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:12px 14px;
-  border-radius:10px;
-  background:var(--bg2);
-  border:1px solid var(--line);
-  color:var(--ink);
-  font:inherit;
-  font-size:15px;
-  font-weight:600;
-  cursor:pointer;
-  text-align:right;
+  display:flex; align-items:center; gap:10px;
+  padding:12px 14px; border-radius:10px;
+  background:var(--bg2); border:1px solid var(--line);
+  color:var(--ink); font:inherit; font-size:15px; font-weight:600;
+  cursor:pointer; text-align:right; width:100%;
   transition:.15s;
-  width:100%;
 }
-.menu-item:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+.menu-item:hover{background:var(--accent); color:#fff; border-color:var(--accent)}
 .menu-item.danger{color:var(--red)}
-.menu-item.danger:hover{background:var(--red);color:#fff;border-color:var(--red)}
-.menu-item svg{width:18px;height:18px;flex:none}
+.menu-item.danger:hover{background:var(--red); color:#fff; border-color:var(--red)}
+.menu-item svg{width:18px; height:18px; flex:none; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
 
+/* إشعار */
 .toast{
   position:fixed;
-  bottom:calc(var(--bottombar-h) + env(safe-area-inset-bottom,0px) + 14px);
-  left:50%;
-  transform:translateX(-50%);
-  background:var(--accent);
-  color:#fff;
-  padding:12px 24px;
-  border-radius:999px;
-  font-weight:700;
-  font-size:14px;
-  box-shadow:var(--shadow2);
-  z-index:99999;
-  animation:fade .2s;
-  pointer-events:none;
+  bottom:calc(var(--bot) + env(safe-area-inset-bottom,0px) + 14px);
+  left:50%; transform:translateX(-50%);
+  background:var(--accent); color:#fff;
+  padding:12px 22px; border-radius:999px;
+  font-weight:700; font-size:14px;
+  box-shadow:var(--shadow2); z-index:99999;
+  animation:fade .2s; pointer-events:none;
+  max-width:90%; text-align:center;
+  display:flex; align-items:center; gap:8px;
 }
+.toast svg{width:18px; height:18px; flex:none; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
 
-.stats-list{
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-  max-height:60vh;
-  overflow:auto;
-}
+/* إحصائيات */
+.stats-list{display:flex; flex-direction:column; gap:8px; max-height:60vh; overflow:auto}
 .stats-item{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  padding:10px 12px;
-  background:var(--bg2);
-  border:1px solid var(--line);
+  display:flex; align-items:center; justify-content:space-between;
+  gap:10px; padding:10px 12px;
+  background:var(--bg2); border:1px solid var(--line);
   border-radius:10px;
 }
-.stats-name{
-  flex:1;
-  font-size:15px;
-  font-weight:600;
-  color:var(--ink);
-  overflow-wrap:anywhere;
-}
-.stats-counts{display:flex;gap:6px;flex:none}
+.stats-name{flex:1; font-size:15px; font-weight:600; color:var(--ink); overflow-wrap:anywhere}
+.stats-counts{display:flex; gap:6px; flex:none}
 .stat-pill{
-  display:inline-flex;
-  align-items:center;
-  gap:4px;
-  padding:4px 10px;
-  border-radius:999px;
-  color:#fff;
-  font-size:13px;
-  font-weight:700;
+  display:inline-flex; align-items:center; gap:4px;
+  padding:4px 10px; border-radius:999px;
+  color:#fff; font-size:13px; font-weight:700;
 }
-.stat-pill svg{width:12px;height:12px}
+.stat-pill svg{width:12px; height:12px; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
 .stat-pill.present{background:var(--green)}
 .stat-pill.absent{background:var(--red)}
 .stat-pill.late{background:var(--orange)}
 
+/* كيبورد */
 .num-keypad{
-  position:fixed;
-  bottom:0;
-  left:0;
-  right:0;
-  z-index:10000;
-  background:var(--bg2);
+  position:fixed; bottom:0; left:0; right:0;
+  z-index:10000; background:var(--bg2);
   border-top:1px solid var(--line);
   padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
-  display:flex;
-  gap:6px;
-  direction:ltr;
+  display:flex; gap:6px; direction:ltr;
 }
 .num-keypad[hidden]{display:none}
 .num-keypad button{
-  flex:1;
-  font:inherit;
-  font-size:20px;
-  font-weight:700;
-  padding:12px 0;
-  border-radius:9px;
-  background:var(--card);
-  color:var(--ink);
+  flex:1; font:inherit; font-size:20px; font-weight:700;
+  padding:12px 0; border-radius:9px;
+  background:var(--card); color:var(--ink);
   border:1px solid var(--line);
-  cursor:pointer;
-  user-select:none;
-  -webkit-user-select:none;
+  cursor:pointer; user-select:none; -webkit-user-select:none;
   transition:.1s;
 }
-.num-keypad button:active{transform:scale(.95);background:var(--accent);color:#fff}
-.num-keypad button.kx{background:var(--bg2);font-size:16px;flex:1.2}
+.num-keypad button:active{transform:scale(.95); background:var(--accent); color:#fff}
+.num-keypad button.kx{background:var(--bg2); font-size:16px; flex:1.2}
 
+/* Word */
 .drop-zone{
-  border:2px dashed var(--blue);
-  border-radius:12px;
-  padding:26px 14px;
-  text-align:center;
-  cursor:pointer;
-  background:rgba(31,78,140,.04);
-  transition:.15s;
-  margin-bottom:12px;
+  border:2px dashed var(--blue); border-radius:12px;
+  padding:26px 14px; text-align:center;
+  cursor:pointer; background:rgba(31,78,140,.04);
+  transition:.15s; margin-bottom:12px;
 }
-.drop-zone:hover,.drop-zone.dragover{background:rgba(31,78,140,.12);border-color:var(--accent)}
-.drop-zone svg{width:38px;height:38px;color:var(--blue);margin-bottom:8px}
-.drop-zone p{font-size:14px;color:var(--mut);margin:3px 0}
-.drop-zone b{color:var(--blue);font-size:15px}
+.drop-zone:hover,.drop-zone.dragover{background:rgba(31,78,140,.12); border-color:var(--accent)}
+.drop-zone svg{width:38px; height:38px; color:var(--blue); margin-bottom:8px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
+.drop-zone p{font-size:14px; color:var(--mut); margin:3px 0}
+.drop-zone b{color:var(--blue); font-size:15px}
+
+/* Zoom */
+.zoom-bar{
+  display:flex; align-items:center; gap:12px;
+  padding:14px 16px; margin:14px 0;
+  background:var(--bg2); border:1px solid var(--line);
+  border-radius:14px;
+}
+.zoom-slider{flex:1; min-width:0}
+.zoom-slider input[type=range]{
+  width:100%; height:6px; -webkit-appearance:none;
+  background:var(--line); border-radius:3px; outline:none;
+}
+.zoom-slider input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none; width:24px; height:24px;
+  background:var(--accent); border-radius:50%; cursor:pointer;
+  box-shadow:0 2px 6px rgba(0,0,0,.25);
+}
+.zoom-slider input[type=range]::-moz-range-thumb{
+  width:24px; height:24px; background:var(--accent);
+  border-radius:50%; cursor:pointer; border:none;
+}
+.zoom-btn{
+  width:44px; height:44px; border-radius:50%;
+  border:1px solid var(--line); background:var(--card);
+  color:var(--ink); cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center;
+  flex:none; transition:.15s;
+}
+.zoom-btn:active{transform:scale(.92)}
+.zoom-btn svg{width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
+.zoom-preview{
+  text-align:center; padding:20px;
+  background:var(--bg2); border:1px dashed var(--line);
+  border-radius:12px; margin:14px 0;
+  min-height:80px;
+  display:flex; align-items:center; justify-content:center;
+  overflow:hidden; word-break:break-word;
+}
+.zoom-preview span{font-weight:700; transition:font-size .15s}
+
+/* Pull to refresh */
+.pull-indicator{
+  position:fixed; top:calc(var(--top-total) + env(safe-area-inset-top,0px) + 10px);
+  left:50%; transform:translateX(-50%);
+  background:var(--accent); color:#fff;
+  padding:10px 22px; border-radius:999px;
+  font-weight:700; font-size:13px;
+  box-shadow:var(--shadow2);
+  z-index:9999; pointer-events:none;
+  display:flex; align-items:center; gap:8px;
+}
+.pull-indicator svg{width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
+
+/* ===== وضع التحديد ===== */
+.select-mode-bar{
+  position:fixed;
+  bottom:calc(var(--bot) + env(safe-area-inset-bottom,0px) + 10px);
+  left:50%; transform:translateX(-50%);
+  background:var(--red); color:#fff;
+  padding:10px 18px; border-radius:999px;
+  display:flex; align-items:center; gap:10px;
+  box-shadow:var(--shadow2); z-index:9999;
+  font-weight:700; font-size:14px;
+  max-width:94%;
+}
+.select-mode-bar[hidden]{display:none}
+.select-mode-bar .count{
+  background:rgba(255,255,255,.25);
+  padding:3px 10px; border-radius:999px;
+  font-size:13px;
+}
+.select-mode-bar button{
+  background:transparent; border:1px solid rgba(255,255,255,.5);
+  color:#fff; padding:6px 14px; border-radius:999px;
+  font:inherit; font-weight:700; font-size:13px; cursor:pointer;
+}
+.select-mode-bar button:active{transform:scale(.95)}
+
+.select-check{
+  width:22px; height:22px; flex:none;
+  display:inline-flex; align-items:center; justify-content:center;
+  border:2px solid var(--line2); border-radius:6px;
+  background:var(--card); cursor:pointer;
+  transition:.15s;
+}
+.select-check.checked{
+  background:var(--red); border-color:var(--red); color:#fff;
+}
+.select-check svg{
+  width:14px; height:14px;
+  fill:none; stroke:currentColor; stroke-width:3;
+  stroke-linecap:round; stroke-linejoin:round;
+  opacity:0; transition:.15s;
+}
+.select-check.checked svg{opacity:1}
+
+tr.select-row td{cursor:pointer}
+tr.select-row td.att-cell{cursor:default}
+
+/* لوحة الألوان */
+.color-palette{
+  display:flex; flex-wrap:wrap; gap:10px;
+  margin:14px 0; justify-content:center;
+}
+.color-palette span{
+  width:44px; height:44px; border-radius:12px;
+  cursor:pointer; border:2px solid transparent;
+  transition:.15s;
+}
+.color-palette span:hover{transform:scale(1.08)}
+.color-palette span.selected{
+  border-color:var(--ink);
+  box-shadow:0 0 0 3px var(--accent);
+}
+.color-palette span.none{
+  background:
+    linear-gradient(45deg, transparent 46%, var(--red) 46%, var(--red) 54%, transparent 54%),
+    var(--bg2);
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px; color:var(--red);
+}
 
 @media (max-width:600px){
-  :root{--topbar-h:60px;--bottombar-h:60px}
+  :root{--top-1:52px; --top-2:56px; --bot:52px}
   body{padding-inline:6px}
-  .page-header h1{font-size:23px}
-  .page-header p{font-size:12px}
-  .sec-btn{font-size:14px;padding:8px 16px}
-  .sec-btn.add{font-size:15px;padding:8px 14px}
-  .icon-btn{width:38px;height:38px}
-  .icon-btn svg{width:18px;height:18px}
-  .sec-header{padding:10px 12px}
-  .sec-header .sec-title{font-size:15px}
-  .btn{padding:9px 14px;font-size:13px}
-  .tool-btn{padding:7px 11px;font-size:12px}
-  tbody td{font-size:13px;padding:5px 3px}
-  td.name-cell{padding:5px 6px;min-width:150px}
-  td.name-cell input{font-size:13px;padding:3px 5px}
-  .att-btn{width:26px;height:26px}
-  .att-btn svg{width:14px;height:14px}
-  td.num-cell{width:42px}
-  thead th{font-size:12px;padding:6px 3px}
-  .num-keypad button{font-size:18px;padding:11px 0}
+  .hero{padding:28px 12px}
+  .hero h1{font-size:24px}
+  .hero p{font-size:12px}
+  .sec-btn{font-size:13px; padding:8px 15px}
+  .sec-btn.add{font-size:15px; padding:8px 14px}
+  .action-btn{padding:8px 12px; font-size:12px; gap:5px}
+  .action-btn svg{width:16px; height:16px}
+  .icon-btn{width:38px; height:38px}
+  .icon-btn svg{width:18px; height:18px}
+  .brand{font-size:13px}
+  .brand-icon{width:28px; height:28px; font-size:14px}
+  .btn{padding:8px 12px; font-size:12px}
+  .tool-btn{padding:7px 11px; font-size:12px}
+  tbody td{font-size:13px; padding:5px 3px}
+  td.name-cell{padding:5px 6px; min-width:140px}
+  td.name-cell input{font-size:13px}
+  .att-btn{width:26px; height:26px}
+  .att-btn svg{width:14px; height:14px}
+  td.num-cell{width:40px}
+  thead th{font-size:12px; padding:6px 3px}
+  .num-keypad button{font-size:18px; padding:11px 0}
+  .section-top-actions{padding:8px 10px}
+  .zoom-btn{width:40px; height:40px}
+  .zoom-btn svg{width:20px; height:20px}
+  .select-mode-bar{font-size:12px; padding:8px 12px}
+  .select-mode-bar button{padding:5px 10px; font-size:12px}
+}
+@media (min-width:1024px){
+  .hero{padding:52px 20px}
+  .hero h1{font-size:38px}
 }
 </style>
-<link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icon-180.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="سجل الدرجات">
-<meta name="theme-color" content="#1f5c55">
-<script>
-try{
-  var t=localStorage.getItem('gradesheet_theme');
-  if(t) document.documentElement.setAttribute('data-theme',t);
-}catch(e){}
-</script>
 </head>
 <body>
 
 <header class="topbar">
-  <div class="sections-strip" id="sectionsStrip"></div>
-  <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" aria-label="تبديل المظهر">
-    <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-    </svg>
-  </button>
+  <div class="topbar-row-1">
+    <div class="brand">
+      <div class="brand-icon">س</div>
+      <span>سجل الدرجات</span>
+    </div>
+    <button class="icon-btn" id="menuBtn" onclick="toggleMenu(event)" aria-label="القائمة">
+      <svg viewBox="0 0 24 24"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+    <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" aria-label="تبديل المظهر">
+      <svg id="themeIcon" viewBox="0 0 24 24">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
+    <div class="menu-dropdown" id="menuDropdown" hidden>
+      <button onclick="closeMenu();openColorsDialog()">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="8" cy="10" r="1" fill="currentColor"/><circle cx="12" cy="7" r="1" fill="currentColor"/><circle cx="16" cy="10" r="1" fill="currentColor"/></svg>
+        تغيير الألوان
+      </button>
+      <a href="https://t.me/ra3k_n" target="_blank" rel="noopener" onclick="closeMenu()">
+        <svg viewBox="0 0 24 24" style="fill:currentColor;stroke:none"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+        تيليجرام
+      </a>
+    </div>
+  </div>
+  <div class="topbar-row-2">
+    <button class="action-btn primary" onclick="openBackupDialog()">
+      <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
+      نسخة احتياطية
+    </button>
+    <button class="action-btn blue" onclick="openWordDialog()">
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      استيراد من Word
+    </button>
+  </div>
 </header>
 
-<div class="page-header">
-  <h1>سجل الدرجات</h1>
-  <p>نظام إدارة الدرجات والحضور</p>
-</div>
-
-<div class="actions">
-  <button class="btn primary" onclick="openBackupDialog()">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
-    نسخة احتياطية
-  </button>
-  <button class="btn blue" id="wordBtn" onclick="openWordDialog()">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-    استيراد من Word
-  </button>
-</div>
-
-<main id="sectionsContainer"></main>
+<main>
+  <div class="hero">
+    <h1>سجل الدرجات</h1>
+    <p>نظام إدارة الدرجات والحضور</p>
+  </div>
+  <div class="sections-strip" id="sectionsStrip"></div>
+  <div id="sectionsContainer"></div>
+</main>
 
 <footer class="bottombar">
-  <span class="ver-text">الإصدار v1.0</span>
-  <a class="tg-btn" href="https://t.me/ra3k_n" target="_blank" rel="noopener" aria-label="تواصل على تيليجرام">
-    <svg viewBox="0 0 24 24">
-      <path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/>
-    </svg>
-  </a>
+  <span class="ver-text">الإصدار v2.0</span>
 </footer>
+
+<div class="select-mode-bar" id="selectModeBar" hidden>
+  <span>وضع التحديد</span>
+  <span class="count" id="selectCount">0</span>
+  <button onclick="deleteSelectedStudents()">حذف المحددين</button>
+  <button onclick="exitSelectMode()">إلغاء</button>
+</div>
 
 <div class="modal" id="rowMenuModal" hidden>
   <div class="modal-content">
@@ -809,6 +753,22 @@ try{
     <div class="menu-list" id="rowMenuList"></div>
     <div class="modal-actions" style="margin-top:14px">
       <button class="btn" onclick="closeModal('rowMenuModal')">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="studentColorModal" hidden>
+  <div class="modal-content">
+    <h3 id="studentColorTitle">لون الطالب</h3>
+    <div class="color-palette" id="studentColorPalette"></div>
+    <div style="display:flex; align-items:center; gap:10px; margin:14px 0; justify-content:center">
+      <span style="font-size:14px; color:var(--mut)">لون مخصص:</span>
+      <input type="color" id="studentCustomColor" style="width:60px; height:40px; border:none; border-radius:8px; cursor:pointer; background:none">
+    </div>
+    <div class="modal-actions">
+      <button class="btn primary" onclick="applyCustomColor()">تطبيق اللون المخصص</button>
+      <button class="btn" onclick="removeStudentColor()">إزالة اللون</button>
+      <button class="btn" onclick="closeModal('studentColorModal')">إلغاء</button>
     </div>
   </div>
 </div>
@@ -826,10 +786,10 @@ try{
 
 <div class="modal" id="editSectionModal" hidden>
   <div class="modal-content">
-    <h3>تعديل الشعبة</h3>
+    <h3>تعديل اسم الشعبة</h3>
     <input class="form-field" id="editSectionInput" placeholder="اسم الشعبة">
     <div class="modal-actions">
-      <button class="btn primary" onclick="confirmRenameSection()">حفظ الاسم</button>
+      <button class="btn primary" onclick="confirmRenameSection()">حفظ</button>
       <button class="btn danger" onclick="confirmDeleteSection()">حذف الشعبة</button>
       <button class="btn" onclick="closeModal('editSectionModal')">إلغاء</button>
     </div>
@@ -850,7 +810,7 @@ try{
 
 <div class="modal" id="statsModal" hidden>
   <div class="modal-content">
-    <h3 id="statsTitle">إحصائيات الطلاب</h3>
+    <h3 id="statsTitle">إحصائيات</h3>
     <div class="stats-list" id="statsList"></div>
     <div class="modal-actions" style="margin-top:14px">
       <button class="btn" onclick="closeModal('statsModal')">إغلاق</button>
@@ -861,10 +821,85 @@ try{
 <div class="modal" id="colorsModal" hidden>
   <div class="modal-content">
     <h3>تغيير ألوان الأعمدة</h3>
-    <div id="colorsList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px"></div>
+    <div id="colorsList" style="display:flex; flex-direction:column; gap:8px; margin-bottom:14px"></div>
     <div class="modal-actions">
       <button class="btn primary" onclick="saveColors()">حفظ</button>
       <button class="btn" onclick="closeModal('colorsModal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="fontModal" hidden>
+  <div class="modal-content">
+    <h3>تنسيق الخطوط — شعبة <span id="fontSectionName"></span></h3>
+    <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:14px">
+      <label style="display:flex; gap:8px; align-items:center; flex-wrap:wrap">
+        <span style="min-width:80px; font-size:13px; color:var(--mut)">نوع الخط:</span>
+        <select class="form-field" id="fontFamily" style="flex:1; margin:0" onchange="previewFont()">
+          <option value="">افتراضي</option>
+          <option value="'Segoe UI',Tahoma,sans-serif">Segoe UI</option>
+          <option value="Tahoma,sans-serif">Tahoma</option>
+          <option value="'Noto Naskh Arabic',serif">نسخ عربي</option>
+          <option value="'Amiri',serif">أميري</option>
+          <option value="'Cairo',sans-serif">القاهرة</option>
+          <option value="Arial,sans-serif">Arial</option>
+        </select>
+      </label>
+      <label style="display:flex; gap:8px; align-items:center; flex-wrap:wrap">
+        <span style="min-width:80px; font-size:13px; color:var(--mut)">الحجم:</span>
+        <input type="range" id="fontSize" min="10" max="26" step="1" value="14" style="flex:1" oninput="previewFont()">
+        <span id="fontSizeVal" style="min-width:48px; font-weight:700; text-align:center">14px</span>
+      </label>
+      <label style="display:flex; gap:8px; align-items:center; flex-wrap:wrap">
+        <span style="min-width:80px; font-size:13px; color:var(--mut)">السماكة:</span>
+        <select class="form-field" id="fontWeight" style="flex:1; margin:0" onchange="previewFont()">
+          <option value="400">عادي</option>
+          <option value="600">شبه عريض</option>
+          <option value="700">عريض</option>
+          <option value="900">عريض جداً</option>
+        </select>
+      </label>
+      <label style="display:flex; gap:8px; align-items:center; flex-wrap:wrap">
+        <span style="min-width:80px; font-size:13px; color:var(--mut)">المحاذاة:</span>
+        <select class="form-field" id="fontAlign" style="flex:1; margin:0" onchange="previewFont()">
+          <option value="right">يمين</option>
+          <option value="center">وسط</option>
+          <option value="left">يسار</option>
+        </select>
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="btn primary" onclick="saveFont()">حفظ</button>
+      <button class="btn" onclick="resetFont()">افتراضي</button>
+      <button class="btn" onclick="closeModal('fontModal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="zoomModal" hidden>
+  <div class="modal-content">
+    <h3>تكبير اسم الطالب</h3>
+    <div class="zoom-preview">
+      <span id="zoomPreviewText">محمد أحمد</span>
+    </div>
+    <div class="zoom-bar">
+      <button class="zoom-btn" onclick="zoomStep(-10)" aria-label="تصغير">
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+      <div class="zoom-slider">
+        <input type="range" id="zoomSlider" min="80" max="250" step="10" value="100" oninput="updateZoom()">
+      </div>
+      <button class="zoom-btn" onclick="zoomStep(10)" aria-label="تكبير">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
+    </div>
+    <div style="text-align:center; font-weight:700; color:var(--mut); margin-bottom:8px">
+      <span id="zoomPercent">100%</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn primary" onclick="saveZoom()">حفظ</button>
+      <button class="btn" onclick="resetZoom()">افتراضي</button>
+      <button class="btn" onclick="closeModal('zoomModal')">إلغاء</button>
     </div>
   </div>
 </div>
@@ -873,17 +908,13 @@ try{
   <div class="modal-content">
     <h3>استيراد أسماء من Word</h3>
     <div class="drop-zone" id="wordDrop">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-        <polyline points="7 10 12 15 17 10"/>
-        <line x1="12" y1="15" x2="12" y2="3"/>
-      </svg>
+      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
       <p><b>اسحب ملف Word هنا</b></p>
       <p>أو اضغط للاختيار من الجهاز</p>
-      <p style="font-size:12px;margin-top:6px">يدعم .docx — يمكن أن يحتوي على كل الشعب معاً</p>
+      <p style="font-size:12px; margin-top:6px">يدعم .docx — يمكن أن يحتوي على كل الشعب معاً</p>
     </div>
     <input type="file" id="wordFileInput" accept=".docx" hidden>
-    <div id="wordStatus" style="font-size:13px;color:var(--mut);line-height:1.8;margin-bottom:10px"></div>
+    <div id="wordStatus" style="font-size:13px; color:var(--mut); line-height:1.8; margin-bottom:10px"></div>
     <div class="modal-actions">
       <button class="btn primary" id="wordImportBtn" hidden onclick="confirmWordImport()">إضافة الأسماء</button>
       <button class="btn" onclick="closeModal('wordModal')">إغلاق</button>
@@ -894,14 +925,14 @@ try{
 <div class="modal" id="backupModal" hidden>
   <div class="modal-content">
     <h3>النسخة الاحتياطية</h3>
-    <p style="font-size:13px;color:var(--mut);margin-bottom:14px" id="backupInfo">لم تُنشأ نسخة بعد</p>
+    <p style="font-size:13px; color:var(--mut); margin-bottom:14px" id="backupInfo">لم تُنشأ نسخة بعد</p>
     <div class="menu-list">
       <button class="menu-item" onclick="createBackup()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         إنشاء نسخة وحفظها
       </button>
       <button class="menu-item" onclick="document.getElementById('restoreFileInput').click()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         استعادة نسخة من ملف
       </button>
     </div>
@@ -915,7 +946,7 @@ try{
 <div class="modal" id="confirmModal" hidden>
   <div class="modal-content">
     <h3 id="confirmTitle">تأكيد</h3>
-    <p id="confirmText" style="font-size:15px;line-height:1.7;color:var(--ink2);margin-bottom:16px"></p>
+    <p id="confirmText" style="font-size:15px; line-height:1.7; color:var(--ink2); margin-bottom:16px"></p>
     <div class="modal-actions">
       <button class="btn danger" id="confirmYesBtn">نعم</button>
       <button class="btn" onclick="closeModal('confirmModal')">إلغاء</button>
@@ -925,18 +956,22 @@ try{
 
 <div class="num-keypad" id="numKeypad" hidden></div>
 <div id="toastBox" hidden></div>
+<div id="pullIndicator" class="pull-indicator" hidden></div>
 
 <script>
+/* =========================================================
+   الحالة
+   ========================================================= */
 const STORAGE_KEY = 'gradesheet_v4';
 
 const DEFAULT_COLUMNS = [
-  { key:'act',  title:'نشاط صفي',              max:'15', color:'#e9ece4', type:'number' },
-  { key:'par',  title:'مشاركة',                 max:'10', color:'#e9ece4', type:'number' },
-  { key:'hw',   title:'واجب',                   max:'15', color:'#f4dadd', type:'number' },
-  { key:'tot',  title:'المجموع',                        color:'#f5dcc8', type:'total'  },
-  { key:'t1',   title:'اختبار الفترة الأولى /', max:'20', color:'#f2eecf', type:'number' },
-  { key:'t2',   title:'اختبار الفترة الثانية /',max:'20', color:'#cfe2ee', type:'number' },
-  { key:'att',  title:'تحضير',                          color:'#cfe2ee', type:'attendance' }
+  { key:'act', title:'نشاط صفي', max:'15', color:'#e9ece4', type:'number' },
+  { key:'par', title:'مشاركة',    max:'10', color:'#e9ece4', type:'number' },
+  { key:'hw',  title:'واجب',      max:'15', color:'#f4dadd', type:'number' },
+  { key:'tot', title:'المجموع',                 color:'#f5dcc8', type:'total'  },
+  { key:'t1',  title:'اختبار الفترة الأولى /', max:'20', color:'#f2eecf', type:'number' },
+  { key:'t2',  title:'اختبار الفترة الثانية /',max:'20', color:'#cfe2ee', type:'number' },
+  { key:'att', title:'تحضير',                    color:'#cfe2ee', type:'attendance' }
 ];
 
 const DEFAULT_SECTIONS = ['101','102','103','104','206'];
@@ -947,57 +982,18 @@ let searchOpen = new Set();
 let searchText = {};
 let currentSectionForMenu = -1;
 let currentRowForMenu = -1;
+let editingSection = -1;
+let zoomContext = { si:-1, ri:-1, val:100 };
+let notesContext = { si:-1, ri:-1 };
+let selectModeSections = new Set();
+let selectedStudents = {};
+let studentColorContext = { si:-1, ri:-1 };
 
-function save(){
-  try{
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-  }catch(e){
-    console.warn('فشل الحفظ',e);
-    showToast('تعذّر الحفظ على هذا الجهاز');
-  }
-}
-function load(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(raw){
-      const data = JSON.parse(raw);
-      if(data && Array.isArray(data.sections) && Array.isArray(data.columns)){
-        return data;
-      }
-    }
-  }catch(e){ console.warn(e); }
-  return null;
-}
-function makeSection(secNum){
-  return {
-    sec: secNum,
-    title: 'كفايات لغوية',
-    level: '1',
-    students: [1,2,3,4,5].map(i => makeStudent(i))
-  };
-}
-function makeStudent(n){
-  return {
-    id: 'stu_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
-    num: n,
-    name: '',
-    scores: {},
-    totalConfirmed: false,
-    totalValue: null,
-    attendance: {},
-    notes: []
-  };
-}
-
-state = load();
-if(!state){
-  state = {
-    columns: DEFAULT_COLUMNS.map(c => ({...c})),
-    sections: DEFAULT_SECTIONS.map(s => makeSection(s)),
-    lastBackup: null,
-    day: todayKey()
-  };
-}
+const STUDENT_COLORS = [
+  '#fecaca', '#fed7aa', '#fef08a', '#d9f99d',
+  '#bbf7d0', '#a7f3d0', '#bae6fd', '#bfdbfe',
+  '#ddd6fe', '#e9d5ff', '#fbcfe8', '#e5e7eb'
+];
 
 function todayKey(){
   const d = new Date(Date.now() - 350*60000);
@@ -1008,17 +1004,89 @@ function esc(s){
 }
 function num(v){ const n = parseFloat(v); return isNaN(n) ? 0 : n; }
 function $(id){ return document.getElementById(id); }
-function showToast(msg){
+
+function load(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const data = JSON.parse(raw);
+      if(data && Array.isArray(data.sections) && Array.isArray(data.columns)) return data;
+    }
+  }catch(e){ console.warn(e); }
+  return null;
+}
+function save(){
+  try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+  catch(e){ console.warn('فشل الحفظ', e); }
+}
+function makeSection(secNum){
+  return {
+    sec: secNum,
+    title: 'كفايات لغوية',
+    level: '1',
+    font: { family:'', size:14, weight:400, align:'right' },
+    students: [1,2,3,4,5].map(i => makeStudent(i))
+  };
+}
+function makeStudent(n){
+  return {
+    id: 'stu_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+    num: n, name: '',
+    scores: {}, totalConfirmed:false, totalValue:null,
+    attendance: {}, notes: [], zoom: 1, color: ''
+  };
+}
+
+state = load();
+if(!state){
+  state = {
+    columns: DEFAULT_COLUMNS.map(c => ({...c})),
+    sections: DEFAULT_SECTIONS.map(s => makeSection(s)),
+    lastBackup: null, day: todayKey()
+  };
+} else {
+  state.sections.forEach(s => {
+    if(!s.font) s.font = { family:'', size:14, weight:400, align:'right' };
+    s.students.forEach(stu => {
+      if(!stu.scores) stu.scores = {};
+      if(!stu.attendance) stu.attendance = {};
+      if(!stu.notes) stu.notes = [];
+      if(stu.zoom == null) stu.zoom = 1;
+      if(stu.color == null) stu.color = '';
+    });
+  });
+}
+
+/* ===== الإشعار ===== */
+function notify(text, icon){
+  icon = icon || 'check';
   const box = $('toastBox');
-  box.textContent = msg;
+  const icons = {
+    check: '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>',
+    add: '<svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+    del: '<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>'
+  };
+  box.innerHTML = (icons[icon]||icons.check) + '<span>' + esc(text) + '</span>';
   box.hidden = false;
   box.className = 'toast';
   clearTimeout(box._t);
-  box._t = setTimeout(() => { box.hidden = true; }, 2200);
+  box._t = setTimeout(() => { box.hidden = true; }, 2000);
 }
-function closeModal(id){ $(id).hidden = true; }
-function openModal(id){ $(id).hidden = false; }
+function closeModal(id){ const el = $(id); if(el) el.hidden = true; }
+function openModal(id){ const el = $(id); if(el) el.hidden = false; }
 
+/* ===== القائمة ☰ ===== */
+function toggleMenu(e){
+  if(e) e.stopPropagation();
+  const menu = $('menuDropdown');
+  menu.hidden = !menu.hidden;
+}
+function closeMenu(){ $('menuDropdown').hidden = true; }
+document.addEventListener('click', (e) => {
+  if(!e.target.closest('#menuDropdown') && !e.target.closest('#menuBtn')) closeMenu();
+});
+
+/* ===== العرض ===== */
 function render(){
   renderSectionsStrip();
   renderSectionsContainer();
@@ -1036,7 +1104,7 @@ function renderSectionsStrip(){
       timer = setTimeout(() => {
         currentSectionForMenu = i;
         openSectionMenu(i);
-      }, 600);
+      }, 650);
     });
     ['pointerup','pointerleave','pointercancel'].forEach(ev => {
       b.addEventListener(ev, () => clearTimeout(timer));
@@ -1052,46 +1120,50 @@ function renderSectionsStrip(){
 }
 
 function renderSectionsContainer(){
-  const container = $('sectionsContainer');
-  container.innerHTML = '';
-  state.sections.forEach((s, si) => {
-    container.appendChild(buildSectionCard(s, si));
-  });
+  const c = $('sectionsContainer');
+  c.innerHTML = '';
+  state.sections.forEach((s, si) => c.appendChild(buildSectionCard(s, si)));
 }
 
 function buildSectionCard(section, si){
   const card = document.createElement('div');
   card.className = 'section-card';
   card.id = 'section_' + si;
+  card.dataset.si = si;
 
-  const header = document.createElement('div');
-  header.className = 'sec-header';
-  header.innerHTML = `
-    <span class="sec-title">شعبة ${esc(section.sec)}</span>
-    <button class="btn" onclick="toggleTools(${si})">تعديل</button>
-    <button class="btn primary" onclick="addStudent(${si})">+ إضافة طالب</button>
+  const top = document.createElement('div');
+  top.className = 'section-top-actions';
+  top.innerHTML = `
+    <button class="btn" onclick="toggleTools(${si})">
+      <svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      تعديل
+    </button>
+    <button class="btn primary" onclick="addStudent(${si})">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      إضافة طالب
+    </button>
+    <button class="btn" onclick="openStats(${si})">
+      <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg>
+      إحصائيات
+    </button>
   `;
-  card.appendChild(header);
+  card.appendChild(top);
 
   const tools = document.createElement('div');
   tools.className = 'tools-panel';
   tools.id = 'tools_' + si;
   tools.hidden = !openedTools.has(si);
   tools.innerHTML = `
-    <button class="tool-btn ${searchOpen.has(si)?'active':''}" onclick="toggleSearch(${si})">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      بحث بالرقم
+    <button class="tool-btn" onclick="openFontDialog(${si})">
+      <svg viewBox="0 0 24 24"><path d="M5 20l7-16 7 16"/><path d="M8 14h8"/></svg>
+      تنسيق الخطوط
     </button>
-    <button class="tool-btn" onclick="openStats(${si})">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg>
-      إحصائيات الطلاب
+    <button class="tool-btn" onclick="enterSelectMode(${si})">
+      <svg viewBox="0 0 24 24"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+      تحديد للحذف
     </button>
-    <button class="tool-btn" onclick="openColorsDialog()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="7" r="1"/><circle cx="16" cy="10" r="1"/></svg>
-      تغيير الألوان
-    </button>
-    <button class="tool-btn" onclick="confirmDeleteAllStudents(${si})" style="color:var(--red)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+    <button class="tool-btn danger" onclick="confirmDeleteAllStudents(${si})">
+      <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
       حذف كل الطلاب
     </button>
   `;
@@ -1102,7 +1174,7 @@ function buildSectionCard(section, si){
     sr.className = 'search-row';
     const inp = document.createElement('input');
     inp.type = 'text';
-    inp.placeholder = 'ابحث برقم الطالب...';
+    inp.placeholder = 'ابحث...';
     inp.value = searchText[si] || '';
     inp.setAttribute('inputmode','none');
     inp.dataset.num = '1';
@@ -1119,6 +1191,13 @@ function buildTable(section, si){
   const wrap = document.createElement('div');
   wrap.className = 'table-wrap';
   const tbl = document.createElement('table');
+  const font = section.font || {};
+
+  tbl.style.fontFamily = font.family || '';
+  tbl.style.fontSize = (font.size || 14) + 'px';
+  tbl.style.fontWeight = font.weight || '';
+  tbl.style.textAlign = font.align || '';
+
   const thead = document.createElement('thead');
   const tr = document.createElement('tr');
 
@@ -1126,8 +1205,7 @@ function buildTable(section, si){
   th0.className = 'sec-col';
   th0.innerHTML = `
     <div class="th-inner">
-      <div>شعبة ( <input class="inline-edit" data-field="sec" data-si="${si}" value="${esc(section.sec)}" inputmode="none" data-num="1"> )
-      </div>
+      <div>شعبة ( <input class="inline-edit" data-field="sec" data-si="${si}" value="${esc(section.sec)}" inputmode="none" data-num="1"> )</div>
       <div class="sub-line">
         <input class="inline-edit" data-field="title" data-si="${si}" value="${esc(section.title)}">
         <input class="inline-edit" data-field="level" data-si="${si}" value="${esc(section.level)}" style="width:34px">
@@ -1141,9 +1219,9 @@ function buildTable(section, si){
     th.className = 'col-' + col.key;
     let maxHtml = '';
     if(col.type === 'number' && col.max !== undefined){
-      maxHtml = `<div class="max-mark">( <input class="inline-edit" data-col="${ci}" data-field="max" value="${esc(col.max)}" inputmode="none" data-num="1"> )</div>`;
+      maxHtml = '<div class="max-mark">( <input class="inline-edit" data-col="' + ci + '" data-field="max" value="' + esc(col.max) + '" inputmode="none" data-num="1"> )</div>';
     } else if(col.type === 'total'){
-      maxHtml = `<div class="max-mark">( <span>مجموع</span> )</div>`;
+      maxHtml = '<div class="max-mark">( <span>مجموع</span> )</div>';
     }
     th.innerHTML = `
       <div class="th-inner">
@@ -1169,21 +1247,33 @@ function buildStudentRow(stu, si, ri){
   const tr = document.createElement('tr');
   tr.dataset.si = si;
   tr.dataset.ri = ri;
+  if(selectModeSections.has(si)) tr.classList.add('select-row');
 
   const tdName = document.createElement('td');
   tdName.className = 'name-cell';
+  if(stu.color) tdName.style.background = stu.color;
+
   const attStatus = stu.attendance[state.day] || '';
-  const attBadge = attStatus ? attBadgeHTML(attStatus) : '';
-  tdName.innerHTML = `
-    ${attBadge}
-    <input class="name-input" readonly data-si="${si}" data-ri="${ri}" data-field="name" value="${esc(stu.name)}" placeholder="اسم الطالب">
-  `;
-  attachNameHandlers(tdName, si, ri);
+  const badge = attStatus ? attBadgeHTML(attStatus) : '';
+
+  const checkbox = selectModeSections.has(si)
+    ? '<button class="select-check ' + ((si+'-'+ri) in selectedStudents ? 'checked' : '') + '"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></button>'
+    : '';
+
+  tdName.innerHTML = checkbox + badge + '<input class="name-input" readonly data-si="' + si + '" data-ri="' + ri + '" data-field="name" value="' + esc(stu.name) + '" placeholder="اسم الطالب" style="font-size:' + Math.round(14*(stu.zoom||1)) + 'px">';
+
+  if(!selectModeSections.has(si)){
+    attachNameHandlers(tdName, si, ri);
+  } else {
+    const inp = tdName.querySelector('.name-input');
+    inp.style.pointerEvents = 'none';
+    tdName.addEventListener('click', () => toggleStudentSelection(si, ri));
+  }
   tr.appendChild(tdName);
 
   const tdNum = document.createElement('td');
   tdNum.className = 'num-cell';
-  tdNum.innerHTML = `<input readonly data-si="${si}" data-ri="${ri}" data-field="num" value="${esc(stu.num)}" inputmode="none" data-num="1">`;
+  tdNum.innerHTML = '<input readonly data-si="' + si + '" data-ri="' + ri + '" data-field="num" value="' + esc(stu.num) + '" inputmode="none" data-num="1">';
   tr.appendChild(tdNum);
 
   state.columns.forEach((col, ci) => {
@@ -1193,25 +1283,21 @@ function buildStudentRow(stu, si, ri){
 
     if(col.type === 'number'){
       const v = stu.scores[col.key] ?? '';
-      td.innerHTML = `<input data-si="${si}" data-ri="${ri}" data-col="${ci}" data-field="score" value="${esc(v)}" inputmode="none" data-num="1">`;
+      td.innerHTML = '<input data-si="' + si + '" data-ri="' + ri + '" data-col="' + ci + '" data-field="score" value="' + esc(v) + '" inputmode="none" data-num="1">';
     }
     else if(col.type === 'total'){
       td.className = 'cell total-cell';
       if(stu.totalConfirmed){
         const total = stu.totalValue ?? calcTotal(stu);
-        td.innerHTML = `
-          <div class="total-display">
-            <input readonly value="${total}">
-            <button class="edit-btn" onclick="reopenTotal(${si},${ri})" title="تعديل الدرجات">✎</button>
-          </div>
-        `;
+        td.innerHTML = '<div class="total-display"><input readonly value="' + total + '">' +
+          '<button class="edit-btn" onclick="reopenTotal(' + si + ',' + ri + ')" title="تعديل"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div>';
       } else {
-        td.innerHTML = `<button class="confirm-btn" onclick="confirmTotal(${si},${ri})">✓ تأكيد</button>`;
+        td.innerHTML = '<button class="confirm-btn" onclick="confirmTotal(' + si + ',' + ri + ')" title="تأكيد المجموع"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></button>';
       }
     }
     else if(col.type === 'attendance'){
       td.className = 'cell att-cell';
-      td.innerHTML = `<div class="att-group">${attendanceButtonsHTML(si, ri, stu)}</div>`;
+      td.innerHTML = '<div class="att-group">' + attendanceButtonsHTML(si, ri, stu) + '</div>';
     }
     tr.appendChild(td);
   });
@@ -1221,69 +1307,53 @@ function buildStudentRow(stu, si, ri){
 
 function attBadgeHTML(status){
   const icons = {
-    present: '<path d="M5 12l5 5 9-10"/>',
-    absent:  '<path d="M6 6l12 12M18 6L6 18"/>',
-    late:    '<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>'
+    present: '<polyline points="20 6 9 17 4 12"/>',
+    absent:  '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+    late:    '<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/>'
   };
-  return `<span class="att-badge ${status}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">${icons[status]}</svg></span>`;
+  return '<span class="att-badge ' + status + '"><svg viewBox="0 0 24 24">' + icons[status] + '</svg></span>';
 }
-
 function attendanceButtonsHTML(si, ri, stu){
   const current = stu.attendance[state.day] || '';
   const config = [
-    { key:'present', icon:'<path d="M5 12l5 5 9-10"/>', label:'حاضر' },
-    { key:'absent',  icon:'<path d="M6 6l12 12M18 6L6 18"/>', label:'غائب' },
-    { key:'late',    icon:'<circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/>', label:'متأخر' }
+    { key:'present', icon:'<polyline points="20 6 9 17 4 12"/>', label:'حاضر' },
+    { key:'absent',  icon:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>', label:'غائب' },
+    { key:'late',    icon:'<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/>', label:'متأخر' }
   ];
-  return config.map(c => `
-    <button class="att-btn ${c.key} ${current === c.key ? 'on' : ''}"
-      onclick="toggleAttendance(${si}, ${ri}, '${c.key}')"
-      aria-label="${c.label}"
-      title="${c.label}">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">${c.icon}</svg>
-    </button>
-  `).join('');
+  return config.map(c =>
+    '<button class="att-btn ' + c.key + (current === c.key ? ' on' : '') + '" onclick="toggleAttendance(' + si + ',' + ri + ',\'' + c.key + '\')" aria-label="' + c.label + '" title="' + c.label + '"><svg viewBox="0 0 24 24">' + c.icon + '</svg></button>'
+  ).join('');
 }
 
 function attachNameHandlers(td, si, ri){
   const inp = td.querySelector('.name-input');
-  let lpTimer = null;
-  let moved = false;
-  let startX = 0, startY = 0;
+  let lpTimer = null, moved = false, sx = 0, sy = 0;
 
   inp.addEventListener('pointerdown', e => {
-    moved = false;
-    startX = e.clientX;
-    startY = e.clientY;
+    moved = false; sx = e.clientX; sy = e.clientY;
     clearTimeout(lpTimer);
     lpTimer = setTimeout(() => {
       if(moved) return;
       currentSectionForMenu = si;
       currentRowForMenu = ri;
       openRowMenu(si, ri);
-    }, 600);
+    }, 650);
   });
-
   inp.addEventListener('pointermove', e => {
-    if(Math.hypot(e.clientX - startX, e.clientY - startY) > 8){
-      moved = true;
-      clearTimeout(lpTimer);
+    if(Math.hypot(e.clientX - sx, e.clientY - sy) > 8){
+      moved = true; clearTimeout(lpTimer);
     }
   });
-
   ['pointerup','pointercancel','pointerleave'].forEach(ev => {
     inp.addEventListener(ev, () => clearTimeout(lpTimer));
   });
-
   inp.addEventListener('click', e => {
     if(!inp.readOnly) return;
     e.preventDefault();
     inp.readOnly = false;
     inp.focus();
-    const len = inp.value.length;
-    try{ inp.setSelectionRange(len, len); }catch(err){}
+    try{ inp.setSelectionRange(inp.value.length, inp.value.length); }catch(err){}
   });
-
   inp.addEventListener('blur', () => {
     inp.readOnly = true;
     const s = state.sections[si];
@@ -1291,14 +1361,14 @@ function attachNameHandlers(td, si, ri){
     const newName = inp.value.trim();
     if(newName !== stu.name){
       stu.name = newName;
+      notify('تم حفظ اسم الطالب: ' + (newName || '(فارغ)'));
       sortStudents(s);
       save();
       render();
     }
   });
-
   inp.addEventListener('keydown', e => {
-    if(e.key === 'Enter'){ inp.blur(); }
+    if(e.key === 'Enter') inp.blur();
   });
 }
 
@@ -1320,32 +1390,22 @@ function toggleTools(si){
   const el = $('tools_' + si);
   if(el) el.hidden = !openedTools.has(si);
 }
-function toggleSearch(si){
-  if(searchOpen.has(si)){ searchOpen.delete(si); searchText[si] = ''; }
-  else searchOpen.add(si);
-  render();
-  if(searchOpen.has(si)){
-    setTimeout(() => {
-      const inp = document.querySelector('#section_' + si + ' .search-row input');
-      if(inp) inp.focus();
-    }, 50);
-  }
-}
 function filterSection(si){
   const q = (searchText[si] || '').trim();
-  const section = state.sections[si];
-  section.students.forEach((stu, ri) => {
+  state.sections[si].students.forEach((stu, ri) => {
     const tr = document.querySelector('#section_' + si + ' tbody tr[data-ri="' + ri + '"]');
     if(!tr) return;
     if(!q){ tr.hidden = false; return; }
-    tr.hidden = !String(stu.num).startsWith(q);
+    const n = String(stu.num);
+    const name = (stu.name || '').toLowerCase();
+    tr.hidden = !(n.startsWith(q) || name.includes(q.toLowerCase()));
   });
 }
 function scrollToSection(si){
   const el = $('section_' + si);
   if(!el) return;
-  const topbarH = document.querySelector('.topbar').offsetHeight;
-  const y = el.getBoundingClientRect().top + window.pageYOffset - topbarH - 12;
+  const h = document.querySelector('.topbar').offsetHeight;
+  const y = el.getBoundingClientRect().top + window.pageYOffset - h - 12;
   window.scrollTo({ top: y, behavior: 'smooth' });
 }
 function addStudent(si){
@@ -1354,14 +1414,15 @@ function addStudent(si){
   section.students.push(stu);
   save();
   render();
-  showToast('تمت إضافة طالب جديد');
+  notify('تمت إضافة طالب جديد', 'add');
 }
 function confirmTotal(si, ri){
   const stu = state.sections[si].students[ri];
   stu.totalConfirmed = true;
-  stu.totalValue = null;
+  stu.totalValue = calcTotal(stu);
   save();
   render();
+  notify('تم تأكيد المجموع: ' + stu.totalValue);
 }
 function reopenTotal(si, ri){
   const stu = state.sections[si].students[ri];
@@ -1371,48 +1432,46 @@ function reopenTotal(si, ri){
   render();
 }
 function calcTotal(stu){
-  let total = 0;
-  state.columns.forEach(c => {
-    if(c.type === 'number'){
-      total += num(stu.scores[c.key]);
-    }
-  });
-  return total;
+  let t = 0;
+  state.columns.forEach(c => { if(c.type === 'number') t += num(stu.scores[c.key]); });
+  return t;
 }
 function toggleAttendance(si, ri, key){
   const stu = state.sections[si].students[ri];
   const today = state.day;
-  if(stu.attendance[today] === key){
-    delete stu.attendance[today];
-  } else {
-    stu.attendance[today] = key;
-  }
+  if(stu.attendance[today] === key) delete stu.attendance[today];
+  else stu.attendance[today] = key;
   save();
   render();
+  const names = { present:'حاضر', absent:'غائب', late:'متأخر' };
+  notify('تم تسجيل: ' + (stu.attendance[today] ? names[key] : 'إزالة'));
 }
 
+/* ===== قائمة الطالب ===== */
 function openRowMenu(si, ri){
   const stu = state.sections[si].students[ri];
   const notesCount = (stu.notes || []).length;
   $('rowMenuTitle').textContent = stu.name || ('طالب رقم ' + stu.num);
   const list = $('rowMenuList');
-  list.innerHTML = `
-    <button class="menu-item" onclick="closeModal('rowMenuModal');openNotesDialog(${si},${ri})">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-      ${notesCount ? 'الملاحظات ('+notesCount+')' : 'إضافة ملاحظة'}
-    </button>
-    <button class="menu-item" onclick="moveStudentDialog(${si},${ri})">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 9 2 12 5 15"/><polyline points="9 5 12 2 15 5"/><polyline points="15 19 12 22 9 19"/><polyline points="19 9 22 12 19 15"/><line x1="2" y1="12" x2="22" y2="12"/><line x1="12" y1="2" x2="12" y2="22"/></svg>
-      نقل الطالب إلى شعبة أخرى
-    </button>
-    <button class="menu-item danger" onclick="confirmDeleteStudent(${si},${ri})">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-      حذف الطالب
-    </button>
-  `;
+  list.innerHTML =
+    '<button class="menu-item" onclick="closeModal(\'rowMenuModal\');openNotesDialog(' + si + ',' + ri + ')">' +
+      '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' +
+      (notesCount ? 'الملاحظات (' + notesCount + ')' : 'إضافة ملاحظة') +
+    '</button>' +
+    '<button class="menu-item" onclick="openZoomDialog(' + si + ',' + ri + ')">' +
+      '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>' +
+      'تكبير اسم الطالب' +
+    '</button>' +
+    '<button class="menu-item" onclick="openStudentColorDialog(' + si + ',' + ri + ')">' +
+      '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="8" cy="10" r="1" fill="currentColor"/><circle cx="12" cy="7" r="1" fill="currentColor"/><circle cx="16" cy="10" r="1" fill="currentColor"/></svg>' +
+      'لون الطالب' +
+    '</button>' +
+    '<button class="menu-item danger" onclick="confirmDeleteStudent(' + si + ',' + ri + ')">' +
+      '<svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>' +
+      'حذف الطالب' +
+    '</button>';
   openModal('rowMenuModal');
 }
-
 function confirmDeleteStudent(si, ri){
   closeModal('rowMenuModal');
   const stu = state.sections[si].students[ri];
@@ -1421,38 +1480,128 @@ function confirmDeleteStudent(si, ri){
     state.sections[si].students.forEach((s, i) => s.num = i + 1);
     save();
     render();
-    showToast('تم حذف الطالب');
+    notify('تم حذف الطالب', 'del');
   });
 }
 
-function moveStudentDialog(si, ri){
-  closeModal('rowMenuModal');
-  const otherSections = state.sections.map((s, i) => ({ s, i })).filter(x => x.i !== si);
-  if(otherSections.length === 0){
-    showToast('لا توجد شعبة أخرى');
-    return;
-  }
-  const list = $('rowMenuList');
-  $('rowMenuTitle').textContent = 'نقل الطالب إلى:';
-  list.innerHTML = otherSections.map(x =>
-    '<button class="menu-item" onclick="moveStudent(' + si + ',' + ri + ',' + x.i + ')">شعبة ' + esc(x.s.sec) + '</button>'
-  ).join('');
-  openModal('rowMenuModal');
-}
-
-function moveStudent(fromSi, ri, toSi){
-  const stu = state.sections[fromSi].students.splice(ri, 1)[0];
-  state.sections[fromSi].students.forEach((s, i) => s.num = i + 1);
-  stu.num = state.sections[toSi].students.length + 1;
-  state.sections[toSi].students.push(stu);
-  sortStudents(state.sections[toSi]);
-  save();
-  closeModal('rowMenuModal');
+/* ===== وضع التحديد ===== */
+function enterSelectMode(si){
+  selectModeSections.add(si);
   render();
-  showToast('تم نقل الطالب');
+  updateSelectBar();
+  notify('وضع التحديد — اضغط على الطلاب لتحديدهم');
+}
+function exitSelectMode(){
+  selectModeSections.clear();
+  selectedStudents = {};
+  render();
+  updateSelectBar();
+}
+function toggleStudentSelection(si, ri){
+  const key = si + '-' + ri;
+  if(selectedStudents[key]) delete selectedStudents[key];
+  else selectedStudents[key] = true;
+  render();
+  updateSelectBar();
+}
+function updateSelectBar(){
+  const bar = $('selectModeBar');
+  const count = Object.keys(selectedStudents).length;
+  if(selectModeSections.size === 0){ bar.hidden = true; return; }
+  bar.hidden = false;
+  $('selectCount').textContent = count + ' محدد';
+}
+function deleteSelectedStudents(){
+  const keys = Object.keys(selectedStudents);
+  if(keys.length === 0){ notify('لم تحدد أي طالب'); return; }
+  showConfirm('حذف الطلاب', 'هل تريد حذف <b>' + keys.length + '</b> طالب محدد؟', () => {
+    const grouped = {};
+    keys.forEach(k => {
+      const parts = k.split('-');
+      const si = +parts[0], ri = +parts[1];
+      if(!grouped[si]) grouped[si] = [];
+      grouped[si].push(ri);
+    });
+    Object.keys(grouped).forEach(si => {
+      const ris = grouped[si].sort((a,b) => b - a);
+      ris.forEach(ri => { state.sections[si].students.splice(ri, 1); });
+      state.sections[si].students.forEach((s, i) => s.num = i + 1);
+    });
+    save();
+    exitSelectMode();
+    notify('تم حذف ' + keys.length + ' طالب', 'del');
+  });
 }
 
-let notesContext = { si: -1, ri: -1 };
+/* ===== لون الطالب ===== */
+function openStudentColorDialog(si, ri){
+  closeModal('rowMenuModal');
+  studentColorContext = { si, ri };
+  const stu = state.sections[si].students[ri];
+  $('studentColorTitle').textContent = 'لون: ' + (stu.name || 'طالب رقم ' + stu.num);
+
+  const pal = $('studentColorPalette');
+  pal.innerHTML = STUDENT_COLORS.map(c => {
+    const sel = stu.color === c ? ' selected' : '';
+    return '<span class="' + sel.trim() + '" style="background:' + c + '" onclick="applyStudentColor(\'' + c + '\')"></span>';
+  }).join('') +
+  '<span class="none ' + (stu.color ? '' : 'selected') + '" onclick="removeStudentColor()">✕</span>';
+
+  $('studentCustomColor').value = stu.color || '#ffffff';
+  openModal('studentColorModal');
+}
+function applyStudentColor(color){
+  const si = studentColorContext.si, ri = studentColorContext.ri;
+  state.sections[si].students[ri].color = color;
+  save();
+  closeModal('studentColorModal');
+  render();
+  notify('تم تطبيق اللون');
+}
+function applyCustomColor(){
+  applyStudentColor($('studentCustomColor').value);
+}
+function removeStudentColor(){
+  const si = studentColorContext.si, ri = studentColorContext.ri;
+  state.sections[si].students[ri].color = '';
+  save();
+  closeModal('studentColorModal');
+  render();
+  notify('تم إزالة اللون');
+}
+
+/* ===== Zoom ===== */
+function openZoomDialog(si, ri){
+  closeModal('rowMenuModal');
+  zoomContext = { si, ri, val: 100 };
+  const stu = state.sections[si].students[ri];
+  $('zoomPreviewText').textContent = stu.name || ('طالب رقم ' + stu.num);
+  $('zoomSlider').value = Math.round((stu.zoom || 1) * 100);
+  updateZoom();
+  openModal('zoomModal');
+}
+function zoomStep(d){
+  const v = Math.max(80, Math.min(250, zoomContext.val + d));
+  $('zoomSlider').value = v;
+  updateZoom();
+}
+function updateZoom(){
+  zoomContext.val = +$('zoomSlider').value;
+  const px = Math.round(16 * zoomContext.val / 100);
+  $('zoomPreviewText').style.fontSize = px + 'px';
+  $('zoomPercent').textContent = zoomContext.val + '%';
+}
+function saveZoom(){
+  const stu = state.sections[zoomContext.si].students[zoomContext.ri];
+  stu.zoom = zoomContext.val / 100;
+  save();
+  closeModal('zoomModal');
+  render();
+  notify('تم حفظ حجم الاسم: ' + zoomContext.val + '%');
+}
+function resetZoom(){ $('zoomSlider').value = 100; updateZoom(); }
+
+/* ===== الملاحظات ===== */
 function openNotesDialog(si, ri){
   notesContext = { si, ri };
   const stu = state.sections[si].students[ri];
@@ -1469,12 +1618,12 @@ function renderNotesList(stu){
     list.innerHTML = '<p style="text-align:center;color:var(--mut);font-size:13px">لا توجد ملاحظات سابقة</p>';
     return;
   }
-  list.innerHTML = notes.map((n, i) => `
-    <div style="background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:6px">
-      <div style="font-size:14px;line-height:1.6">${esc(n.text)}</div>
-      <div style="font-size:11px;color:var(--mut);margin-top:4px">${formatDate(n.date)}</div>
-    </div>
-  `).join('');
+  list.innerHTML = notes.map(n =>
+    '<div style="background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:6px">' +
+      '<div style="font-size:14px;line-height:1.6">' + esc(n.text) + '</div>' +
+      '<div style="font-size:11px;color:var(--mut);margin-top:4px">' + formatDate(n.date) + '</div>' +
+    '</div>'
+  ).join('');
 }
 function formatDate(ts){
   try{
@@ -1482,17 +1631,18 @@ function formatDate(ts){
   }catch(e){ return ''; }
 }
 function saveNote(){
-  const text = $('noteText').value.trim();
-  if(!text){ showToast('اكتب ملاحظة أولاً'); return; }
+  const t = $('noteText').value.trim();
+  if(!t){ notify('اكتب ملاحظة أولاً'); return; }
   const stu = state.sections[notesContext.si].students[notesContext.ri];
   if(!stu.notes) stu.notes = [];
-  stu.notes.unshift({ text, date: Date.now() });
+  stu.notes.unshift({ text: t, date: Date.now() });
   save();
   $('noteText').value = '';
   renderNotesList(stu);
-  showToast('تم حفظ الملاحظة');
+  notify('تم حفظ الملاحظة');
 }
 
+/* ===== إحصائيات ===== */
 function openStats(si){
   const section = state.sections[si];
   $('statsTitle').textContent = 'إحصائيات — شعبة ' + section.sec;
@@ -1503,50 +1653,49 @@ function openStats(si){
     return;
   }
   list.innerHTML = section.students.map(stu => {
-    const counts = { present:0, absent:0, late:0 };
-    Object.values(stu.attendance || {}).forEach(v => { if(counts[v] !== undefined) counts[v]++; });
-    return `
-      <div class="stats-item">
-        <div class="stats-name">${esc(stu.name) || '<i style="color:var(--mut)">بدون اسم</i>'}</div>
-        <div class="stats-counts">
-          <span class="stat-pill present"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>${counts.present}</span>
-          <span class="stat-pill absent"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>${counts.absent}</span>
-          <span class="stat-pill late"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l3 2"/></svg>${counts.late}</span>
-        </div>
-      </div>
-    `;
+    const c = { present:0, absent:0, late:0 };
+    Object.values(stu.attendance || {}).forEach(v => { if(c[v] !== undefined) c[v]++; });
+    return '<div class="stats-item">' +
+      '<div class="stats-name">' + (esc(stu.name) || '<i style="color:var(--mut)">بدون اسم</i>') + '</div>' +
+      '<div class="stats-counts">' +
+        '<span class="stat-pill present"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>' + c.present + '</span>' +
+        '<span class="stat-pill absent"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' + c.absent + '</span>' +
+        '<span class="stat-pill late"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>' + c.late + '</span>' +
+      '</div>' +
+    '</div>';
   }).join('');
   openModal('statsModal');
 }
 
+/* ===== شعبة ===== */
 function openAddSectionDialog(){
   $('newSectionInput').value = '';
   openModal('addSectionModal');
   setTimeout(() => $('newSectionInput').focus(), 100);
 }
 function confirmAddSection(){
-  const val = $('newSectionInput').value.trim();
-  if(!val){ showToast('أدخل رقم الشعبة'); return; }
-  state.sections.push(makeSection(val));
+  const v = $('newSectionInput').value.trim();
+  if(!v){ notify('أدخل رقم الشعبة'); return; }
+  state.sections.push(makeSection(v));
   save();
   closeModal('addSectionModal');
   render();
-  showToast('تمت إضافة الشعبة');
+  notify('تمت إضافة شعبة: ' + v, 'add');
 }
 function openSectionMenu(si){
-  const section = state.sections[si];
-  $('editSectionInput').value = section.sec;
+  const s = state.sections[si];
+  $('editSectionInput').value = s.sec;
   currentSectionForMenu = si;
   openModal('editSectionModal');
 }
 function confirmRenameSection(){
-  const val = $('editSectionInput').value.trim();
-  if(!val){ showToast('أدخل الاسم'); return; }
-  state.sections[currentSectionForMenu].sec = val;
+  const v = $('editSectionInput').value.trim();
+  if(!v){ notify('أدخل الاسم'); return; }
+  state.sections[currentSectionForMenu].sec = v;
   save();
   closeModal('editSectionModal');
   render();
-  showToast('تم حفظ الاسم');
+  notify('تم حفظ اسم الشعبة: ' + v);
 }
 function confirmDeleteSection(){
   const si = currentSectionForMenu;
@@ -1555,7 +1704,7 @@ function confirmDeleteSection(){
     state.sections.splice(si, 1);
     save();
     render();
-    showToast('تم حذف الشعبة');
+    notify('تم حذف الشعبة', 'del');
   });
 }
 function confirmDeleteAllStudents(si){
@@ -1563,30 +1712,62 @@ function confirmDeleteAllStudents(si){
     state.sections[si].students = [];
     save();
     render();
-    showToast('تم الحذف');
+    notify('تم حذف كل الطلاب', 'del');
   });
 }
 
+/* ===== ألوان الأعمدة ===== */
 function openColorsDialog(){
   const list = $('colorsList');
-  list.innerHTML = state.columns.map((c, i) => `
-    <label style="display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px">
-      <input type="color" value="${c.color}" data-col="${i}" oninput="changeColumnColor(${i}, this.value)" style="width:44px;height:36px;border:none;border-radius:8px;cursor:pointer;background:none">
-      <span style="flex:1;font-size:14px;font-weight:600">${esc(c.title)}</span>
-    </label>
-  `).join('');
+  list.innerHTML = state.columns.map((c, i) =>
+    '<label style="display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px">' +
+      '<input type="color" value="' + c.color + '" oninput="state.columns[' + i + '].color=this.value" style="width:44px;height:36px;border:none;border-radius:8px;cursor:pointer;background:none">' +
+      '<span style="flex:1;font-size:14px;font-weight:600">' + esc(c.title) + '</span>' +
+    '</label>'
+  ).join('');
   openModal('colorsModal');
-}
-function changeColumnColor(i, val){
-  state.columns[i].color = val;
 }
 function saveColors(){
   save();
   closeModal('colorsModal');
   render();
-  showToast('تم حفظ الألوان');
+  notify('تم حفظ الألوان');
 }
 
+/* ===== تنسيق الخطوط ===== */
+function openFontDialog(si){
+  editingSection = si;
+  const f = state.sections[si].font || {};
+  $('fontSectionName').textContent = state.sections[si].sec;
+  $('fontFamily').value = f.family || '';
+  $('fontSize').value = f.size || 14;
+  $('fontSizeVal').textContent = (f.size || 14) + 'px';
+  $('fontWeight').value = f.weight || 400;
+  $('fontAlign').value = f.align || 'right';
+  openModal('fontModal');
+}
+function previewFont(){ $('fontSizeVal').textContent = $('fontSize').value + 'px'; }
+function saveFont(){
+  state.sections[editingSection].font = {
+    family: $('fontFamily').value,
+    size: +$('fontSize').value,
+    weight: +$('fontWeight').value,
+    align: $('fontAlign').value
+  };
+  save();
+  closeModal('fontModal');
+  render();
+  notify('تم حفظ تنسيق الخطوط');
+}
+function resetFont(){
+  $('fontFamily').value = '';
+  $('fontSize').value = 14;
+  $('fontWeight').value = 400;
+  $('fontAlign').value = 'right';
+  previewFont();
+}
+
+/* ===== Word ===== */
 function openWordDialog(){
   $('wordStatus').textContent = '';
   $('wordImportBtn').hidden = true;
@@ -1596,65 +1777,49 @@ function openWordDialog(){
 function handleWordFile(file){
   $('wordStatus').textContent = 'جارٍ القراءة...';
   readDocx(file).then(lines => {
-    if(!lines.length){
-      $('wordStatus').textContent = 'لم أجد أسماء في الملف';
-      return;
-    }
+    if(!lines.length){ $('wordStatus').textContent = 'لم أجد أسماء'; return; }
     const parsed = groupSections(lines);
     window.__wordParsed = parsed;
-    const total = lines.length;
-    let msg = 'تم العثور على ' + total + ' اسم';
+    let msg = 'تم العثور على ' + lines.length + ' اسم';
     const named = parsed.filter(p => p.sec);
     if(named.length){
       msg += ' موزعة على ' + named.length + ' شعب:\n';
-      named.forEach(p => { msg += '• شعبة ' + p.sec + ': ' + p.names.length + ' اسم\n'; });
-    } else {
-      msg += ' — ستُضاف إلى الشعبة الأولى';
-    }
+      named.forEach(p => { msg += '• شعبة ' + p.sec + ': ' + p.names.length + '\n'; });
+    } else msg += ' — ستُضاف إلى الشعبة الأولى';
     $('wordStatus').textContent = msg;
     $('wordImportBtn').hidden = false;
-  }).catch(err => {
-    $('wordStatus').textContent = 'تعذّر قراءة الملف. تأكد أنه .docx';
-  });
+  }).catch(() => { $('wordStatus').textContent = 'تعذّر قراءة الملف'; });
 }
 function groupSections(lines){
-  const out = [];
-  let current = null;
+  const out = []; let cur = null;
   for(const line of lines){
     const m = line.match(/^(?:شعبة|الشعبة|فصل|الفصل|الصف)\s*[\(\[]?\s*(\d+)/i);
-    if(m){
-      current = { sec: m[1], names: [] };
-      out.push(current);
-      continue;
-    }
-    if(!current){ current = { sec: null, names: [] }; out.push(current); }
-    current.names.push(line);
+    if(m){ cur = { sec: m[1], names: [] }; out.push(cur); continue; }
+    if(!cur){ cur = { sec: null, names: [] }; out.push(cur); }
+    cur.names.push(line);
   }
   return out;
 }
 function confirmWordImport(){
   const parsed = window.__wordParsed;
-  if(!parsed){ return; }
+  if(!parsed) return;
   let added = 0;
   parsed.forEach(p => {
     let section;
     if(p.sec){
       section = state.sections.find(s => String(s.sec) === String(p.sec));
       if(!section){
-        section = { sec: p.sec, title: 'كفايات لغوية', level: '1', students: [] };
+        section = { sec: p.sec, title: 'كفايات لغوية', level: '1', font: { family:'', size:14, weight:400, align:'right' }, students: [] };
         state.sections.push(section);
       }
-    } else {
-      section = state.sections[0];
-    }
+    } else section = state.sections[0];
     if(!section) return;
     p.names.forEach(name => {
-      const trimmed = name.trim();
-      if(!trimmed) return;
-      const exists = section.students.some(s => normalizeArabic(s.name) === normalizeArabic(trimmed));
-      if(exists) return;
+      const t = name.trim();
+      if(!t) return;
+      if(section.students.some(s => normalizeAr(s.name) === normalizeAr(t))) return;
       const stu = makeStudent(section.students.length + 1);
-      stu.name = trimmed;
+      stu.name = t;
       section.students.push(stu);
       added++;
     });
@@ -1663,9 +1828,9 @@ function confirmWordImport(){
   save();
   closeModal('wordModal');
   render();
-  showToast('تمت إضافة ' + added + ' اسم');
+  notify('تمت إضافة ' + added + ' اسم', 'add');
 }
-function normalizeArabic(s){
+function normalizeAr(s){
   return String(s || '').replace(/[\u064B-\u0652\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').trim().toLowerCase();
 }
 async function readDocx(file){
@@ -1713,10 +1878,9 @@ function extractLines(xml){
   return out;
 }
 
+/* ===== النسخة الاحتياطية ===== */
 function openBackupDialog(){
-  $('backupInfo').textContent = state.lastBackup
-    ? 'آخر نسخة: ' + formatDate(state.lastBackup)
-    : 'لم تُنشأ نسخة بعد';
+  $('backupInfo').textContent = state.lastBackup ? 'آخر نسخة: ' + formatDate(state.lastBackup) : 'لم تُنشأ نسخة بعد';
   openModal('backupModal');
 }
 async function createBackup(){
@@ -1736,10 +1900,8 @@ async function createBackup(){
     state.lastBackup = Date.now();
     save();
     closeModal('backupModal');
-    showToast('تم إنشاء النسخة');
-  }catch(e){
-    showToast('تعذّر إنشاء النسخة');
-  }
+    notify('تم إنشاء النسخة الاحتياطية');
+  }catch(e){ notify('تعذّر إنشاء النسخة'); }
 }
 $('restoreFileInput').addEventListener('change', async (e) => {
   const file = e.target.files[0];
@@ -1748,32 +1910,37 @@ $('restoreFileInput').addEventListener('change', async (e) => {
   try{
     const text = await file.text();
     const data = JSON.parse(text);
-    if(!Array.isArray(data.sections) || !Array.isArray(data.columns)){
-      throw new Error('invalid');
-    }
+    if(!Array.isArray(data.sections) || !Array.isArray(data.columns)) throw 0;
     showConfirm('استعادة نسخة', 'سيتم استبدال كل البيانات الحالية. متأكد؟', () => {
       state = data;
       if(!state.day) state.day = todayKey();
+      state.sections.forEach(s => {
+        if(!s.font) s.font = { family:'', size:14, weight:400, align:'right' };
+        s.students.forEach(stu => {
+          if(!stu.scores) stu.scores = {};
+          if(!stu.attendance) stu.attendance = {};
+          if(!stu.notes) stu.notes = [];
+          if(stu.zoom == null) stu.zoom = 1;
+          if(stu.color == null) stu.color = '';
+        });
+      });
       save();
       closeModal('backupModal');
       render();
-      showToast('تمت الاستعادة');
+      notify('تمت استعادة النسخة');
     });
-  }catch(err){
-    showToast('الملف غير صالح');
-  }
+  }catch(err){ notify('الملف غير صالح'); }
 });
 
+/* ===== تأكيد ===== */
 function showConfirm(title, text, onYes){
   $('confirmTitle').textContent = title;
   $('confirmText').innerHTML = text;
-  $('confirmYesBtn').onclick = () => {
-    closeModal('confirmModal');
-    onYes();
-  };
+  $('confirmYesBtn').onclick = () => { closeModal('confirmModal'); onYes(); };
   openModal('confirmModal');
 }
 
+/* ===== المظهر ===== */
 function currentTheme(){
   const t = document.documentElement.getAttribute('data-theme');
   if(t) return t;
@@ -1781,9 +1948,8 @@ function currentTheme(){
 }
 function updateThemeIcon(){
   const dark = currentTheme() === 'dark';
-  const icon = $('themeIcon');
-  icon.innerHTML = dark
-    ? '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>'
+  $('themeIcon').innerHTML = dark
+    ? '<circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/>'
     : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
 }
 function toggleTheme(){
@@ -1795,18 +1961,16 @@ function toggleTheme(){
 }
 try{
   matchMedia('(prefers-color-scheme:dark)').addEventListener('change', () => {
-    if(!document.documentElement.getAttribute('data-theme')){ updateThemeIcon(); }
+    if(!document.documentElement.getAttribute('data-theme')) updateThemeIcon();
   });
 }catch(e){}
 
+/* ===== كيبورد ===== */
 const keypad = $('numKeypad');
-(function buildKeypad(){
-  const keys = ['1','2','3','4','5','6','7','8','9','.','0'];
-  keys.forEach(k => {
+(function(){
+  ['1','2','3','4','5','6','7','8','9','.','0'].forEach(k => {
     const b = document.createElement('button');
-    b.type = 'button';
-    b.textContent = k;
-    b.dataset.kp = k;
+    b.type = 'button'; b.textContent = k; b.dataset.kp = k;
     keypad.appendChild(b);
   });
   const bs = document.createElement('button');
@@ -1817,27 +1981,22 @@ const keypad = $('numKeypad');
   keypad.appendChild(ok);
 })();
 let activeNumInput = null;
-function showKeypad(input){
-  activeNumInput = input;
-  keypad.hidden = false;
-}
-function hideKeypad(){
-  activeNumInput = null;
-  keypad.hidden = true;
-}
+function showKeypad(input){ activeNumInput = input; keypad.hidden = false; }
+function hideKeypad(){ activeNumInput = null; keypad.hidden = true; }
+
 document.addEventListener('focusin', (e) => {
   const t = e.target;
-  if(t && t.dataset && t.dataset.num){ showKeypad(t); }
+  if(t && t.dataset && t.dataset.num) showKeypad(t);
 });
 document.addEventListener('focusout', () => {
   setTimeout(() => {
     const a = document.activeElement;
-    if(!a || !a.dataset || !a.dataset.num){ hideKeypad(); }
+    if(!a || !a.dataset || !a.dataset.num) hideKeypad();
   }, 150);
 });
 ['pointerdown','touchstart','mousedown'].forEach(ev => {
   keypad.addEventListener(ev, (e) => {
-    if(e.target.closest('button')){ e.preventDefault(); }
+    if(e.target.closest('button')) e.preventDefault();
   }, { passive: false });
 });
 keypad.addEventListener('click', (e) => {
@@ -1861,10 +2020,10 @@ keypad.addEventListener('click', (e) => {
   el.dispatchEvent(new Event('input', { bubbles: true }));
 });
 
+/* ===== إدخال ===== */
 document.addEventListener('input', (e) => {
   const t = e.target;
   if(!t.dataset) return;
-
   if(t.dataset.num){
     let v = t.value
       .replace(/[٠-٩]/g, x => '٠١٢٣٤٥٦٧٨٩'.indexOf(x))
@@ -1873,12 +2032,7 @@ document.addEventListener('input', (e) => {
     v = v.replace(/\.(?=.*\.)/g,'');
     if(v !== t.value) t.value = v;
   }
-
-  const si = t.dataset.si;
-  const ri = t.dataset.ri;
-  const col = t.dataset.col;
-  const field = t.dataset.field;
-
+  const si = t.dataset.si, ri = t.dataset.ri, col = t.dataset.col, field = t.dataset.field;
   if(si !== undefined && ri !== undefined && col !== undefined && field === 'score'){
     const stu = state.sections[si].students[ri];
     const c = state.columns[col];
@@ -1887,21 +2041,18 @@ document.addEventListener('input', (e) => {
     updateTotalFor(si, ri);
     return;
   }
-
   if(si !== undefined && ri !== undefined && field === 'num'){
     const stu = state.sections[si].students[ri];
     stu.num = t.value;
     save();
     return;
   }
-
-  if(si !== undefined && field){
+  if(si !== undefined && field && field !== 'name'){
     state.sections[si][field] = t.value;
     if(field === 'sec') renderSectionsStrip();
     save();
     return;
   }
-
   if(col !== undefined && field){
     state.columns[col][field] = t.value;
     save();
@@ -1909,14 +2060,36 @@ document.addEventListener('input', (e) => {
   }
 });
 
+document.addEventListener('change', (e) => {
+  const t = e.target;
+  if(t.dataset && t.dataset.si !== undefined && t.dataset.field && t.dataset.field !== 'name'){
+    const field = t.dataset.field;
+    if(field === 'sec') notify('تم حفظ رقم الشعبة: ' + t.value);
+    else if(field === 'title') notify('تم حفظ العنوان: ' + t.value);
+    else if(field === 'level') notify('تم حفظ المستوى: ' + t.value);
+    state.sections[+t.dataset.si][field] = t.value;
+    if(field === 'sec') renderSectionsStrip();
+    save();
+  }
+  if(t.dataset && t.dataset.col !== undefined && t.dataset.field){
+    const field = t.dataset.field;
+    if(field === 'title') notify('تم حفظ عنوان العمود: ' + t.value);
+    else if(field === 'max') notify('تم حفظ الدرجة العظمى: ' + t.value);
+    state.columns[+t.dataset.col][field] = t.value;
+    save();
+  }
+});
+
 function updateTotalFor(si, ri){
   const stu = state.sections[si].students[ri];
   if(!stu.totalConfirmed) return;
+  const total = calcTotal(stu);
+  stu.totalValue = total;
   const input = document.querySelector('#section_' + si + ' tbody tr[data-ri="' + ri + '"] .total-display input');
-  if(input) input.value = calcTotal(stu);
+  if(input) input.value = total;
 }
 
-$('wordBtn').addEventListener('click', openWordDialog);
+/* ===== Word Drop ===== */
 const wordDrop = $('wordDrop');
 const wordInput = $('wordFileInput');
 wordDrop.addEventListener('click', () => wordInput.click());
@@ -1934,6 +2107,7 @@ wordInput.addEventListener('change', e => {
   if(f) handleWordFile(f);
 });
 
+/* ===== اليوم ===== */
 function checkDay(){
   const k = todayKey();
   if(state.day === k) return;
@@ -1944,12 +2118,46 @@ function checkDay(){
 setInterval(checkDay, 60000);
 document.addEventListener('visibilitychange', () => { if(!document.hidden) checkDay(); });
 
+/* ===== Pull to Refresh ===== */
+let pullStart = 0, pulling = false, pullDist = 0;
+const pullIndicator = $('pullIndicator');
+function showPull(d, text){
+  pullIndicator.hidden = false;
+  pullIndicator.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="7 13 12 18 17 13"/><line x1="12" y1="4" x2="12" y2="18"/></svg><span>' + text + '</span>';
+  pullIndicator.style.opacity = Math.min(1, d/70);
+}
+function hidePull(){ pullIndicator.hidden = true; }
+document.addEventListener('touchstart', e => {
+  if(window.scrollY <= 0 && e.touches.length === 1){
+    if(document.querySelector('.modal:not([hidden])')) return;
+    pullStart = e.touches[0].clientY;
+    pulling = true; pullDist = 0;
+  }
+}, { passive: true });
+document.addEventListener('touchmove', e => {
+  if(!pulling) return;
+  pullDist = e.touches[0].clientY - pullStart;
+  if(pullDist > 12 && window.scrollY <= 0){
+    showPull(pullDist, pullDist > 90 ? 'أفلت للتحديث' : 'اسحب للأسفل');
+  } else hidePull();
+}, { passive: true });
+document.addEventListener('touchend', () => {
+  if(!pulling) return;
+  pulling = false;
+  if(pullDist > 90){
+    showPull(200, 'تم التحديث');
+    setTimeout(() => location.reload(), 500);
+  } else hidePull();
+});
+
+/* ===== ESC ===== */
 document.addEventListener('keydown', e => {
   if(e.key === 'Escape'){
-    ['rowMenuModal','addSectionModal','editSectionModal','notesModal','statsModal','colorsModal','wordModal','backupModal','confirmModal'].forEach(id => {
+    ['rowMenuModal','studentColorModal','addSectionModal','editSectionModal','notesModal','statsModal','colorsModal','fontModal','zoomModal','wordModal','backupModal','confirmModal'].forEach(id => {
       const el = $(id);
       if(el && !el.hidden) el.hidden = true;
     });
+    closeMenu();
   }
 });
 
