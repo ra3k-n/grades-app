@@ -6,9 +6,7 @@
 <title>سجل الدرجات</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f5c55'/%3E%3Ctext x='32' y='46' font-size='38' font-weight='900' text-anchor='middle' fill='%23fff' font-family='sans-serif'%3E%D8%B3%3C/text%3E%3C/svg%3E">
 <style>
-/* =========================================================
-   المتغيرات الأساسية
-   ========================================================= */
+/* ===== المتغيرات ===== */
 :root{
   --bg:#f5f5f2;
   --bg2:#ffffff;
@@ -72,18 +70,18 @@ body{
   background:var(--bg);
   color:var(--ink);
   padding-top:calc(var(--topbar-h) + env(safe-area-inset-top,0px) + 12px);
-  padding-bottom:calc(var(--bottombar {-h) + env(safe-area-inset-bottom,0px) + 16px);
+  padding-bottom:calc(var(--bottombar-h) + env(safe-area-inset-bottom,0px) + 16px);
   padding-inline:12px;
   transition:background-color .3s,color .3s;
   -webkit-font-smoothing:antialiased;
 }
 
-/* =========================================================
-   الشريط العلوي - ثابت
-   ========================================================= */
+/* ===== الشريط العلوي ===== */
 .topbar{
   position:fixed;
-  top:0;left:0;right:0;
+  top:0;
+  left:0;
+  right:0;
   height:calc(var(--topbar-h) + env(safe-area-inset-top,0px));
   padding-top:env(safe-area-inset-top,0px);
   background:var(--card);
@@ -149,9 +147,7 @@ body{
 .icon-btn:active{transform:scale(.92)}
 .icon-btn svg{width:20px;height:20px}
 
-/* =========================================================
-   رأس الصفحة
-   ========================================================= */
+/* ===== رأس الصفحة ===== */
 .page-header{
   text-align:center;
   padding:12px 8px 20px;
@@ -172,9 +168,7 @@ body{
   font-size:13px;
 }
 
-/* =========================================================
-   أزرار التحكم العامة
-   ========================================================= */
+/* ===== أزرار عامة ===== */
 .actions{
   display:flex;
   gap:8px;
@@ -204,9 +198,7 @@ body{
 .btn.danger{color:var(--red);border-color:var(--red)}
 .btn.danger:hover{background:var(--red);color:#fff}
 
-/* =========================================================
-   بطاقة الشعبة
-   ========================================================= */
+/* ===== بطاقة الشعبة ===== */
 .section-card{
   background:var(--card);
   border:1px solid var(--line);
@@ -232,9 +224,7 @@ body{
   margin-inline-end:auto;
 }
 
-/* =========================================================
-   لوحة الأدوات
-   ========================================================= */
+/* ===== لوحة الأدوات ===== */
 .tools-panel{
   display:flex;
   gap:8px;
@@ -281,9 +271,7 @@ body{
 }
 .search-row input:focus{border-color:var(--accent)}
 
-/* =========================================================
-   الجدول
-   ========================================================= */
+/* ===== الجدول ===== */
 .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table{
   width:100%;
@@ -334,7 +322,6 @@ thead th .max-mark input{
   font-weight:700;
 }
 
-/* خلية العمود الأول */
 th.sec-col{
   background:linear-gradient(180deg,#e4e4e4,#d8d8d4);
   font-weight:800;
@@ -357,7 +344,6 @@ th.sec-col input{
 th.sec-col .sub-line{font-size:12px;color:var(--mut);margin-top:2px}
 th.sec-col .sub-line input{width:110px;font-size:12px;font-weight:600;color:var(--ink2)}
 
-/* ألوان الأعمدة */
 th.col-act{background:#e9ece4}
 th.col-par{background:#e9ece4}
 th.col-hw {background:#f4dadd}
@@ -374,7 +360,6 @@ th.col-att{background:#cfe2ee}
 :root[data-theme="dark"] th.col-t2,
 :root[data-theme="dark"] th.col-att{background:#2d3835;color:var(--ink)}
 
-/* صفوف الطلاب */
 tbody tr{transition:background-color .15s}
 tbody tr:hover{background:rgba(31,92,85,.04)}
 tbody td{
@@ -474,7 +459,6 @@ td.total-cell .edit-btn{
 }
 td.total-cell .edit-btn:hover{background:var(--bg2)}
 
-/* خلية التحضير */
 td.att-cell{padding:4px 2px}
 .att-group{
   display:flex;
@@ -504,7 +488,6 @@ td.att-cell{padding:4px 2px}
 .att-btn.late{background:var(--orange)}
 .att-btn:hover{opacity:.85}
 
-/* شارة الحضور */
 .att-badge{
   display:inline-flex;
   align-items:center;
@@ -520,28 +503,26 @@ td.att-cell{padding:4px 2px}
 .att-badge.absent{background:var(--red)}
 .att-badge.late{background:var(--orange)}
 
-/* =========================================================
-   الشريط السفلي - ثابت
-   ========================================================= */
-.bottombar {
-  position: fixed !important;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  min-height: 64px;
-  box-sizing: border-box;
-  padding: 8px 16px;
-  padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  background: var(--card);
-  border-top: 1px solid var(--line);
-  z-index: 9999;
+/* ===== الشريط السفلي — ثابت ===== */
+.bottombar{
+  position:fixed !important;
+  left:0;
+  right:0;
+  bottom:0;
+  width:100%;
+  min-height:64px;
+  box-sizing:border-box;
+  padding:8px 16px;
+  padding-bottom:calc(8px + env(safe-area-inset-bottom, 0px));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:16px;
+  background:var(--card);
+  border-top:1px solid var(--line);
+  z-index:9999;
 }
-..ver-text{
+.ver-text{
   font-size:13px;
   font-weight:700;
   color:var(--mut);
@@ -565,9 +546,7 @@ td.att-cell{padding:4px 2px}
 .tg-btn:active{transform:scale(.94)}
 .tg-btn svg{width:24px;height:24px;fill:#fff;display:block}
 
-/* =========================================================
-   النوافذ المنبثقة
-   ========================================================= */
+/* ===== النوافذ المنبثقة ===== */
 .modal{
   position:fixed;
   inset:0;
@@ -647,7 +626,7 @@ td.att-cell{padding:4px 2px}
 
 .toast{
   position:fixed;
-  bottom:calc(var(--bottombar {-h) + env(safe-area-inset-bottom,0px) + 14px);
+  bottom:calc(var(--bottombar-h) + env(safe-area-inset-bottom,0px) + 14px);
   left:50%;
   transform:translateX(-50%);
   background:var(--accent);
@@ -657,7 +636,7 @@ td.att-cell{padding:4px 2px}
   font-weight:700;
   font-size:14px;
   box-shadow:var(--shadow2);
-  z-index:600;
+  z-index:99999;
   animation:fade .2s;
   pointer-events:none;
 }
@@ -704,8 +683,10 @@ td.att-cell{padding:4px 2px}
 
 .num-keypad{
   position:fixed;
-  bottom:0;left:0;right:0;
-  z-index:300;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:10000;
   background:var(--bg2);
   border-top:1px solid var(--line);
   padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
@@ -748,7 +729,7 @@ td.att-cell{padding:4px 2px}
 .drop-zone b{color:var(--blue);font-size:15px}
 
 @media (max-width:600px){
-  :root{--topbar-h:60px;--bottombar {-h:60px}
+  :root{--topbar-h:60px;--bottombar-h:60px}
   body{padding-inline:6px}
   .page-header h1{font-size:23px}
   .page-header p{font-size:12px}
@@ -813,7 +794,7 @@ try{
 
 <main id="sectionsContainer"></main>
 
-<footer class="bottombar {">
+<footer class="bottombar">
   <span class="ver-text">الإصدار v1.0</span>
   <a class="tg-btn" href="https://t.me/ra3k_n" target="_blank" rel="noopener" aria-label="تواصل على تيليجرام">
     <svg viewBox="0 0 24 24">
@@ -946,9 +927,6 @@ try{
 <div id="toastBox" hidden></div>
 
 <script>
-/* =========================================================
-   البيانات والتهيئة
-   ========================================================= */
 const STORAGE_KEY = 'gradesheet_v4';
 
 const DEFAULT_COLUMNS = [
@@ -1348,7 +1326,7 @@ function toggleSearch(si){
   render();
   if(searchOpen.has(si)){
     setTimeout(() => {
-      const inp = document.querySelector(`#section_${si} .search-row input`);
+      const inp = document.querySelector('#section_' + si + ' .search-row input');
       if(inp) inp.focus();
     }, 50);
   }
@@ -1357,7 +1335,7 @@ function filterSection(si){
   const q = (searchText[si] || '').trim();
   const section = state.sections[si];
   section.students.forEach((stu, ri) => {
-    const tr = document.querySelector(`#section_${si} tbody tr[data-ri="${ri}"]`);
+    const tr = document.querySelector('#section_' + si + ' tbody tr[data-ri="' + ri + '"]');
     if(!tr) return;
     if(!q){ tr.hidden = false; return; }
     tr.hidden = !String(stu.num).startsWith(q);
@@ -1438,7 +1416,7 @@ function openRowMenu(si, ri){
 function confirmDeleteStudent(si, ri){
   closeModal('rowMenuModal');
   const stu = state.sections[si].students[ri];
-  showConfirm('حذف الطالب', `هل تريد حذف <b>${esc(stu.name || 'طالب رقم '+stu.num)}</b> مع درجاته وملاحظاته؟`, () => {
+  showConfirm('حذف الطالب', 'هل تريد حذف <b>' + esc(stu.name || 'طالب رقم '+stu.num) + '</b> مع درجاته وملاحظاته؟', () => {
     state.sections[si].students.splice(ri, 1);
     state.sections[si].students.forEach((s, i) => s.num = i + 1);
     save();
@@ -1457,7 +1435,7 @@ function moveStudentDialog(si, ri){
   const list = $('rowMenuList');
   $('rowMenuTitle').textContent = 'نقل الطالب إلى:';
   list.innerHTML = otherSections.map(x =>
-    `<button class="menu-item" onclick="moveStudent(${si},${ri},${x.i})">شعبة ${esc(x.s.sec)}</button>`
+    '<button class="menu-item" onclick="moveStudent(' + si + ',' + ri + ',' + x.i + ')">شعبة ' + esc(x.s.sec) + '</button>'
   ).join('');
   openModal('rowMenuModal');
 }
@@ -1573,7 +1551,7 @@ function confirmRenameSection(){
 function confirmDeleteSection(){
   const si = currentSectionForMenu;
   closeModal('editSectionModal');
-  showConfirm('حذف الشعبة', `هل تريد حذف <b>شعبة ${esc(state.sections[si].sec)}</b> مع كل طلابها؟`, () => {
+  showConfirm('حذف الشعبة', 'هل تريد حذف <b>شعبة ' + esc(state.sections[si].sec) + '</b> مع كل طلابها؟', () => {
     state.sections.splice(si, 1);
     save();
     render();
@@ -1581,7 +1559,7 @@ function confirmDeleteSection(){
   });
 }
 function confirmDeleteAllStudents(si){
-  showConfirm('حذف جميع الطلاب', `هل تريد حذف <b>كل طلاب شعبة ${esc(state.sections[si].sec)}</b>؟`, () => {
+  showConfirm('حذف جميع الطلاب', 'هل تريد حذف <b>كل طلاب شعبة ' + esc(state.sections[si].sec) + '</b>؟', () => {
     state.sections[si].students = [];
     save();
     render();
@@ -1625,11 +1603,11 @@ function handleWordFile(file){
     const parsed = groupSections(lines);
     window.__wordParsed = parsed;
     const total = lines.length;
-    let msg = `تم العثور على ${total} اسم`;
+    let msg = 'تم العثور على ' + total + ' اسم';
     const named = parsed.filter(p => p.sec);
     if(named.length){
       msg += ' موزعة على ' + named.length + ' شعب:\n';
-      named.forEach(p => { msg += `• شعبة ${p.sec}: ${p.names.length} اسم\n`; });
+      named.forEach(p => { msg += '• شعبة ' + p.sec + ': ' + p.names.length + ' اسم\n'; });
     } else {
       msg += ' — ستُضاف إلى الشعبة الأولى';
     }
@@ -1934,7 +1912,7 @@ document.addEventListener('input', (e) => {
 function updateTotalFor(si, ri){
   const stu = state.sections[si].students[ri];
   if(!stu.totalConfirmed) return;
-  const input = document.querySelector(`#section_${si} tbody tr[data-ri="${ri}"] .total-display input`);
+  const input = document.querySelector('#section_' + si + ' tbody tr[data-ri="' + ri + '"] .total-display input');
   if(input) input.value = calcTotal(stu);
 }
 
