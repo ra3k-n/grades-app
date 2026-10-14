@@ -408,14 +408,16 @@ td.att-cell{padding:4px 2px}
 
 /* ===== الشريط السفلي ===== */
 .bottombar{
-  position:fixed; left:0; right:0; bottom:0;
+  position:fixed !important; left:0; right:0; bottom:0 !important;
+  inset-inline:0;
   height:calc(var(--bot) + env(safe-area-inset-bottom,0px));
   padding-bottom:env(safe-area-inset-bottom,0px);
   background:var(--card);
   border-top:1px solid var(--line);
   box-shadow:0 -2px 12px rgba(0,0,0,.06);
   display:flex; align-items:center; justify-content:center;
-  z-index:200;
+  z-index:10000;
+  transform:translateZ(0);
 }
 .ver-text{font-size:13px; font-weight:800; color:var(--mut); letter-spacing:.5px}
 
