@@ -28,7 +28,7 @@
   --shadow:0 2px 8px rgba(0,0,0,.06);
   --shadow2:0 4px 16px rgba(0,0,0,.1);
   --topbar-h:68px;
-  --bottombar-h:64px;
+  --bottombar {-h:64px;
 }
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]){
@@ -72,7 +72,7 @@ body{
   background:var(--bg);
   color:var(--ink);
   padding-top:calc(var(--topbar-h) + env(safe-area-inset-top,0px) + 12px);
-  padding-bottom:calc(var(--bottombar-h) + env(safe-area-inset-bottom,0px) + 16px);
+  padding-bottom:calc(var(--bottombar {-h) + env(safe-area-inset-bottom,0px) + 16px);
   padding-inline:12px;
   transition:background-color .3s,color .3s;
   -webkit-font-smoothing:antialiased;
@@ -523,22 +523,25 @@ td.att-cell{padding:4px 2px}
 /* =========================================================
    الشريط السفلي - ثابت
    ========================================================= */
-.bottombar{
-  position:fixed;
-  bottom:0;left:0;right:0;
-  height:calc(var(--bottombar-h) + env(safe-area-inset-bottom,0px));
-  padding-bottom:env(safe-area-inset-bottom,0px);
-  background:var(--card);
-  border-top:1px solid var(--line);
-  box-shadow:0 -2px 12px rgba(0,0,0,.06);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:16px;
-  z-index:200;
-  transition:background-color .3s,border-color .3s;
+..bottombar {
+  position: fixed !important;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  min-height: 64px;
+  box-sizing: border-box;
+  padding: 8px 16px;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  background: var(--card);
+  border-top: 1px solid var(--line);
+  z-index: 9999;
 }
-.bottombar .ver-text{
+.bottombar { .ver-text{
   font-size:13px;
   font-weight:700;
   color:var(--mut);
@@ -644,7 +647,7 @@ td.att-cell{padding:4px 2px}
 
 .toast{
   position:fixed;
-  bottom:calc(var(--bottombar-h) + env(safe-area-inset-bottom,0px) + 14px);
+  bottom:calc(var(--bottombar {-h) + env(safe-area-inset-bottom,0px) + 14px);
   left:50%;
   transform:translateX(-50%);
   background:var(--accent);
@@ -745,7 +748,7 @@ td.att-cell{padding:4px 2px}
 .drop-zone b{color:var(--blue);font-size:15px}
 
 @media (max-width:600px){
-  :root{--topbar-h:60px;--bottombar-h:60px}
+  :root{--topbar-h:60px;--bottombar {-h:60px}
   body{padding-inline:6px}
   .page-header h1{font-size:23px}
   .page-header p{font-size:12px}
@@ -810,7 +813,7 @@ try{
 
 <main id="sectionsContainer"></main>
 
-<footer class="bottombar">
+<footer class="bottombar {">
   <span class="ver-text">الإصدار v1.0</span>
   <a class="tg-btn" href="https://t.me/ra3k_n" target="_blank" rel="noopener" aria-label="تواصل على تيليجرام">
     <svg viewBox="0 0 24 24">
