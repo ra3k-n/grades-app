@@ -261,7 +261,7 @@ body{
 table{width:100%; border-collapse:separate; border-spacing:0; min-width:900px}
 thead th{
   position:sticky;
-  top:calc(var(--top-total) + 55px + env(safe-area-inset-top,0px));
+  top:calc(var(--top-total) + var(--sections-strip-height, 55px) + env(safe-area-inset-top,0px));
   z-index:100;
   background:var(--bg2);
   border-bottom:2px solid var(--line2);
@@ -1134,6 +1134,12 @@ function setupStickyTableHeads(){
   document.querySelectorAll('.sticky-table-head').forEach(el => el.remove());
   const heads = [];
   const wrapCleanups = [];
+  const strip = document.querySelector('.sections-strip');
+  const syncStripHeight = () => {
+    const height = strip ? strip.getBoundingClientRect().height : 0;
+    document.documentElement.style.setProperty('--sections-strip-height', `${height}px`);
+  };
+  syncStripHeight();
   document.querySelectorAll('.table-wrap').forEach(wrap => {
     const table = wrap.querySelector('table');
     const sourceHead = table && table.querySelector('thead');
@@ -1180,7 +1186,10 @@ function setupStickyTableHeads(){
     wrapCleanups.push(() => wrap.removeEventListener('scroll', sync));
     heads.push(sync);
   });
-  const update = () => heads.forEach(fn => fn());
+  const update = () => {
+    syncStripHeight();
+    heads.forEach(fn => fn());
+  };
   window.addEventListener('scroll', update, {passive:true});
   window.addEventListener('resize', update);
   window.__stickyTableHeadsCleanup = () => {
