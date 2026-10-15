@@ -53,7 +53,7 @@ body{
   font-family:'Segoe UI',Tahoma,'Noto Naskh Arabic',system-ui,sans-serif;
   background:var(--bg); color:var(--ink);
   padding-top:calc(var(--top-total) + env(safe-area-inset-top,0px) + 8px);
-  padding-bottom:calc(var(--bot) + env(safe-area-inset-bottom,0px) + 8px);
+  padding-bottom:calc(52px + env(safe-area-inset-bottom, 0px) + 10px);
   padding-inline:10px;
   transition:background-color .3s,color .3s;
   -webkit-font-smoothing:antialiased;
@@ -407,19 +407,23 @@ td.att-cell{padding:4px 2px}
 .att-badge.late{background:var(--orange)}
 
 /* ===== الشريط السفلي ===== */
-.bottombar{
-  position:fixed !important; left:0; right:0; bottom:0 !important;
-  inset-inline:0;
-  height:calc(var(--bot) + env(safe-area-inset-bottom,0px));
-  padding-bottom:env(safe-area-inset-bottom,0px);
+#verBar{
+  position:fixed;
+  top:auto; bottom:0; left:0; right:0;
+  width:100%;
+  height:calc(52px + env(safe-area-inset-bottom, 0px));
+  padding-bottom:env(safe-area-inset-bottom, 0px);
   background:var(--card);
   border-top:1px solid var(--line);
-  box-shadow:0 -2px 12px rgba(0,0,0,.06);
+  box-shadow:0 -2px 12px rgba(0,0,0,.08);
   display:flex; align-items:center; justify-content:center;
-  z-index:10000;
-  transform:translateZ(0);
+  z-index:2147483647;
+  margin:0; pointer-events:auto;
 }
-.ver-text{font-size:13px; font-weight:800; color:var(--mut); letter-spacing:.5px}
+#verBar span{
+  font-size:13px; font-weight:800;
+  color:var(--mut); letter-spacing:.5px;
+}
 
 /* ===== مودالات ===== */
 .modal{
@@ -730,6 +734,10 @@ tr.select-row td.att-cell{cursor:default}
   </div>
 </header>
 
+<footer id="verBar">
+  <span>الإصدار v2.0</span>
+</footer>
+
 <main>
   <div class="hero">
     <h1>سجل الدرجات</h1>
@@ -738,10 +746,6 @@ tr.select-row td.att-cell{cursor:default}
   <div class="sections-strip" id="sectionsStrip"></div>
   <div id="sectionsContainer"></div>
 </main>
-
-<footer class="bottombar">
-  <span class="ver-text">الإصدار v2.0</span>
-</footer>
 
 <div class="select-mode-bar" id="selectModeBar" hidden>
   <span>وضع التحديد</span>
