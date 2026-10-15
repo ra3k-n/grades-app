@@ -210,7 +210,8 @@ body{
 /* ===== بطاقة الشعبة ===== */
 .section-card{
   background:var(--card); border:1px solid var(--line);
-  border-radius:14px; margin-top:14px; overflow:hidden;
+  border-radius:14px; margin-top:10px; margin-bottom:24px;
+  overflow:hidden;
   box-shadow:var(--shadow);
 }
 .section-top-actions{
@@ -320,8 +321,14 @@ tbody td{
 tbody td:last-child{border-left:none}
 
 td.name-cell{
+  padding:0; min-width:180px; text-align:right;
+  vertical-align:middle;
+}
+td.name-cell .name-wrapper{
   display:flex; align-items:center; gap:6px;
-  padding:6px 8px; min-width:190px; text-align:right;
+  padding:5px 8px;
+  min-height:34px;
+  box-sizing:border-box;
 }
 td.name-cell input{
   flex:1; border:none; background:transparent;
@@ -1250,7 +1257,7 @@ function buildStudentRow(stu, si, ri){
     ? '<button class="select-check ' + ((si+'-'+ri) in selectedStudents ? 'checked' : '') + '"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></button>'
     : '';
 
-  tdName.innerHTML = checkbox + badge + '<input class="name-input" readonly data-si="' + si + '" data-ri="' + ri + '" data-field="name" value="' + esc(stu.name) + '" placeholder="اسم الطالب" style="font-size:' + Math.round(14*(stu.zoom||1)) + 'px">';
+  tdName.innerHTML = '<div class="name-wrapper">' + checkbox + badge + '<input class="name-input" readonly data-si="' + si + '" data-ri="' + ri + '" data-field="name" value="' + esc(stu.name) + '" placeholder="اسم الطالب" style="font-size:' + Math.round(14*(stu.zoom||1)) + 'px">' + '</div>';
 
   if(!selectModeSections.has(si)){
     attachNameHandlers(tdName, si, ri);
