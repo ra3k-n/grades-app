@@ -19,7 +19,7 @@
   --ink:#1a1a1a; --ink2:#2d2d2d; --mut:#6b6b6b;
   --line:#d4d4cf; --line2:#b8b8b0;
   --accent:#1f5c55; --accent2:#2a7a70;
-  --blue:#1f4e8c; --green:#22a854; --greenBtn:#16a34a;
+  --blue:#1f4e8c; --green:#22a854;
   --red:#e63946; --orange:#f59e0b; --gold:#b8860b;
   --shadow:0 2px 8px rgba(0,0,0,.06);
   --shadow2:0 4px 16px rgba(0,0,0,.1);
@@ -174,6 +174,11 @@ body{
 
 /* ===== شريط الشعب ===== */
 .sections-strip{
+  position:sticky;
+  top:calc(var(--top-total) + env(safe-area-inset-top,0px));
+  z-index:150;
+  background:var(--bg);
+  box-shadow:0 2px 6px rgba(0,0,0,.06);
   display:flex; gap:10px;
   overflow-x:auto; padding:14px 4px 6px;
   scrollbar-width:none; align-items:center;
@@ -182,7 +187,7 @@ body{
 .sections-strip::-webkit-scrollbar{display:none}
 .sec-btn{
   flex:none;
-  background:var(--greenBtn); color:#fff; border:none;
+  background:var(--accent); color:#fff; border:none;
   border-radius:999px; padding:9px 22px;
   font:inherit; font-weight:700; font-size:15px;
   cursor:pointer; white-space:nowrap;
@@ -256,7 +261,7 @@ body{
 table{width:100%; border-collapse:separate; border-spacing:0; min-width:900px}
 thead th{
   position:sticky;
-  top:0;
+  top:calc(var(--top-total) + 55px + env(safe-area-inset-top,0px));
   z-index:100;
   background:var(--bg2);
   border-bottom:2px solid var(--line2);
@@ -266,6 +271,12 @@ thead th{
   text-align:center; vertical-align:top;
 }
 thead th:last-child{border-left:none}
+.sticky-table-head{
+  position:fixed; display:none; overflow:hidden;
+  z-index:140; pointer-events:none;
+  background:var(--bg2); box-shadow:0 2px 6px rgba(0,0,0,.12);
+}
+.sticky-table-head table{margin:0; table-layout:fixed}
 thead th .th-inner{display:flex; flex-direction:column; align-items:center; gap:4px}
 thead th input{
   width:88%; border:none; background:transparent;
@@ -286,7 +297,7 @@ thead th .max-mark input{
   :root:not([data-theme="light"]) thead th .max-mark input{color:#fff}
 }
 
-th.sec-col{background:linear-gradient(180deg,#e4e4e4,#d8d8d4); min-width:190px}
+th.sec-col{background:linear-gradient(180deg,#e4e4e4,#d8d8d4); min-width:180px; border-left:2px solid var(--line2)}
 :root[data-theme="dark"] th.sec-col{background:linear-gradient(180deg,#2d3835,#263130)}
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]) th.sec-col{background:linear-gradient(180deg,#2d3835,#263130)}
@@ -1082,6 +1093,7 @@ document.addEventListener('click', (e) => {
 function render(){
   renderSectionsStrip();
   renderSectionsContainer();
+  setupStickyTableHeads();
 }
 function renderSectionsStrip(){
   const strip = $('sectionsStrip');
@@ -1115,6 +1127,68 @@ function renderSectionsContainer(){
   const c = $('sectionsContainer');
   c.innerHTML = '';
   state.sections.forEach((s, si) => c.appendChild(buildSectionCard(s, si)));
+}
+
+function setupStickyTableHeads(){
+  if(window.__stickyTableHeadsCleanup) window.__stickyTableHeadsCleanup();
+  document.querySelectorAll('.sticky-table-head').forEach(el => el.remove());
+  const heads = [];
+  const wrapCleanups = [];
+  document.querySelectorAll('.table-wrap').forEach(wrap => {
+    const table = wrap.querySelector('table');
+    const sourceHead = table && table.querySelector('thead');
+    if(!table || !sourceHead) return;
+
+    const bar = document.createElement('div');
+    bar.className = 'sticky-table-head';
+    const cloneTable = document.createElement('table');
+    cloneTable.className = table.className;
+    cloneTable.style.width = table.getBoundingClientRect().width + 'px';
+    cloneTable.style.minWidth = '0';
+    const cloneHead = sourceHead.cloneNode(true);
+    cloneHead.querySelectorAll('input,button').forEach(el => {
+      el.tabIndex = -1;
+      el.setAttribute('aria-hidden','true');
+    });
+    cloneTable.appendChild(cloneHead);
+    bar.appendChild(cloneTable);
+    document.body.appendChild(bar);
+
+    const sync = () => {
+      const firstTh = sourceHead.querySelector('th');
+      if(!firstTh) return;
+      const top = firstTh.getBoundingClientRect().top;
+      const topLimit = parseFloat(getComputedStyle(firstTh).top) || 0;
+      const wrapRect = wrap.getBoundingClientRect();
+      const headHeight = sourceHead.getBoundingClientRect().height;
+      const active = top < topLimit && wrapRect.bottom > topLimit + headHeight;
+      if(!active){
+        bar.style.display = 'none';
+        return;
+      }
+      bar.style.display = 'block';
+      bar.style.top = topLimit + 'px';
+      bar.style.left = wrapRect.left + 'px';
+      bar.style.width = wrap.clientWidth + 'px';
+      cloneTable.style.transform = 'translateX(' + (-wrap.scrollLeft) + 'px)';
+    };
+    const widths = [...sourceHead.children[0].children].map(th => th.getBoundingClientRect().width);
+    [...cloneHead.children[0].children].forEach((th, i) => {
+      if(widths[i]) th.style.width = widths[i] + 'px';
+    });
+    wrap.addEventListener('scroll', sync, {passive:true});
+    wrapCleanups.push(() => wrap.removeEventListener('scroll', sync));
+    heads.push(sync);
+  });
+  const update = () => heads.forEach(fn => fn());
+  window.addEventListener('scroll', update, {passive:true});
+  window.addEventListener('resize', update);
+  window.__stickyTableHeadsCleanup = () => {
+    window.removeEventListener('scroll', update);
+    window.removeEventListener('resize', update);
+    wrapCleanups.forEach(cleanup => cleanup());
+  };
+  update();
 }
 
 function buildSectionCard(section, si){
