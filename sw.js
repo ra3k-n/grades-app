@@ -1,5 +1,5 @@
 /* Service Worker — النسخة الجديدة */
-const CACHE = 'grades-v5';
+const CACHE = 'grades-v6';
 const ASSETS = ['./', './index.html'];
 
 self.addEventListener('install', e => {
