@@ -1,44 +1,54 @@
-/* Service Worker — النسخة الجديدة */
-const CACHE = 'grades-v6';
-const ASSETS = ['./', './index.html'];
+/* Service Worker — تحديث مباشر للنسخة المنشورة */
+const CACHE = 'grades-v7';
+const APP_SHELL = ['./', './index.html'];
 
-self.addEventListener('install', e => {
+self.addEventListener('install', event => {
   self.skipWaiting();
-  e.waitUntil((async () => {
+  event.waitUntil((async () => {
     const cache = await caches.open(CACHE);
-    for (const url of ASSETS) {
+    for (const url of APP_SHELL) {
       try {
-        const r = await fetch(url, { cache: 'reload' });
-        if(r.ok) await cache.put(url, r.clone());
-      } catch(err){}
+        const response = await fetch(url, { cache: 'no-store' });
+        if (response.ok) await cache.put(url, response.clone());
+      } catch (_) {}
     }
   })());
 });
 
-self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys()
-      .then(names => Promise.all(names.filter(n => n !== CACHE).map(n => caches.delete(n))))
-      .then(() => self.clients.claim())
-  );
+self.addEventListener('activate', event => {
+  event.waitUntil((async () => {
+    const names = await caches.keys();
+    await Promise.all(
+      names.filter(name => name !== CACHE).map(name => caches.delete(name))
+    );
+    await self.clients.claim();
+  })());
 });
 
-self.addEventListener('fetch', e => {
-  const req = e.request;
-  if(req.method !== 'GET') return;
-  e.respondWith((async () => {
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  if (request.method !== 'GET') return;
+
+  const isPage = request.mode === 'navigate' ||
+    new URL(request.url).pathname.endsWith('/index.html');
+
+  event.respondWith((async () => {
     try {
-      const fresh = await fetch(req);
-      if(fresh && fresh.ok){
+      // Always prefer the newest HTML so old layouts cannot return from cache.
+      const response = await fetch(request, { cache: isPage ? 'no-store' : 'default' });
+      if (response.ok) {
         const cache = await caches.open(CACHE);
-        cache.put(req, fresh.clone()).catch(() => {});
+        await cache.put(request, response.clone());
       }
-      return fresh;
-    } catch(err){
-      const cached = await caches.match(req, { ignoreSearch: true });
-      if(cached) return cached;
-      if(req.mode === 'navigate') return caches.match('./index.html');
-      throw err;
+      return response;
+    } catch (_) {
+      const cached = await caches.match(request, { ignoreSearch: true });
+      if (cached) return cached;
+      if (isPage) {
+        const shell = await caches.match('./index.html');
+        if (shell) return shell;
+      }
+      throw _;
     }
   })());
 });
