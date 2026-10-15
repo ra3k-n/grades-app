@@ -260,8 +260,7 @@ body{
 .table-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch}
 table{width:100%; border-collapse:separate; border-spacing:0; min-width:900px}
 thead th{
-  position:sticky;
-  top:calc(var(--top-total) + var(--sections-strip-height, 55px) + env(safe-area-inset-top,0px));
+  position:static;
   z-index:100;
   background:var(--bg2);
   border-bottom:2px solid var(--line2);
@@ -1140,6 +1139,9 @@ function setupStickyTableHeads(){
     document.documentElement.style.setProperty('--sections-strip-height', `${height}px`);
   };
   syncStripHeight();
+  const probe = document.createElement('div');
+  probe.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none;width:0;height:0';
+  document.body.appendChild(probe);
   document.querySelectorAll('.table-wrap').forEach(wrap => {
     const table = wrap.querySelector('table');
     const sourceHead = table && table.querySelector('thead');
@@ -1164,7 +1166,8 @@ function setupStickyTableHeads(){
       const firstTh = sourceHead.querySelector('th');
       if(!firstTh) return;
       const top = firstTh.getBoundingClientRect().top;
-      const topLimit = parseFloat(getComputedStyle(firstTh).top) || 0;
+      probe.style.top = 'calc(var(--top-total) + var(--sections-strip-height, 55px) + env(safe-area-inset-top,0px))';
+      const topLimit = parseFloat(getComputedStyle(probe).top) || 0;
       const wrapRect = wrap.getBoundingClientRect();
       const headHeight = sourceHead.getBoundingClientRect().height;
       const active = top < topLimit && wrapRect.bottom > topLimit + headHeight;
@@ -1196,6 +1199,7 @@ function setupStickyTableHeads(){
     window.removeEventListener('scroll', update);
     window.removeEventListener('resize', update);
     wrapCleanups.forEach(cleanup => cleanup());
+    probe.remove();
   };
   update();
 }
