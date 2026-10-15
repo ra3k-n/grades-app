@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>سجل الدرجات</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f5c55'/%3E%3Ctext x='32' y='46' font-size='38' font-weight='900' text-anchor='middle' fill='%23fff' font-family='sans-serif'%3E%D8%B3%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -139,39 +139,24 @@ body{
 .hero{
   position:relative;
   margin-top:8px;
-  padding:38px 16px 38px;
+  padding:46px 16px 46px;
   text-align:center;
   border-radius:16px;
   background-image:url('header-bg.png');
   background-size:cover;
-  background-position:center;
+  background-position:center 75%;
   overflow:hidden;
 }
 .hero::before{
   content:''; position:absolute; inset:0;
   background:linear-gradient(180deg,
-    rgba(245,245,242,.85) 0%,
-    rgba(245,245,242,.55) 50%,
-    rgba(245,245,242,.85) 100%);
+    rgba(10,25,22,.18) 0%,
+    rgba(10,25,22,.32) 100%);
   z-index:1;
 }
-:root[data-theme="dark"] .hero::before{
-  background:linear-gradient(180deg,
-    rgba(15,20,19,.88) 0%,
-    rgba(15,20,19,.6) 50%,
-    rgba(15,20,19,.88) 100%);
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]) .hero::before{
-    background:linear-gradient(180deg,
-      rgba(15,20,19,.88) 0%,
-      rgba(15,20,19,.6) 50%,
-      rgba(15,20,19,.88) 100%);
-  }
-}
 .hero h1,.hero p{position:relative; z-index:2}
-.hero h1{font-size:30px; font-weight:900; margin:0; color:var(--accent); letter-spacing:-.5px}
-.hero p{margin:8px 0 0; color:var(--ink2); font-size:13px; font-weight:600}
+.hero h1{font-size:30px; font-weight:900; margin:0; color:#fff; letter-spacing:-.5px; text-shadow:0 2px 8px rgba(0,0,0,.55)}
+.hero p{margin:8px 0 0; color:#fff; font-size:13px; font-weight:700; text-shadow:0 1px 6px rgba(0,0,0,.6)}
 
 /* ===== شريط الشعب ===== */
 .sections-strip{
@@ -2263,7 +2248,7 @@ document.addEventListener('visibilitychange', () => { if(document.hidden) save()
 updateThemeIcon();
 render();
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js?v=7', {updateViaCache:'none'}).catch(() => {});
+  navigator.serviceWorker.register('./sw.js?v=8', {updateViaCache:'none'}).catch(() => {});
 }
 </script>
 </body>

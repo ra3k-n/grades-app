@@ -1,5 +1,5 @@
 /* Service Worker — تحديث مباشر للنسخة المنشورة */
-const CACHE = 'grades-v7';
+const CACHE = 'grades-v8';
 const APP_SHELL = ['./', './index.html'];
 
 self.addEventListener('install', event => {
