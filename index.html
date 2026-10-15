@@ -48,7 +48,7 @@
   --shadow2:0 4px 16px rgba(0,0,0,.4);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%}
+html,body{height:100%; overscroll-behavior-y:none}
 body{
   font-family:'Segoe UI',Tahoma,'Noto Naskh Arabic',system-ui,sans-serif;
   background:var(--bg); color:var(--ink);
@@ -64,6 +64,7 @@ body{
 .topbar{
   position:fixed; top:0; left:0; right:0;
   z-index:200;
+  transform:translateZ(0);
   padding-top:env(safe-area-inset-top,0px);
   background:var(--card);
   border-bottom:1px solid var(--line);
@@ -482,6 +483,8 @@ textarea.form-field{min-height:110px; resize:vertical}
   max-width:90%; text-align:center;
   display:flex; align-items:center; gap:8px;
 }
+.toast[hidden]{display:none}
+.pull-indicator[hidden]{display:none}
 .toast svg{width:18px; height:18px; flex:none; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
 
 /* إحصائيات */
@@ -765,10 +768,10 @@ tr.select-row td.att-cell{cursor:default}
     <div class="color-palette" id="studentColorPalette"></div>
     <div style="display:flex; align-items:center; gap:10px; margin:14px 0; justify-content:center">
       <span style="font-size:14px; color:var(--mut)">لون مخصص:</span>
-      <input type="color" id="studentCustomColor" style="width:60px; height:40px; border:none; border-radius:8px; cursor:pointer; background:none">
+      <input type="color" id="studentCustomColor" oninput="pickCustomColor(this.value)" style="width:60px; height:40px; border:none; border-radius:8px; cursor:pointer; background:none">
     </div>
     <div class="modal-actions">
-      <button class="btn primary" onclick="applyCustomColor()">تطبيق اللون المخصص</button>
+      <button class="btn primary" onclick="applyPendingColor()">تطبيق</button>
       <button class="btn" onclick="removeStudentColor()">إزالة اللون</button>
       <button class="btn" onclick="closeModal('studentColorModal')">إلغاء</button>
     </div>
@@ -1559,7 +1562,7 @@ function openRowMenu(si, ri){
 function confirmDeleteStudent(si, ri){
   closeModal('rowMenuModal');
   const stu = state.sections[si].students[ri];
-  showConfirm('حذف الطالب', 'هل متأكد حذف <b>' + esc(stu.name || 'الطالب'+stu.num) + '</b> الطالب؟', () => {
+  showConfirm('حذف الطالب', 'هل تريد حذف <b>' + esc(stu.name || 'طالب رقم '+stu.num) + '</b> مع درجاته وملاحظاته؟', () => {
     state.sections[si].students.splice(ri, 1);
     state.sections[si].students.forEach((s, i) => s.num = i + 1);
     save();
@@ -1618,32 +1621,41 @@ function deleteSelectedStudents(){
 }
 
 /* ===== لون الطالب ===== */
+let pendingStudentColor = null;
 function openStudentColorDialog(si, ri){
   closeModal('rowMenuModal');
   studentColorContext = { si, ri };
+  pendingStudentColor = null;
   const stu = state.sections[si].students[ri];
   $('studentColorTitle').textContent = 'لون: ' + (stu.name || 'طالب رقم ' + stu.num);
 
   const pal = $('studentColorPalette');
   pal.innerHTML = STUDENT_COLORS.map(c => {
-    const sel = stu.color === c ? ' selected' : '';
-    return '<span class="' + sel.trim() + '" style="background:' + c + '" onclick="applyStudentColor(\'' + c + '\')"></span>';
+    return '<span data-color="' + c + '" style="background:' + c + '" onclick="pickStudentColor(\'' + c + '\', this)"></span>';
   }).join('') +
-  '<span class="none ' + (stu.color ? '' : 'selected') + '" onclick="removeStudentColor()">✕</span>';
+  '<span class="none" data-color="" onclick="pickStudentColor(\'\', this)">✕</span>';
 
   $('studentCustomColor').value = stu.color || '#ffffff';
   openModal('studentColorModal');
 }
-function applyStudentColor(color){
+function pickStudentColor(color, el){
+  pendingStudentColor = color;
+  document.querySelectorAll('#studentColorPalette span').forEach(x => x.classList.remove('selected'));
+  el.classList.add('selected');
+  if(color) $('studentCustomColor').value = color;
+}
+function pickCustomColor(color){
+  pendingStudentColor = color;
+  document.querySelectorAll('#studentColorPalette span').forEach(x => x.classList.remove('selected'));
+}
+function applyPendingColor(){
+  if(pendingStudentColor === null){ notify('اختر لونًا أولاً'); return; }
   const si = studentColorContext.si, ri = studentColorContext.ri;
-  state.sections[si].students[ri].color = color;
+  state.sections[si].students[ri].color = pendingStudentColor;
   save();
   closeModal('studentColorModal');
   render();
-  notify('تم تطبيق اللون');
-}
-function applyCustomColor(){
-  applyStudentColor($('studentCustomColor').value);
+  notify(pendingStudentColor ? 'تم تطبيق اللون' : 'تم إزالة اللون');
 }
 function removeStudentColor(){
   const si = studentColorContext.si, ri = studentColorContext.ri;
