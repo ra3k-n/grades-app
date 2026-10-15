@@ -1559,7 +1559,7 @@ function openRowMenu(si, ri){
 function confirmDeleteStudent(si, ri){
   closeModal('rowMenuModal');
   const stu = state.sections[si].students[ri];
-  showConfirm('حذف الطالب', 'هل تريد حذف <b>' + esc(stu.name || 'طالب رقم '+stu.num) + '</b> مع درجاته وملاحظاته؟', () => {
+  showConfirm('حذف الطالب', 'هل متأكد حذف <b>' + esc(stu.name || 'الطالب'+stu.num) + '</b> الطالب؟', () => {
     state.sections[si].students.splice(ri, 1);
     state.sections[si].students.forEach((s, i) => s.num = i + 1);
     save();
