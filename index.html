@@ -2174,6 +2174,9 @@ document.addEventListener('visibilitychange', () => { if(document.hidden) save()
 
 updateThemeIcon();
 render();
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js?v=6', {updateViaCache:'none'}).catch(() => {});
+}
 </script>
 </body>
 </html>
