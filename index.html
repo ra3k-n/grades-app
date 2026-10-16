@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="سجل الدرجات">
 <meta name="theme-color" content="#1f5c55">
-<script>try{var t=localStorage.getItem('gradesheet_theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script>(function(){var t='light';try{t=localStorage.getItem('gradesheet_theme')||'light'}catch(e){}document.documentElement.setAttribute('data-theme',t)})()</script>
 <style>
 :root{
   --bg:#f5f5f2; --bg2:#ffffff; --card:#ffffff;
@@ -49,12 +49,17 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%; overscroll-behavior-y:none}
+html{-webkit-text-size-adjust:100%; text-size-adjust:100%}
+body{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none}
+input,textarea,select{-webkit-user-select:text; user-select:text; -webkit-touch-callout:default}
+input[readonly]{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none; cursor:pointer}
 body{
   font-family:'Segoe UI',Tahoma,'Noto Naskh Arabic',system-ui,sans-serif;
   background:var(--bg); color:var(--ink);
   padding-top:calc(var(--top-total) + env(safe-area-inset-top,0px) + 8px);
   padding-bottom:calc(52px + env(safe-area-inset-bottom, 0px) + 10px);
-  padding-inline:10px;
+  padding-left:max(10px,env(safe-area-inset-left,0px));
+  padding-right:max(10px,env(safe-area-inset-right,0px));
   transition:background-color .3s,color .3s;
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
@@ -73,7 +78,8 @@ body{
 .topbar-row-1{
   height:var(--top-1);
   display:flex; align-items:center; gap:8px;
-  padding-inline:10px;
+  padding-left:max(10px,env(safe-area-inset-left,0px));
+  padding-right:max(10px,env(safe-area-inset-right,0px));
 }
 .brand{
   flex:1; min-width:0;
@@ -82,9 +88,8 @@ body{
   white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
 }
 .brand-icon{
-  width:32px; height:32px; border-radius:8px; flex:none;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  display:grid; place-items:center; color:#fff; font-weight:900; font-size:16px;
+  width:34px; height:34px; border-radius:8px; flex:none;
+  display:block; object-fit:cover;
 }
 .icon-btn{
   width:42px; height:42px; border-radius:50%; flex:none;
@@ -117,7 +122,8 @@ body{
 .topbar-row-2{
   height:var(--top-2);
   display:flex; align-items:center; gap:8px;
-  padding-inline:10px;
+  padding-left:max(10px,env(safe-area-inset-left,0px));
+  padding-right:max(10px,env(safe-area-inset-right,0px));
   border-top:1px solid var(--line);
   overflow-x:auto;
   scrollbar-width:none;
@@ -154,9 +160,9 @@ body{
     rgba(10,25,22,.32) 100%);
   z-index:1;
 }
-.hero h1,.hero p{position:relative; z-index:2}
-.hero h1{font-size:30px; font-weight:900; margin:0; color:#fff; letter-spacing:-.5px; text-shadow:0 2px 8px rgba(0,0,0,.55)}
-.hero p{margin:8px 0 0; color:#fff; font-size:13px; font-weight:700; text-shadow:0 1px 6px rgba(0,0,0,.6)}
+.hero h1,.hero p{position:relative; z-index:2; display:block; width:100%; text-align:center}
+.hero h1{font-size:38px; font-weight:900; margin:0; color:#fff; letter-spacing:-.5px; text-shadow:0 2px 8px rgba(0,0,0,.55)}
+.hero p{margin:8px 0 0; color:#fff; font-size:15px; font-weight:700; text-shadow:0 1px 6px rgba(0,0,0,.6)}
 
 /* ===== شريط الشعب ===== */
 .sections-strip{
@@ -244,7 +250,7 @@ body{
 
 /* ===== الجدول ===== */
 .table-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch}
-table{width:100%; border-collapse:separate; border-spacing:0; min-width:900px}
+table{width:100%; border-collapse:separate; border-spacing:0; min-width:720px}
 thead th{
   position:static;
   z-index:100;
@@ -252,6 +258,7 @@ thead th{
   border-bottom:2px solid var(--line2);
   border-left:1px solid var(--line);
   padding:8px 4px;
+  font-family:var(--ff,inherit);
   font-size:13px; font-weight:700; color:var(--ink);
   text-align:center; vertical-align:top;
 }
@@ -312,27 +319,29 @@ tbody td{
   border-bottom:1px solid var(--line);
   border-left:1px solid var(--line);
   padding:6px 4px; text-align:center;
-  color:var(--ink); font-size:14px;
+  color:var(--ink);
+  font-family:var(--ff,inherit); font-size:var(--fs,14px); font-weight:var(--fw,400);
 }
 tbody td:last-child{border-left:none}
 
 td.name-cell{
-  padding:0; min-width:180px; text-align:right;
+  padding:0; min-width:200px; text-align:center;
   vertical-align:middle;
 }
 td.name-cell .name-wrapper{
-  display:flex; align-items:center; gap:6px;
+  display:flex; align-items:center; justify-content:center; gap:6px;
   padding:5px 8px;
-  min-height:34px;
+  min-height:40px;
   box-sizing:border-box;
 }
 td.name-cell input{
   flex:1; border:none; background:transparent;
-  font:inherit; font-size:14px; color:var(--ink);
-  text-align:right; padding:4px 6px;
+  font:inherit; font-size:calc(var(--fs,14px) * 1.3); color:var(--ink);
+  text-align:center; padding:4px 6px;
   outline:none; border-radius:6px; min-width:0;
   transition:background-color .15s;
 }
+.name-input[readonly]{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none; cursor:default}
 td.name-cell input:not([readonly]){
   background:var(--bg2);
   box-shadow:inset 0 0 0 2px var(--accent);
@@ -342,11 +351,11 @@ thead th.num-col{width:48px; background:var(--bg2)}
 td.num-cell input{
   width:100%; border:none; background:transparent;
   text-align:center; font:inherit; font-weight:700;
-  font-size:13px; color:var(--ink); outline:none;
+  color:var(--ink); outline:none;
 }
 td.cell input{
   width:100%; border:none; background:transparent;
-  text-align:center; font:inherit; font-size:14px;
+  text-align:center; font:inherit;
   color:var(--ink); padding:6px 2px;
   outline:none; border-radius:6px;
   transition:background-color .15s;
@@ -356,6 +365,8 @@ td.cell input:focus{background:var(--bg2); box-shadow:inset 0 0 0 2px var(--acce
 td.total-cell{background:#f5dcc8; font-weight:800}
 :root[data-theme="dark"] td.total-cell{background:#2d3835}
 
+.th-stats{padding:5px 10px; font-size:12px; border-radius:8px; pointer-events:auto}
+.th-stats svg{width:14px; height:14px}
 .confirm-btn{
   width:34px; height:34px; border-radius:50%;
   background:transparent; border:none; cursor:pointer; padding:0;
@@ -423,7 +434,7 @@ td.att-cell{padding:4px 2px}
 .modal-content{
   background:var(--card); color:var(--ink);
   border-radius:18px; padding:20px;
-  width:100%; max-width:460px; max-height:88vh; overflow:auto;
+  width:100%; max-width:460px; max-height:88vh; max-height:88dvh; overflow:auto;
   box-shadow:var(--shadow2);
   animation:slideUp .25s;
 }
@@ -492,25 +503,33 @@ textarea.form-field{min-height:110px; resize:vertical}
 .stat-pill.absent{background:var(--red)}
 .stat-pill.late{background:var(--orange)}
 
-/* كيبورد */
+/* لوحة الأرقام */
 .num-keypad{
-  position:fixed; bottom:0; left:0; right:0;
-  z-index:10000; background:var(--bg2);
-  border-top:1px solid var(--line);
-  padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
-  display:flex; gap:6px; direction:ltr;
+  position:fixed; z-index:10000;
+  width:min(300px, calc(100vw - 16px));
+  background:#1d2523; border-radius:24px; padding:12px;
+  box-shadow:0 12px 36px rgba(0,0,0,.4);
+  display:grid; grid-template-columns:repeat(3,1fr); gap:10px;
+  direction:ltr; touch-action:manipulation;
+  -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;
 }
 .num-keypad[hidden]{display:none}
 .num-keypad button{
-  flex:1; font:inherit; font-size:20px; font-weight:700;
-  padding:12px 0; border-radius:9px;
-  background:var(--card); color:var(--ink);
-  border:1px solid var(--line);
-  cursor:pointer; user-select:none; -webkit-user-select:none;
-  transition:.1s;
+  height:56px; border:none; border-radius:999px;
+  background:#fff; color:#1a1a1a;
+  font:inherit; font-size:26px; font-weight:700; line-height:1;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  cursor:pointer; touch-action:manipulation;
+  transition:transform .08s, background-color .08s;
 }
-.num-keypad button:active{transform:scale(.95); background:var(--accent); color:#fff}
-.num-keypad button.kx{background:var(--bg2); font-size:16px; flex:1.2}
+.num-keypad button:active{transform:scale(.94); background:#dfe5e2}
+.num-keypad button.kx{font-size:15px}
+.num-keypad button svg{width:22px; height:22px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; flex:none}
+@media (max-height:520px){
+  .num-keypad{gap:6px; padding:8px; border-radius:18px}
+  .num-keypad button{height:42px; font-size:20px}
+}
+.num-active{box-shadow:inset 0 0 0 2px var(--accent) !important; background:var(--bg2) !important; border-radius:6px}
 
 /* Word */
 .drop-zone{
@@ -648,10 +667,10 @@ tr.select-row td.att-cell{cursor:default}
 
 @media (max-width:600px){
   :root{--top-1:52px; --top-2:56px; --bot:52px}
-  body{padding-inline:6px}
+  body{padding-left:max(6px,env(safe-area-inset-left,0px)); padding-right:max(6px,env(safe-area-inset-right,0px))}
   .hero{padding:28px 12px}
-  .hero h1{font-size:24px}
-  .hero p{font-size:12px}
+  .hero h1{font-size:30px}
+  .hero p{font-size:13px}
   .sec-btn{font-size:13px; padding:8px 15px}
   .sec-btn.add{font-size:15px; padding:8px 14px}
   .action-btn{padding:8px 12px; font-size:12px; gap:5px}
@@ -662,9 +681,8 @@ tr.select-row td.att-cell{cursor:default}
   .brand-icon{width:28px; height:28px; font-size:14px}
   .btn{padding:8px 12px; font-size:12px}
   .tool-btn{padding:7px 11px; font-size:12px}
-  tbody td{font-size:13px; padding:5px 3px}
+  tbody td{padding:5px 3px}
   td.name-cell{padding:5px 6px; min-width:140px}
-  td.name-cell input{font-size:13px}
   .att-btn{width:26px; height:26px}
   .att-btn svg{width:14px; height:14px}
   td.num-cell{width:40px}
@@ -678,7 +696,7 @@ tr.select-row td.att-cell{cursor:default}
 }
 @media (min-width:1024px){
   .hero{padding:52px 20px}
-  .hero h1{font-size:38px}
+  .hero h1{font-size:46px}
 }
 </style>
 </head>
@@ -687,16 +705,16 @@ tr.select-row td.att-cell{cursor:default}
 <header class="topbar">
   <div class="topbar-row-1">
     <div class="brand">
-      <div class="brand-icon">س</div>
+      <img class="brand-icon" src="icon-192.png" alt="">
       <span>سجل الدرجات</span>
     </div>
-    <button class="icon-btn" id="menuBtn" onclick="toggleMenu(event)" aria-label="القائمة">
-      <svg viewBox="0 0 24 24"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
-    </button>
     <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" aria-label="تبديل المظهر">
       <svg id="themeIcon" viewBox="0 0 24 24">
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
       </svg>
+    </button>
+    <button class="icon-btn" id="menuBtn" onclick="toggleMenu(event)" aria-label="القائمة">
+      <svg viewBox="0 0 24 24"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
     </button>
     <div class="menu-dropdown" id="menuDropdown" hidden>
       <button onclick="closeMenu();openColorsDialog()">
@@ -766,7 +784,7 @@ tr.select-row td.att-cell{cursor:default}
 <div class="modal" id="addSectionModal" hidden>
   <div class="modal-content">
     <h3>إضافة شعبة جديدة</h3>
-    <input class="form-field" id="newSectionInput" inputmode="none" data-num="1" placeholder="رقم الشعبة — مثال: 105">
+    <input class="form-field" id="newSectionInput" inputmode="none" data-num="1" readonly placeholder="رقم الشعبة — مثال: 105">
     <div class="modal-actions">
       <button class="btn primary" onclick="confirmAddSection()">إضافة</button>
       <button class="btn" onclick="closeModal('addSectionModal')">إلغاء</button>
@@ -849,47 +867,11 @@ tr.select-row td.att-cell{cursor:default}
           <option value="900">عريض جداً</option>
         </select>
       </label>
-      <label style="display:flex; gap:8px; align-items:center; flex-wrap:wrap">
-        <span style="min-width:80px; font-size:13px; color:var(--mut)">المحاذاة:</span>
-        <select class="form-field" id="fontAlign" style="flex:1; margin:0" onchange="previewFont()">
-          <option value="right">يمين</option>
-          <option value="center">وسط</option>
-          <option value="left">يسار</option>
-        </select>
-      </label>
     </div>
     <div class="modal-actions">
       <button class="btn primary" onclick="saveFont()">حفظ</button>
       <button class="btn" onclick="resetFont()">افتراضي</button>
       <button class="btn" onclick="closeModal('fontModal')">إلغاء</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="zoomModal" hidden>
-  <div class="modal-content">
-    <h3>تكبير اسم الطالب</h3>
-    <div class="zoom-preview">
-      <span id="zoomPreviewText">محمد أحمد</span>
-    </div>
-    <div class="zoom-bar">
-      <button class="zoom-btn" onclick="zoomStep(-10)" aria-label="تصغير">
-        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </button>
-      <div class="zoom-slider">
-        <input type="range" id="zoomSlider" min="80" max="250" step="10" value="100" oninput="updateZoom()">
-      </div>
-      <button class="zoom-btn" onclick="zoomStep(10)" aria-label="تكبير">
-        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </button>
-    </div>
-    <div style="text-align:center; font-weight:700; color:var(--mut); margin-bottom:8px">
-      <span id="zoomPercent">100%</span>
-    </div>
-    <div class="modal-actions">
-      <button class="btn primary" onclick="saveZoom()">حفظ</button>
-      <button class="btn" onclick="resetZoom()">افتراضي</button>
-      <button class="btn" onclick="closeModal('zoomModal')">إلغاء</button>
     </div>
   </div>
 </div>
@@ -919,14 +901,14 @@ tr.select-row td.att-cell{cursor:default}
     <div class="menu-list">
       <button class="menu-item" onclick="createBackup()">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        إنشاء نسخة وحفظها
+        إنشاء نسخة
       </button>
       <button class="menu-item" onclick="document.getElementById('restoreFileInput').click()">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        استعادة نسخة من ملف
+        استعادة نسخة
       </button>
     </div>
-    <input type="file" id="restoreFileInput" accept=".json" hidden>
+    <input type="file" id="restoreFileInput" accept="application/json,.json,text/plain" hidden>
     <div class="modal-actions" style="margin-top:14px">
       <button class="btn" onclick="closeModal('backupModal')">إغلاق</button>
     </div>
@@ -955,12 +937,12 @@ tr.select-row td.att-cell{cursor:default}
 const STORAGE_KEY = 'gradesheet_v4';
 
 const DEFAULT_COLUMNS = [
-  { key:'act', title:'نشاط صفي', max:'15', color:'#e9ece4', type:'number' },
+  { key:'act', title:'نشاط', max:'15', color:'#e9ece4', type:'number' },
   { key:'par', title:'مشاركة',    max:'10', color:'#e9ece4', type:'number' },
   { key:'hw',  title:'واجب',      max:'15', color:'#f4dadd', type:'number' },
   { key:'tot', title:'المجموع',                 color:'#f5dcc8', type:'total'  },
-  { key:'t1',  title:'اختبار الفترة الأولى /', max:'20', color:'#f2eecf', type:'number' },
-  { key:'t2',  title:'اختبار الفترة الثانية /',max:'20', color:'#cfe2ee', type:'number' },
+  { key:'t1',  title:'اختبار 1', max:'20', color:'#f2eecf', type:'number' },
+  { key:'t2',  title:'اختبار 2',max:'20', color:'#cfe2ee', type:'number' },
   { key:'att', title:'تحضير',                    color:'#cfe2ee', type:'attendance' }
 ];
 
@@ -973,7 +955,6 @@ let searchText = {};
 let currentSectionForMenu = -1;
 let currentRowForMenu = -1;
 let editingSection = -1;
-let zoomContext = { si:-1, ri:-1, val:100 };
 let notesContext = { si:-1, ri:-1 };
 let selectModeSections = new Set();
 let selectedStudents = {};
@@ -1027,6 +1008,14 @@ function makeStudent(n){
   };
 }
 
+function migrateColumns(st){
+  (st.columns || []).forEach(c => {
+    if(c.key === 'act' && c.title === 'نشاط صفي') c.title = 'نشاط';
+    if(c.key === 't1' && /^اختبار الفترة الأولى/.test(c.title || '')) c.title = 'اختبار 1';
+    if(c.key === 't2' && /^اختبار الفترة الثانية/.test(c.title || '')) c.title = 'اختبار 2';
+  });
+}
+
 state = load();
 if(!state){
   state = {
@@ -1035,6 +1024,7 @@ if(!state){
     lastBackup: null, day: todayKey()
   };
 } else {
+  migrateColumns(state);
   state.sections.forEach(s => {
     if(!s.font) s.font = { family:'', size:14, weight:400, align:'right' };
     s.students.forEach(stu => {
@@ -1078,6 +1068,7 @@ document.addEventListener('click', (e) => {
 
 /* ===== العرض ===== */
 function render(){
+  closeKeypad(false);
   renderSectionsStrip();
   renderSectionsContainer();
   setupStickyTableHeads();
@@ -1139,9 +1130,11 @@ function setupStickyTableHeads(){
     bar.className = 'sticky-table-head';
     const cloneTable = document.createElement('table');
     cloneTable.className = table.className;
+    cloneTable.style.cssText = table.style.cssText;
     cloneTable.style.width = table.getBoundingClientRect().width + 'px';
     cloneTable.style.minWidth = '0';
     const cloneHead = sourceHead.cloneNode(true);
+    cloneHead.querySelectorAll('[data-num]').forEach(el => el.removeAttribute('data-num'));
     cloneHead.querySelectorAll('input,button').forEach(el => {
       el.tabIndex = -1;
       el.setAttribute('aria-hidden','true');
@@ -1209,10 +1202,6 @@ function buildSectionCard(section, si){
       <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       إضافة طالب
     </button>
-    <button class="btn" onclick="openStats(${si})">
-      <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg>
-      إحصائيات
-    </button>
   `;
   card.appendChild(top);
 
@@ -1245,6 +1234,7 @@ function buildSectionCard(section, si){
     inp.value = searchText[si] || '';
     inp.setAttribute('inputmode','none');
     inp.dataset.num = '1';
+    inp.readOnly = true;
     inp.oninput = (e) => { searchText[si] = e.target.value; filterSection(si); };
     sr.appendChild(inp);
     card.appendChild(sr);
@@ -1260,10 +1250,9 @@ function buildTable(section, si){
   const tbl = document.createElement('table');
   const font = section.font || {};
 
-  tbl.style.fontFamily = font.family || '';
-  tbl.style.fontSize = (font.size || 14) + 'px';
-  tbl.style.fontWeight = font.weight || '';
-  tbl.style.textAlign = font.align || '';
+  if(font.family) tbl.style.setProperty('--ff', font.family);
+  tbl.style.setProperty('--fs', (font.size || 14) + 'px');
+  if(font.weight) tbl.style.setProperty('--fw', font.weight);
 
   const thead = document.createElement('thead');
   const tr = document.createElement('tr');
@@ -1272,31 +1261,34 @@ function buildTable(section, si){
   th0.className = 'sec-col';
   th0.innerHTML = `
     <div class="th-inner">
-      <div>شعبة ( <input class="inline-edit" data-field="sec" data-si="${si}" value="${esc(section.sec)}" inputmode="none" data-num="1"> )</div>
+      <div>شعبة ( <input class="inline-edit" data-field="sec" data-si="${si}" value="${esc(section.sec)}" inputmode="none" data-num="1" readonly> )</div>
       <div class="sub-line">
         <input class="inline-edit" data-field="title" data-si="${si}" value="${esc(section.title)}">
         <input class="inline-edit" data-field="level" data-si="${si}" value="${esc(section.level)}" style="width:34px">
       </div>
     </div>
   `;
-  tr.appendChild(th0);
-
   const thNum = document.createElement('th');
   thNum.className = 'num-col';
   thNum.setAttribute('aria-hidden', 'true');
   tr.appendChild(thNum);
+  tr.appendChild(th0);
 
   state.columns.forEach((col, ci) => {
     const th = document.createElement('th');
     th.className = 'col-' + col.key;
     let maxHtml = '';
     if(col.type === 'number' && col.max !== undefined){
-      maxHtml = '<div class="max-mark">( <input class="inline-edit" data-col="' + ci + '" data-field="max" value="' + esc(col.max) + '" inputmode="none" data-num="1"> )</div>';
+      maxHtml = '<div class="max-mark">( <input class="inline-edit" data-col="' + ci + '" data-field="max" value="' + esc(col.max) + '" inputmode="none" data-num="1" readonly> )</div>';
     } else if(col.type === 'total'){
       maxHtml = '<div class="max-mark">( <span>مجموع</span> )</div>';
     }
+    const statsHtml = col.type === 'attendance'
+      ? '<button class="btn th-stats" onclick="openStats(' + si + ')"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg>إحصائيات</button>'
+      : '';
     th.innerHTML = `
       <div class="th-inner">
+        ${statsHtml}
         <input class="inline-edit" data-col="${ci}" data-field="title" value="${esc(col.title)}">
         ${maxHtml}
       </div>
@@ -1332,7 +1324,8 @@ function buildStudentRow(stu, si, ri){
     ? '<button class="select-check ' + ((si+'-'+ri) in selectedStudents ? 'checked' : '') + '"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></button>'
     : '';
 
-  tdName.innerHTML = '<div class="name-wrapper">' + checkbox + badge + '<input class="name-input" readonly data-si="' + si + '" data-ri="' + ri + '" data-field="name" value="' + esc(stu.name) + '" placeholder="اسم الطالب" style="font-size:' + Math.round(14*(stu.zoom||1)) + 'px">' + '</div>';
+  tdName.innerHTML = '<div class="name-wrapper">' + checkbox + badge + '<input class="name-input" readonly data-si="' + si + '" data-ri="' + ri + '" data-field="name" value="' + esc(stu.name) + '" placeholder="اسم الطالب">' + '</div>';
+  tdName.addEventListener('contextmenu', e => { if(e.target.closest('.name-input[readonly]') || !e.target.closest('input')) e.preventDefault(); });
 
   if(!selectModeSections.has(si)){
     attachNameHandlers(tdName, si, ri);
@@ -1341,12 +1334,11 @@ function buildStudentRow(stu, si, ri){
     inp.style.pointerEvents = 'none';
     tdName.addEventListener('click', () => toggleStudentSelection(si, ri));
   }
-  tr.appendChild(tdName);
-
   const tdNum = document.createElement('td');
   tdNum.className = 'num-cell';
   tdNum.innerHTML = '<input readonly data-si="' + si + '" data-ri="' + ri + '" data-field="num" value="' + esc(stu.num) + '" inputmode="none" data-num="1">';
   tr.appendChild(tdNum);
+  tr.appendChild(tdName);
 
   state.columns.forEach((col, ci) => {
     const td = document.createElement('td');
@@ -1355,13 +1347,13 @@ function buildStudentRow(stu, si, ri){
 
     if(col.type === 'number'){
       const v = stu.scores[col.key] ?? '';
-      td.innerHTML = '<input data-si="' + si + '" data-ri="' + ri + '" data-col="' + ci + '" data-field="score" value="' + esc(v) + '" inputmode="none" data-num="1">';
+      td.innerHTML = '<input data-si="' + si + '" data-ri="' + ri + '" data-col="' + ci + '" data-field="score" value="' + esc(v) + '" inputmode="none" data-num="1" readonly>';
     }
     else if(col.type === 'total'){
       td.className = 'cell total-cell';
       if(stu.totalConfirmed){
-        const total = stu.totalValue ?? calcTotal(stu);
-        td.innerHTML = '<div class="total-display"><input readonly value="' + total + '">' +
+        const total = (stu.totalValue === null || stu.totalValue === undefined || stu.totalValue === '') ? calcTotal(stu) : stu.totalValue;
+        td.innerHTML = '<div class="total-display"><input readonly data-si="' + si + '" data-ri="' + ri + '" data-field="total" data-num="1" inputmode="none" value="' + total + '">' +
           '<button class="edit-btn" onclick="reopenTotal(' + si + ',' + ri + ')" title="تعديل"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div>';
       } else {
         td.innerHTML = '<button class="confirm-btn" onclick="confirmTotal(' + si + ',' + ri + ')" title="تأكيد المجموع"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></button>';
@@ -1530,10 +1522,6 @@ function openRowMenu(si, ri){
       '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' +
       (notesCount ? 'الملاحظات (' + notesCount + ')' : 'إضافة ملاحظة') +
     '</button>' +
-    '<button class="menu-item" onclick="openZoomDialog(' + si + ',' + ri + ')">' +
-      '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>' +
-      'تكبير اسم الطالب' +
-    '</button>' +
     '<button class="menu-item" onclick="openStudentColorDialog(' + si + ',' + ri + ')">' +
       '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="8" cy="10" r="1" fill="currentColor"/><circle cx="12" cy="7" r="1" fill="currentColor"/><circle cx="16" cy="10" r="1" fill="currentColor"/></svg>' +
       'لون الطالب' +
@@ -1650,37 +1638,6 @@ function removeStudentColor(){
   render();
   notify('تم إزالة اللون');
 }
-
-/* ===== Zoom ===== */
-function openZoomDialog(si, ri){
-  closeModal('rowMenuModal');
-  zoomContext = { si, ri, val: 100 };
-  const stu = state.sections[si].students[ri];
-  $('zoomPreviewText').textContent = stu.name || ('طالب رقم ' + stu.num);
-  $('zoomSlider').value = Math.round((stu.zoom || 1) * 100);
-  updateZoom();
-  openModal('zoomModal');
-}
-function zoomStep(d){
-  const v = Math.max(80, Math.min(250, zoomContext.val + d));
-  $('zoomSlider').value = v;
-  updateZoom();
-}
-function updateZoom(){
-  zoomContext.val = +$('zoomSlider').value;
-  const px = Math.round(16 * zoomContext.val / 100);
-  $('zoomPreviewText').style.fontSize = px + 'px';
-  $('zoomPercent').textContent = zoomContext.val + '%';
-}
-function saveZoom(){
-  const stu = state.sections[zoomContext.si].students[zoomContext.ri];
-  stu.zoom = zoomContext.val / 100;
-  save();
-  closeModal('zoomModal');
-  render();
-  notify('تم حفظ حجم الاسم: ' + zoomContext.val + '%');
-}
-function resetZoom(){ $('zoomSlider').value = 100; updateZoom(); }
 
 /* ===== الملاحظات ===== */
 function openNotesDialog(si, ri){
@@ -1824,7 +1781,6 @@ function openFontDialog(si){
   $('fontSize').value = f.size || 14;
   $('fontSizeVal').textContent = (f.size || 14) + 'px';
   $('fontWeight').value = f.weight || 400;
-  $('fontAlign').value = f.align || 'right';
   openModal('fontModal');
 }
 function previewFont(){ $('fontSizeVal').textContent = $('fontSize').value + 'px'; }
@@ -1832,8 +1788,7 @@ function saveFont(){
   state.sections[editingSection].font = {
     family: $('fontFamily').value,
     size: +$('fontSize').value,
-    weight: +$('fontWeight').value,
-    align: $('fontAlign').value
+    weight: +$('fontWeight').value
   };
   save();
   closeModal('fontModal');
@@ -1844,7 +1799,6 @@ function resetFont(){
   $('fontFamily').value = '';
   $('fontSize').value = 14;
   $('fontWeight').value = 400;
-  $('fontAlign').value = 'right';
   previewFont();
 }
 
@@ -1965,24 +1919,42 @@ function openBackupDialog(){
   openModal('backupModal');
 }
 async function createBackup(){
+  const prev = state.lastBackup;
   try{
+    state.lastBackup = Date.now();
     const text = JSON.stringify(state);
-    const fname = 'grades-backup-' + new Date().toISOString().slice(0,10) + '.json';
-    const f = new File([text], fname, { type: 'application/json' });
-    if(navigator.canShare && navigator.canShare({ files: [f] })){
-      await navigator.share({ files: [f] });
-    } else {
+    const d = new Date();
+    const fname = 'grades-backup-' + d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0') + '.json';
+    let done = false;
+    let file = null;
+    try{ file = new File([text], fname, { type: 'application/json' }); }catch(e){ file = null; }
+    if(file && navigator.canShare && navigator.share){
+      let can = false;
+      try{ can = navigator.canShare({ files: [file] }); }catch(e){ can = false; }
+      if(can){
+        try{
+          await navigator.share({ files: [file], title: fname });
+          done = true;
+        }catch(err){
+          if(err && err.name === 'AbortError'){ state.lastBackup = prev; return; }
+        }
+      }
+    }
+    if(!done){
       const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
       const a = document.createElement('a');
-      a.href = url; a.download = fname;
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 4000);
+      a.href = url; a.download = fname; a.style.display = 'none';
+      document.body.appendChild(a); a.click();
+      setTimeout(() => { a.remove(); URL.revokeObjectURL(url); }, 60000);
+      done = true;
     }
-    state.lastBackup = Date.now();
     save();
-    closeModal('backupModal');
+    $('backupInfo').textContent = 'آخر نسخة: ' + formatDate(state.lastBackup);
     notify('تم إنشاء النسخة الاحتياطية');
-  }catch(e){ notify('تعذّر إنشاء النسخة'); }
+  }catch(e){
+    state.lastBackup = prev;
+    notify('تعذّر إنشاء النسخة');
+  }
 }
 $('restoreFileInput').addEventListener('change', async (e) => {
   const file = e.target.files[0];
@@ -1994,6 +1966,7 @@ $('restoreFileInput').addEventListener('change', async (e) => {
     if(!Array.isArray(data.sections) || !Array.isArray(data.columns)) throw 0;
     showConfirm('استعادة نسخة', 'سيتم استبدال كل البيانات الحالية. متأكد؟', () => {
       state = data;
+      migrateColumns(state);
       if(!state.day) state.day = todayKey();
       state.sections.forEach(s => {
         if(!s.font) s.font = { family:'', size:14, weight:400, align:'right' };
@@ -2046,59 +2019,151 @@ try{
   });
 }catch(e){}
 
-/* ===== كيبورد ===== */
+/* ===== لوحة الأرقام (تظهر تحت الخانة) ===== */
 const keypad = $('numKeypad');
+const ICON_BACK = '<svg viewBox="0 0 24 24"><path d="M21 5H9l-6 7 6 7h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1z"/><line x1="12" y1="9.5" x2="17" y2="14.5"/><line x1="17" y1="9.5" x2="12" y2="14.5"/></svg>';
+const ICON_X = '<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+const AR_DIGITS = '٠١٢٣٤٥٦٧٨٩';
 (function(){
-  ['1','2','3','4','5','6','7','8','9','.','0'].forEach(k => {
+  [1,2,3,4,5,6,7,8,9,'cancel',0,'del'].forEach(k => {
     const b = document.createElement('button');
-    b.type = 'button'; b.textContent = k; b.dataset.kp = k;
+    b.type = 'button';
+    if(k === 'cancel'){ b.className = 'kx'; b.dataset.kp = 'cancel'; b.innerHTML = ICON_X + '<span>إلغاء</span>'; }
+    else if(k === 'del'){ b.className = 'kx'; b.dataset.kp = 'del'; b.innerHTML = ICON_BACK + '<span>حذف</span>'; }
+    else { b.dataset.kp = String(k); b.textContent = AR_DIGITS[k]; }
     keypad.appendChild(b);
   });
-  const bs = document.createElement('button');
-  bs.type = 'button'; bs.className = 'kx'; bs.dataset.kp = 'backspace'; bs.textContent = '⌫';
-  keypad.appendChild(bs);
-  const ok = document.createElement('button');
-  ok.type = 'button'; ok.className = 'kx'; ok.dataset.kp = 'ok'; ok.textContent = 'تم';
-  keypad.appendChild(ok);
 })();
-let activeNumInput = null;
-function showKeypad(input){ activeNumInput = input; keypad.hidden = false; }
-function hideKeypad(){ activeNumInput = null; keypad.hidden = true; }
 
-document.addEventListener('focusin', (e) => {
-  const t = e.target;
-  if(t && t.dataset && t.dataset.num) showKeypad(t);
-});
-document.addEventListener('focusout', () => {
-  setTimeout(() => {
-    const a = document.activeElement;
-    if(!a || !a.dataset || !a.dataset.num) hideKeypad();
-  }, 150);
-});
-['pointerdown','touchstart','mousedown'].forEach(ev => {
-  keypad.addEventListener(ev, (e) => {
-    if(e.target.closest('button')) e.preventDefault();
-  }, { passive: false });
-});
-keypad.addEventListener('click', (e) => {
-  const b = e.target.closest('button');
-  if(!b || !activeNumInput) return;
-  e.preventDefault();
-  const key = b.dataset.kp;
-  const el = activeNumInput;
-  if(key === 'ok'){ el.blur(); hideKeypad(); return; }
-  if(key === 'backspace'){
-    const s = el.selectionStart ?? el.value.length;
-    const en = el.selectionEnd ?? s;
-    if(s !== en) el.setRangeText('', s, en, 'end');
-    else if(s > 0) el.setRangeText('', s-1, s, 'end');
-    else return;
-  } else {
-    const s = el.selectionStart ?? el.value.length;
-    const en = el.selectionEnd ?? s;
-    el.setRangeText(key, s, en, 'end');
-  }
+let activeNumInput = null, numOriginal = '', numFresh = false, numChanged = false;
+
+function setNumValue(el, v){
+  el.value = v;
+  numChanged = true;
   el.dispatchEvent(new Event('input', { bubbles: true }));
+}
+function placeKeypad(){
+  if(!activeNumInput) return;
+  if(!document.body.contains(activeNumInput)){ closeKeypad(false); return; }
+  const r = activeNumInput.getBoundingClientRect();
+  const kw = keypad.offsetWidth, kh = keypad.offsetHeight;
+  const vw = window.innerWidth, vh = window.innerHeight;
+  let left = r.left + r.width / 2 - kw / 2;
+  left = Math.max(8, Math.min(left, vw - kw - 8));
+  let top = r.bottom + 8;
+  if(top + kh > vh - 8){
+    const above = r.top - kh - 8;
+    top = above >= 8 ? above : Math.max(8, vh - kh - 8);
+  }
+  keypad.style.left = left + 'px';
+  keypad.style.top = top + 'px';
+}
+function openKeypad(input){
+  if(activeNumInput === input){ placeKeypad(); return; }
+  if(activeNumInput) closeKeypad(true);
+  activeNumInput = input;
+  numOriginal = input.value;
+  numFresh = input.value !== '';
+  numChanged = false;
+  input.classList.add('num-active');
+  keypad.hidden = false;
+  if(!input.closest('.modal')){
+    const topbar = document.querySelector('.topbar');
+    const limit = (topbar ? topbar.offsetHeight : 0) + 70;
+    const r = input.getBoundingClientRect();
+    const need = r.bottom + 8 + keypad.offsetHeight + 8 - window.innerHeight;
+    if(need > 0){
+      const dy = Math.min(need, r.top - limit);
+      if(dy > 0) window.scrollBy(0, dy);
+    }
+  }
+  placeKeypad();
+}
+function closeKeypad(commit){
+  const el = activeNumInput;
+  keypad.hidden = true;
+  if(!el) return;
+  activeNumInput = null;
+  el.classList.remove('num-active');
+  if(commit && numChanged && document.body.contains(el)){
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+}
+function cancelKeypad(){
+  const el = activeNumInput;
+  if(!el) return;
+  if(numChanged){
+    el.value = numOriginal;
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  numChanged = false;
+  closeKeypad(false);
+}
+function keypadPress(key){
+  const el = activeNumInput;
+  if(!el) return;
+  if(key === 'cancel'){ cancelKeypad(); return; }
+  if(key === 'del'){
+    if(!el.value) return;
+    numFresh = false;
+    setNumValue(el, el.value.slice(0, -1));
+    return;
+  }
+  const base = numFresh ? '' : el.value;
+  numFresh = false;
+  if(base.length >= 6) return;
+  setNumValue(el, base + key);
+}
+
+const KP_EVENT = window.PointerEvent ? 'pointerdown' : 'touchstart';
+keypad.addEventListener(KP_EVENT, (e) => {
+  e.preventDefault();
+  const b = e.target.closest && e.target.closest('button');
+  if(b) keypadPress(b.dataset.kp);
+}, { passive: false });
+keypad.addEventListener('mousedown', e => e.preventDefault());
+keypad.addEventListener('contextmenu', e => e.preventDefault());
+
+document.addEventListener(KP_EVENT, (e) => {
+  if(!activeNumInput) return;
+  if(keypad.contains(e.target)) return;
+  if(e.target.closest && e.target.closest('[data-num]')) return;
+  closeKeypad(true);
+}, true);
+function numTarget(e){
+  const t = e.target && e.target.closest ? e.target.closest('[data-num]') : null;
+  if(!t || t.disabled || t.closest('.sticky-table-head')) return null;
+  return t;
+}
+document.addEventListener('click', e => { const t = numTarget(e); if(t) openKeypad(t); });
+document.addEventListener('focusin', e => { const t = numTarget(e); if(t) openKeypad(t); });
+document.addEventListener('scroll', placeKeypad, true);
+window.addEventListener('resize', placeKeypad);
+window.addEventListener('orientationchange', () => setTimeout(placeKeypad, 250));
+
+document.addEventListener('keydown', (e) => {
+  if(!activeNumInput || e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = e.key;
+  if(/^[0-9٠-٩]$/.test(k)){
+    e.preventDefault();
+    const i = AR_DIGITS.indexOf(k);
+    keypadPress(i >= 0 ? String(i) : k);
+  } else if(k === 'Backspace' || k === 'Delete'){
+    e.preventDefault(); keypadPress('del');
+  } else if(k === 'Escape'){
+    e.preventDefault(); cancelKeypad();
+  } else if(k === 'Enter' || k === 'Tab'){
+    closeKeypad(true);
+  }
+});
+
+/* منع قائمة النظام (نسخ / بحث / ترجمة) عند الضغط المطول */
+document.addEventListener('contextmenu', e => {
+  if(!(e.target.closest && e.target.closest('input:not([readonly]),textarea'))) e.preventDefault();
+});
+document.addEventListener('selectstart', e => {
+  const el = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
+  if(!el || !el.closest('input:not([readonly]),textarea')) e.preventDefault();
 });
 
 /* ===== إدخال ===== */
@@ -2122,6 +2187,12 @@ document.addEventListener('input', (e) => {
     updateTotalFor(si, ri);
     return;
   }
+  if(si !== undefined && ri !== undefined && field === 'total'){
+    const stu = state.sections[si].students[ri];
+    stu.totalValue = t.value === '' ? null : t.value;
+    save();
+    return;
+  }
   if(si !== undefined && ri !== undefined && field === 'num'){
     const stu = state.sections[si].students[ri];
     stu.num = t.value;
@@ -2143,7 +2214,7 @@ document.addEventListener('input', (e) => {
 
 document.addEventListener('change', (e) => {
   const t = e.target;
-  if(t.dataset && t.dataset.si !== undefined && t.dataset.field && t.dataset.field !== 'name'){
+  if(t.dataset && t.dataset.si !== undefined && t.dataset.ri === undefined && ['sec','title','level'].includes(t.dataset.field)){
     const field = t.dataset.field;
     if(field === 'sec') notify('تم حفظ رقم الشعبة: ' + t.value);
     else if(field === 'title') notify('تم حفظ العنوان: ' + t.value);
@@ -2152,7 +2223,7 @@ document.addEventListener('change', (e) => {
     if(field === 'sec') renderSectionsStrip();
     save();
   }
-  if(t.dataset && t.dataset.col !== undefined && t.dataset.field){
+  if(t.dataset && t.dataset.col !== undefined && t.dataset.ri === undefined && ['title','max'].includes(t.dataset.field)){
     const field = t.dataset.field;
     if(field === 'title') notify('تم حفظ عنوان العمود: ' + t.value);
     else if(field === 'max') notify('تم حفظ الدرجة العظمى: ' + t.value);
@@ -2234,7 +2305,7 @@ document.addEventListener('touchend', () => {
 /* ===== ESC ===== */
 document.addEventListener('keydown', e => {
   if(e.key === 'Escape'){
-    ['rowMenuModal','studentColorModal','addSectionModal','editSectionModal','notesModal','statsModal','colorsModal','fontModal','zoomModal','wordModal','backupModal','confirmModal'].forEach(id => {
+    ['rowMenuModal','studentColorModal','addSectionModal','editSectionModal','notesModal','statsModal','colorsModal','fontModal','wordModal','backupModal','confirmModal'].forEach(id => {
       const el = $(id);
       if(el && !el.hidden) el.hidden = true;
     });
@@ -2248,8 +2319,36 @@ document.addEventListener('visibilitychange', () => { if(document.hidden) save()
 updateThemeIcon();
 render();
 if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('./sw.js?v=8', {updateViaCache:'none'}).catch(() => {});
+  navigator.serviceWorker.register('./sw.js', {updateViaCache:'none'}).catch(() => {});
 }
+
+/* تحديث تلقائي: عند وجود نسخة جديدة من الموقع تُحمَّل وتبقى البيانات محفوظة في الجهاز */
+(function(){
+  if(typeof fetch !== 'function') return;
+  const url = location.href.split('#')[0].split('?')[0];
+  let baseline = null, busy = false;
+  async function sig(){
+    const r = await fetch(url, { cache: 'no-store' });
+    if(!r.ok) throw new Error('x');
+    const t = await r.text();
+    let h = 0;
+    for(let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) | 0;
+    return t.length + ':' + h;
+  }
+  async function check(){
+    if(busy) return;
+    busy = true;
+    try{
+      const v = await sig();
+      if(baseline === null) baseline = v;
+      else if(v !== baseline){ save(); location.reload(); }
+    }catch(e){}
+    busy = false;
+  }
+  check();
+  document.addEventListener('visibilitychange', () => { if(!document.hidden) check(); });
+  setInterval(() => { if(!document.hidden) check(); }, 5 * 60 * 1000);
+})();
 </script>
 </body>
 </html>
