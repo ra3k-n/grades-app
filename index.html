@@ -531,6 +531,10 @@ textarea.form-field{min-height:110px; resize:vertical}
 .num-keypad button:active{transform:scale(.94); background:#dfe5e2}
 .num-keypad button.kx{font-size:15px}
 .num-keypad button svg{width:32px; height:32px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; flex:none}
+@media (min-width:768px) and (min-height:521px){
+  .num-keypad{width:340px; padding:14px; gap:12px}
+  .num-keypad button{height:64px; font-size:28px}
+}
 @media (max-height:520px){
   .num-keypad{gap:6px; padding:8px; border-radius:18px}
   .num-keypad button{height:42px; font-size:20px}
@@ -749,7 +753,7 @@ tr.select-row td.att-cell{cursor:default}
 <main>
   <div class="hero">
     <h1>سجل الدرجات</h1>
-    <p>نظام إدارة الدرجات</p>
+    <p>نظام إدارة الدرجات والحضور</p>
   </div>
   <div class="sections-strip" id="sectionsStrip"></div>
   <div id="sectionsContainer"></div>
@@ -1035,6 +1039,13 @@ if(!state){
   };
 } else {
   migrateColumns(state);
+  try{
+    if(!localStorage.getItem('gradesheet_lb_reset')){
+      state.lastBackup = null;
+      localStorage.setItem('gradesheet_lb_reset', '1');
+      save();
+    }
+  }catch(e){}
   state.sections.forEach(s => {
     if(!s.font) s.font = { family:'', size:14, weight:400, align:'right' };
     s.students.forEach(stu => {
@@ -1994,10 +2005,9 @@ function openBackupDialog(){
   openModal('backupModal');
 }
 async function createBackup(){
-  const prev = state.lastBackup;
+  const now = Date.now();
   try{
-    state.lastBackup = Date.now();
-    const text = JSON.stringify(state);
+    const text = JSON.stringify(Object.assign({}, state, { lastBackup: now }));
     const d = new Date();
     const fname = 'grades-backup-' + d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0') + '.json';
     let done = false;
@@ -2011,7 +2021,7 @@ async function createBackup(){
           await navigator.share({ files: [file], title: fname });
           done = true;
         }catch(err){
-          if(err && err.name === 'AbortError'){ state.lastBackup = prev; return; }
+          if(err && err.name === 'AbortError') return;
         }
       }
     }
@@ -2021,13 +2031,12 @@ async function createBackup(){
       a.href = url; a.download = fname; a.style.display = 'none';
       document.body.appendChild(a); a.click();
       setTimeout(() => { a.remove(); URL.revokeObjectURL(url); }, 60000);
-      done = true;
     }
+    state.lastBackup = now;
     save();
-    $('backupInfo').textContent = 'آخر نسخة: ' + formatDate(state.lastBackup);
+    closeModal('backupModal');
     notify('تم إنشاء النسخة الاحتياطية');
   }catch(e){
-    state.lastBackup = prev;
     notify('تعذّر إنشاء النسخة');
   }
 }
