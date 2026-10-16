@@ -264,7 +264,7 @@ thead th{
   border-left:1px solid var(--line);
   padding:8px 4px;
   font-family:var(--ff,inherit);
-  font-size:13px; font-weight:700; color:var(--ink);
+  font-size:15px; font-weight:700; color:var(--ink);
   text-align:center; vertical-align:top;
 }
 thead th:last-child{border-left:none}
@@ -277,13 +277,13 @@ thead th:last-child{border-left:none}
 thead th .th-inner{display:flex; flex-direction:column; align-items:center; gap:4px}
 thead th input{
   width:88%; border:none; background:transparent;
-  font:inherit; font-weight:700; font-size:13px;
+  font:inherit; font-weight:700; font-size:17px;
   color:inherit; text-align:center; padding:2px;
   border-bottom:1px dashed var(--line2); outline:none;
 }
-thead th .max-mark{font-size:11px; color:var(--red); font-weight:700}
+thead th .max-mark{font-size:15px; color:var(--red); font-weight:700}
 thead th .max-mark input{
-  width:38px; display:inline-block; text-align:center;
+  width:48px; display:inline-block; text-align:center; font-size:15px;
   border-bottom:1px dashed var(--line2);
   color:var(--red); font-weight:700;
 }
@@ -294,14 +294,14 @@ thead th .max-mark input{
   :root:not([data-theme="light"]) thead th .max-mark input{color:#fff}
 }
 
-th.sec-col{background:linear-gradient(180deg,#e4e4e4,#d8d8d4); min-width:180px; border-left:2px solid var(--line2)}
+th.sec-col{background:linear-gradient(180deg,#e4e4e4,#d8d8d4); min-width:210px; border-left:2px solid var(--line2)}
 :root[data-theme="dark"] th.sec-col{background:linear-gradient(180deg,#2d3835,#263130)}
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]) th.sec-col{background:linear-gradient(180deg,#2d3835,#263130)}
 }
-th.sec-col input{border-bottom:1px dashed var(--line2); font-weight:800; font-size:14px; width:60px}
-th.sec-col .sub-line{font-size:12px; color:var(--mut); margin-top:2px; display:flex; gap:4px; justify-content:center; align-items:center; flex-wrap:wrap}
-th.sec-col .sub-line input{width:105px; font-size:12px; font-weight:600; color:var(--ink2)}
+th.sec-col input{border-bottom:1px dashed var(--line2); font-weight:800; font-size:20px; width:72px}
+th.sec-col .sub-line{font-size:16px; color:var(--mut); margin-top:2px; display:flex; gap:4px; justify-content:center; align-items:center; flex-wrap:wrap}
+th.sec-col .sub-line input{width:125px; font-size:17px; font-weight:600; color:var(--ink2)}
 
 th.col-act{background:#e9ece4}
 th.col-par{background:#e9ece4}
@@ -371,8 +371,8 @@ td.cell input:focus{background:var(--bg2); box-shadow:inset 0 0 0 2px var(--acce
 td.total-cell{background:#f5dcc8; font-weight:800}
 :root[data-theme="dark"] td.total-cell{background:#2d3835}
 
-.th-stats{padding:5px 10px; font-size:12px; border-radius:8px; pointer-events:auto}
-.th-stats svg{width:14px; height:14px}
+.th-stats{padding:7px 14px; font-size:15px; border-radius:9px; pointer-events:auto}
+.th-stats svg{width:17px; height:17px}
 .confirm-btn{
   width:34px; height:34px; border-radius:50%;
   background:transparent; border:none; cursor:pointer; padding:0;
@@ -417,6 +417,8 @@ td.att-cell{padding:4px 2px}
 .att-btn.late{background:var(--orange)}
 .att-btn:hover{opacity:.85}
 
+.att-letter{font-size:17px; font-weight:900; line-height:1; color:#fff; font-family:inherit}
+.att-badge .att-letter{font-size:13px}
 .att-badge{
   display:inline-flex; align-items:center; justify-content:center;
   width:22px; height:22px; border-radius:50%; color:#fff; flex:none;
@@ -475,10 +477,10 @@ textarea.form-field{min-height:110px; resize:vertical}
 /* إشعار */
 .toast{
   position:fixed;
-  top:calc(var(--top-total) + env(safe-area-inset-top,0px) + 16px);
+  top:calc(var(--top-1) + env(safe-area-inset-top,0px) + 9px);
   left:50%; transform:translateX(-50%);
   background:var(--accent); color:#fff;
-  padding:12px 22px; border-radius:999px;
+  padding:8px 20px; border-radius:999px;
   font-weight:700; font-size:14px;
   box-shadow:var(--shadow2); z-index:99999;
   animation:fade .2s; pointer-events:none;
@@ -486,7 +488,6 @@ textarea.form-field{min-height:110px; resize:vertical}
   display:flex; align-items:center; gap:8px;
 }
 .toast[hidden]{display:none}
-.pull-indicator[hidden]{display:none}
 .toast svg{width:18px; height:18px; flex:none; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
 
 /* إحصائيات */
@@ -593,18 +594,22 @@ textarea.form-field{min-height:110px; resize:vertical}
 }
 .zoom-preview span{font-weight:700; transition:font-size .15s}
 
-/* Pull to refresh */
-.pull-indicator{
-  position:fixed; top:calc(var(--top-total) + env(safe-area-inset-top,0px) + 65px);
-  left:50%; transform:translateX(-50%);
-  background:var(--accent); color:#fff;
-  padding:10px 22px; border-radius:999px;
-  font-weight:700; font-size:13px;
-  box-shadow:var(--shadow2);
-  z-index:9999; pointer-events:none;
-  display:flex; align-items:center; gap:8px;
+/* سحب للتحديث */
+.pull-area{
+  position:fixed; left:0; right:0;
+  top:calc(var(--top-total) + env(safe-area-inset-top,0px));
+  height:0; overflow:hidden; z-index:90;
+  display:flex; align-items:flex-end; justify-content:center;
+  background:var(--bg); pointer-events:none;
 }
-.pull-indicator svg{width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
+.pull-inner{display:flex; flex-direction:column; align-items:center; gap:0; padding-bottom:12px}
+.pull-dots{width:60px; height:60px; color:var(--accent); display:block}
+.pull-icon{width:46px; height:46px; border-radius:12px; display:none; margin-bottom:8px; box-shadow:var(--shadow)}
+.pull-text{font-size:14px; font-weight:700; color:var(--mut)}
+.pull-area.refreshing .pull-dots{display:none}
+.pull-area.refreshing .pull-icon{display:block; animation:pullspin 1s linear infinite}
+@keyframes pullspin{to{transform:rotate(360deg)}}
+.pull-anim{transition:height .25s ease, transform .25s ease}
 
 /* ===== وضع التحديد ===== */
 .select-mode-bar{
@@ -697,7 +702,13 @@ tr.select-row td.att-cell{cursor:default}
   .att-btn{width:26px; height:26px}
   .att-btn svg{width:14px; height:14px}
   td.num-cell{width:40px}
-  thead th{font-size:12px; padding:6px 3px}
+  thead th{font-size:13px; padding:6px 3px}
+  thead th input{font-size:14px}
+  thead th .max-mark, thead th .max-mark input{font-size:13px}
+  th.sec-col input{font-size:17px}
+  th.sec-col .sub-line, th.sec-col .sub-line input{font-size:14px}
+  th.sec-col .sub-line input{width:95px}
+  .th-stats{padding:6px 10px; font-size:13px}
   .num-keypad button{font-size:18px; padding:11px 0}
   .section-top-actions{padding:8px 10px}
   .zoom-btn{width:40px; height:40px}
@@ -941,7 +952,16 @@ tr.select-row td.att-cell{cursor:default}
 
 <div class="num-keypad" id="numKeypad" hidden></div>
 <div id="toastBox" hidden></div>
-<div id="pullIndicator" class="pull-indicator" hidden></div>
+<div id="pullArea" class="pull-area" aria-hidden="true">
+  <div class="pull-inner">
+    <svg class="pull-dots" viewBox="0 0 60 60">
+      <defs><filter id="pullGoo" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.4" result="b"/><feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -8"/></filter></defs>
+      <g filter="url(#pullGoo)" fill="currentColor"><circle id="pd1" r="5" cx="30" cy="30"/><circle id="pd2" r="5" cx="30" cy="30"/></g>
+    </svg>
+    <img class="pull-icon" id="pullIcon" alt="">
+    <div class="pull-text" id="pullText">اسحب للأسفل للتحديث</div>
+  </div>
+</div>
 
 <script>
 /* =========================================================
@@ -1177,6 +1197,13 @@ function setupStickyTableHeads(){
         bar.style.display = 'none';
         return;
       }
+      const srcRow = sourceHead.children[0].children;
+      const clRow = cloneHead.children[0].children;
+      for(let i = 0; i < srcRow.length && i < clRow.length; i++){
+        const w = srcRow[i].getBoundingClientRect().width;
+        if(w) clRow[i].style.width = w + 'px';
+      }
+      cloneTable.style.width = table.getBoundingClientRect().width + 'px';
       bar.style.display = 'block';
       bar.style.top = topLimit + 'px';
       bar.style.left = wrapRect.left + 'px';
@@ -1396,17 +1423,19 @@ function attBadgeHTML(status){
     absent:  '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
     late:    '<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/>'
   };
+  const letters = { present:'ح', absent:'غ' };
+  if(letters[status]) return '<span class="att-badge ' + status + '"><span class="att-letter">' + letters[status] + '</span></span>';
   return '<span class="att-badge ' + status + '"><svg viewBox="0 0 24 24">' + icons[status] + '</svg></span>';
 }
 function attendanceButtonsHTML(si, ri, stu){
   const current = stu.attendance[state.day] || '';
   const config = [
-    { key:'present', icon:'<polyline points="20 6 9 17 4 12"/>', label:'حاضر' },
-    { key:'absent',  icon:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>', label:'غائب' },
+    { key:'present', letter:'ح', label:'حاضر' },
+    { key:'absent',  letter:'غ', label:'غائب' },
     { key:'late',    icon:'<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/>', label:'متأخر' }
   ];
   return config.map(c =>
-    '<button class="att-btn ' + c.key + (current === c.key ? ' on' : '') + '" onclick="toggleAttendance(' + si + ',' + ri + ',\'' + c.key + '\')" aria-label="' + c.label + '" title="' + c.label + '"><svg viewBox="0 0 24 24">' + c.icon + '</svg></button>'
+    '<button class="att-btn ' + c.key + (current === c.key ? ' on' : '') + '" onclick="toggleAttendance(' + si + ',' + ri + ',\'' + c.key + '\')" aria-label="' + c.label + '" title="' + c.label + '">' + (c.letter ? '<span class="att-letter">' + c.letter + '</span>' : '<svg viewBox="0 0 24 24">' + c.icon + '</svg>') + '</button>'
   ).join('');
 }
 
@@ -2354,37 +2383,67 @@ function checkDay(){
 setInterval(checkDay, 60000);
 document.addEventListener('visibilitychange', () => { if(!document.hidden) checkDay(); });
 
-/* ===== Pull to Refresh ===== */
-let pullStart = 0, pulling = false, pullDist = 0;
-const pullIndicator = $('pullIndicator');
-function showPull(d, text){
-  pullIndicator.hidden = false;
-  pullIndicator.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="7 13 12 18 17 13"/><line x1="12" y1="4" x2="12" y2="18"/></svg><span>' + text + '</span>';
-  pullIndicator.style.opacity = Math.min(1, d/70);
-}
-function hidePull(){ pullIndicator.hidden = true; }
-document.addEventListener('touchstart', e => {
-  if(window.scrollY <= 0 && e.touches.length === 1){
-    if(document.querySelector('.modal:not([hidden])')) return;
-    pullStart = e.touches[0].clientY;
-    pulling = true; pullDist = 0;
+/* ===== سحب للتحديث ===== */
+(function(){
+  const area = $('pullArea'), txt = $('pullText'), pd1 = $('pd1'), pd2 = $('pd2');
+  const mainEl = document.querySelector('main');
+  const brandImg = document.querySelector('.brand-icon');
+  if(brandImg) $('pullIcon').src = brandImg.src;
+  const MAX = 120, TRIGGER = 80, HOLD = 96;
+  let sx = 0, sy = 0, active = false, decided = false, shown = 0, busy = false;
+
+  function paint(h){
+    shown = h;
+    area.style.height = h + 'px';
+    mainEl.style.transform = h > 0 ? 'translateY(' + h + 'px)' : '';
+    const p = Math.min(h / TRIGGER, 1);
+    const th = h * 0.09, d = 18 * (1 - p), r = 5 + 2 * p;
+    const dx = d * Math.cos(th), dy = d * Math.sin(th);
+    pd1.setAttribute('cx', 30 + dx); pd1.setAttribute('cy', 30 + dy);
+    pd2.setAttribute('cx', 30 - dx); pd2.setAttribute('cy', 30 - dy);
+    pd1.setAttribute('r', r); pd2.setAttribute('r', r);
+    area.style.opacity = Math.min(1, h / 24);
+    txt.textContent = h >= TRIGGER ? 'أفلت للتحديث' : 'اسحب للأسفل للتحديث';
   }
-}, { passive: true });
-document.addEventListener('touchmove', e => {
-  if(!pulling) return;
-  pullDist = e.touches[0].clientY - pullStart;
-  if(pullDist > 12 && window.scrollY <= 0){
-    showPull(pullDist, pullDist > 90 ? 'أفلت للتحديث' : 'اسحب للأسفل');
-  } else hidePull();
-}, { passive: true });
-document.addEventListener('touchend', () => {
-  if(!pulling) return;
-  pulling = false;
-  if(pullDist > 90){
-    showPull(200, 'تم التحديث');
-    setTimeout(() => location.reload(), 500);
-  } else hidePull();
-});
+  function collapse(){
+    area.classList.add('pull-anim'); mainEl.classList.add('pull-anim');
+    paint(0);
+    setTimeout(() => { area.classList.remove('pull-anim'); mainEl.classList.remove('pull-anim'); }, 300);
+  }
+  function refresh(){
+    busy = true;
+    area.classList.add('pull-anim', 'refreshing'); mainEl.classList.add('pull-anim');
+    paint(HOLD);
+    txt.textContent = 'جارٍ التحديث';
+    try{ save(); }catch(e){}
+    setTimeout(() => location.reload(), 800);
+  }
+  document.addEventListener('touchstart', e => {
+    if(busy || e.touches.length !== 1 || window.scrollY > 0) return;
+    if(document.querySelector('.modal:not([hidden])') || activeNumInput) return;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+    active = true; decided = false;
+  }, { passive: true });
+  document.addEventListener('touchmove', e => {
+    if(!active) return;
+    const dx = e.touches[0].clientX - sx, dy = e.touches[0].clientY - sy;
+    if(!decided){
+      if(Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)){ active = false; return; }
+      if(Math.abs(dy) <= 8) return;
+      decided = true;
+    }
+    if(dy <= 0 || window.scrollY > 0){ if(shown > 0) paint(0); return; }
+    paint(Math.min(dy * 0.6, MAX));
+  }, { passive: true });
+  function end(){
+    if(!active) return;
+    active = false;
+    if(shown >= TRIGGER) refresh(); else if(shown > 0) collapse();
+  }
+  document.addEventListener('touchend', end);
+  document.addEventListener('touchcancel', end);
+  paint(0);
+})();
 
 /* ===== ESC ===== */
 document.addEventListener('keydown', e => {
