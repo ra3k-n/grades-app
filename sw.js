@@ -1,5 +1,5 @@
 /* Service Worker — تحديث مباشر للنسخة المنشورة */
-const CACHE = 'grades-v8';
+const CACHE = 'grades-app';
 const APP_SHELL = ['./', './index.html'];
 
 self.addEventListener('install', event => {
@@ -28,6 +28,7 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const request = event.request;
   if (request.method !== 'GET') return;
+  if (request.cache === 'no-store') return;
 
   const isPage = request.mode === 'navigate' ||
     new URL(request.url).pathname.endsWith('/index.html');
