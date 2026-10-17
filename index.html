@@ -281,20 +281,14 @@ thead th input{
   color:inherit; text-align:center; padding:2px;
   border-bottom:1px dashed var(--line2); outline:none;
 }
-thead th .max-mark{font-size:15px; color:var(--red); font-weight:700}
+thead th .max-mark{font-size:15px; color:var(--mm,var(--red)); font-weight:700}
 thead th .max-mark input{
   width:48px; display:inline-block; text-align:center; font-size:15px;
   border-bottom:1px dashed var(--line2);
-  color:var(--red); font-weight:700;
-}
-:root[data-theme="dark"] thead th .max-mark,
-:root[data-theme="dark"] thead th .max-mark input{color:#fff}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]) thead th .max-mark,
-  :root:not([data-theme="light"]) thead th .max-mark input{color:#fff}
+  color:var(--mm,var(--red)); font-weight:700;
 }
 
-th.sec-col{background:linear-gradient(180deg,#e4e4e4,#d8d8d4); min-width:210px; border-left:2px solid var(--line2)}
+th.sec-col{background:linear-gradient(180deg,#e4e4e4,#d8d8d4); min-width:190px; border-left:2px solid var(--line2)}
 :root[data-theme="dark"] th.sec-col{background:linear-gradient(180deg,#2d3835,#263130)}
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]) th.sec-col{background:linear-gradient(180deg,#2d3835,#263130)}
@@ -310,6 +304,8 @@ th.col-tot{background:#f5dcc8}
 th.col-t1{background:#f2eecf}
 th.col-t2{background:#cfe2ee}
 th.col-att{background:#cfe2ee}
+thead th[class^="col-"]{min-width:max(92px, calc(var(--fs,14px) * 5.2))}
+thead th.col-att{min-width:170px}
 :root[data-theme="dark"] th.col-act,
 :root[data-theme="dark"] th.col-par,
 :root[data-theme="dark"] th.col-hw,
@@ -330,19 +326,19 @@ tbody td{
 tbody td:last-child{border-left:none}
 
 td.name-cell{
-  padding:0; min-width:200px; text-align:center;
+  padding:0; min-width:150px; text-align:center;
   vertical-align:middle;
 }
 td.name-cell .name-wrapper{
   display:flex; align-items:center; justify-content:center; gap:6px;
-  padding:5px 8px;
+  padding:5px 4px;
   min-height:40px;
   box-sizing:border-box;
 }
 td.name-cell input{
   flex:1; border:none; background:transparent;
-  font:inherit; font-size:calc(var(--fs,14px) * 1.3); color:var(--ink);
-  text-align:center; padding:4px 6px;
+  font:inherit; font-size:calc(var(--fs,14px) * 1.3); color:inherit;
+  text-align:center; padding:4px 2px;
   outline:none; border-radius:6px; min-width:0;
   transition:background-color .15s;
 }
@@ -362,7 +358,7 @@ td.num-cell input{
 td.cell input{
   width:100%; border:none; background:transparent;
   text-align:center; font:inherit;
-  color:var(--ink); padding:6px 2px;
+  color:inherit; padding:6px 2px;
   outline:none; border-radius:6px;
   transition:background-color .15s;
 }
@@ -373,6 +369,16 @@ td.total-cell{background:#f5dcc8; font-weight:800}
 
 .th-stats{padding:7px 14px; font-size:15px; border-radius:9px; pointer-events:auto}
 .th-stats svg{width:17px; height:17px}
+.stats-clear{padding:5px 10px; font-size:12px; flex:none}
+.cc-row{background:var(--bg2); border:1px solid var(--line); border-radius:12px; padding:10px}
+.cc-head{display:flex; align-items:center; gap:10px; margin-bottom:8px}
+.cc-title{flex:1; font-size:14px; font-weight:700}
+.cc-cur{width:28px; height:28px; border-radius:8px; border:1px solid var(--line2); flex:none}
+.cc-input{width:44px; height:34px; border:none; border-radius:8px; cursor:pointer; background:none; padding:0; flex:none}
+.cc-reset{padding:6px 10px; font-size:12px}
+.cc-swatches{display:flex; flex-wrap:wrap; gap:8px}
+.cc-sw{width:30px; height:30px; border-radius:9px; border:2px solid var(--line2); cursor:pointer}
+.cc-sw.selected{border-color:var(--ink); box-shadow:0 0 0 2px var(--accent)}
 .confirm-btn{
   width:34px; height:34px; border-radius:50%;
   background:transparent; border:none; cursor:pointer; padding:0;
@@ -389,7 +395,7 @@ td.total-cell .total-display{
 td.total-cell .total-display input{
   flex:1; min-width:0; font-weight:800; font-size:15px;
   border:none; background:transparent;
-  color:var(--ink); text-align:center; outline:none;
+  color:inherit; text-align:center; outline:none;
 }
 td.total-cell .edit-btn{
   border:none; background:transparent;
@@ -856,7 +862,7 @@ tr.select-row td.att-cell{cursor:default}
     <div id="colorsList" style="display:flex; flex-direction:column; gap:8px; margin-bottom:14px"></div>
     <div class="modal-actions">
       <button class="btn primary" onclick="saveColors()">حفظ</button>
-      <button class="btn" onclick="closeModal('colorsModal')">إلغاء</button>
+      <button class="btn" onclick="cancelColors()">إلغاء</button>
     </div>
   </div>
 </div>
@@ -980,6 +986,24 @@ const DEFAULT_COLUMNS = [
 ];
 
 const DEFAULT_SECTIONS = ['101','102','103','104','206'];
+
+const DEFAULT_COL_COLORS = {};
+DEFAULT_COLUMNS.forEach(c => { DEFAULT_COL_COLORS[c.key] = c.color; });
+function isDarkTheme(){ return document.documentElement.getAttribute('data-theme') === 'dark'; }
+function colColor(col){
+  if(isDarkTheme() && col.color === DEFAULT_COL_COLORS[col.key]) return '#2d3835';
+  return col.color || '#ffffff';
+}
+function toHex6(c){
+  c = String(c || '').trim();
+  if(/^#[0-9a-f]{3}$/i.test(c)) c = '#' + c[1]+c[1]+c[2]+c[2]+c[3]+c[3];
+  return /^#[0-9a-f]{6}$/i.test(c) ? c.toLowerCase() : '#ffffff';
+}
+function textOn(c){
+  const h = toHex6(c);
+  const r = parseInt(h.slice(1,3),16), g = parseInt(h.slice(3,5),16), b = parseInt(h.slice(5,7),16);
+  return (0.299*r + 0.587*g + 0.114*b) > 150 ? '#1a1a1a' : '#ffffff';
+}
 
 let state = null;
 let openedTools = new Set();
@@ -1121,10 +1145,12 @@ function renderSectionsStrip(){
     const b = document.createElement('button');
     b.className = 'sec-btn';
     b.textContent = 'شعبة ' + s.sec;
-    b.onclick = () => scrollToSection(i);
-    let timer;
+    let timer, secFired = false;
+    b.onclick = () => { if(secFired){ secFired = false; return; } scrollToSection(i); };
     b.addEventListener('pointerdown', () => {
+      secFired = false;
       timer = setTimeout(() => {
+        secFired = true;
         currentSectionForMenu = i;
         openSectionMenu(i);
       }, 650);
@@ -1309,10 +1335,10 @@ function buildTable(section, si){
   th0.className = 'sec-col';
   th0.innerHTML = `
     <div class="th-inner">
-      <div>شعبة ( <input class="inline-edit" data-field="sec" data-si="${si}" value="${esc(section.sec)}" inputmode="none" data-num="1" readonly> )</div>
+      <div>شعبة ( <input size="1" class="inline-edit" data-field="sec" data-si="${si}" value="${esc(section.sec)}" inputmode="none" data-num="1" readonly> )</div>
       <div class="sub-line">
-        <input class="inline-edit" data-field="title" data-si="${si}" value="${esc(section.title)}">
-        <input class="inline-edit" data-field="level" data-si="${si}" value="${esc(section.level)}" style="width:34px">
+        <input size="1" class="inline-edit" data-field="title" data-si="${si}" value="${esc(section.title)}">
+        <input size="1" class="inline-edit" data-field="level" data-si="${si}" value="${esc(section.level)}" style="width:34px">
       </div>
     </div>
   `;
@@ -1325,9 +1351,12 @@ function buildTable(section, si){
   state.columns.forEach((col, ci) => {
     const th = document.createElement('th');
     th.className = 'col-' + col.key;
+    const hbg = colColor(col), htc = textOn(hbg);
+    th.style.background = hbg; th.style.color = htc;
+    th.style.setProperty('--mm', htc === '#ffffff' ? '#ffffff' : '#e63946');
     let maxHtml = '';
     if((col.type === 'number' || col.type === 'total') && col.max !== undefined){
-      maxHtml = '<div class="max-mark">( <input class="inline-edit" data-col="' + ci + '" data-field="max" value="' + esc(col.max) + '" inputmode="none" data-num="1" readonly> )</div>';
+      maxHtml = '<div class="max-mark">( <input size="1" class="inline-edit" data-col="' + ci + '" data-field="max" value="' + esc(col.max) + '" inputmode="none" data-num="1" readonly> )</div>';
     } else if(col.type === 'total'){
       maxHtml = '<div class="max-mark">( <span>مجموع</span> )</div>';
     }
@@ -1337,7 +1366,7 @@ function buildTable(section, si){
     th.innerHTML = `
       <div class="th-inner">
         ${statsHtml}
-        <input class="inline-edit" data-col="${ci}" data-field="title" value="${esc(col.title)}">
+        <input size="1" class="inline-edit" data-col="${ci}" data-field="title" value="${esc(col.title)}">
         ${maxHtml}
       </div>
     `;
@@ -1363,7 +1392,7 @@ function buildStudentRow(stu, si, ri){
 
   const tdName = document.createElement('td');
   tdName.className = 'name-cell';
-  if(stu.color) tdName.style.background = stu.color;
+  if(stu.color){ tdName.style.background = stu.color; tdName.style.color = textOn(stu.color); }
 
   const attStatus = stu.attendance[state.day] || '';
   const badge = attStatus ? attBadgeHTML(attStatus) : '';
@@ -1372,7 +1401,7 @@ function buildStudentRow(stu, si, ri){
     ? '<button class="select-check ' + ((si+'-'+ri) in selectedStudents ? 'checked' : '') + '"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></button>'
     : '';
 
-  tdName.innerHTML = '<div class="name-wrapper">' + checkbox + badge + '<input class="name-input" readonly data-si="' + si + '" data-ri="' + ri + '" data-field="name" value="' + esc(stu.name) + '" placeholder="اسم الطالب">' + '</div>';
+  tdName.innerHTML = '<div class="name-wrapper">' + checkbox + badge + '<input class="name-input" size="' + Math.max(6, String(stu.name || '').length + 2) + '" readonly data-si="' + si + '" data-ri="' + ri + '" data-field="name" value="' + esc(stu.name) + '" placeholder="اسم الطالب">' + '</div>';
   tdName.addEventListener('contextmenu', e => { if(e.target.closest('.name-input[readonly]') || !e.target.closest('input')) e.preventDefault(); });
 
   if(!selectModeSections.has(si)){
@@ -1384,24 +1413,26 @@ function buildStudentRow(stu, si, ri){
   }
   const tdNum = document.createElement('td');
   tdNum.className = 'num-cell';
-  tdNum.innerHTML = '<input readonly data-si="' + si + '" data-ri="' + ri + '" data-field="num" value="' + esc(stu.num) + '" inputmode="none" data-num="1">';
+  tdNum.innerHTML = '<input size="1" readonly data-si="' + si + '" data-ri="' + ri + '" data-field="num" value="' + esc(stu.num) + '" inputmode="none" data-num="1">';
   tr.appendChild(tdNum);
   tr.appendChild(tdName);
 
   state.columns.forEach((col, ci) => {
     const td = document.createElement('td');
     td.className = 'cell';
-    td.style.background = col.color;
+    const cbg = colColor(col);
+    td.style.background = cbg;
+    td.style.color = textOn(cbg);
 
     if(col.type === 'number'){
       const v = stu.scores[col.key] ?? '';
-      td.innerHTML = '<input data-si="' + si + '" data-ri="' + ri + '" data-col="' + ci + '" data-field="score" value="' + esc(v) + '" inputmode="none" data-num="1" readonly>';
+      td.innerHTML = '<input size="1" data-si="' + si + '" data-ri="' + ri + '" data-col="' + ci + '" data-field="score" value="' + esc(v) + '" inputmode="none" data-num="1" readonly>';
     }
     else if(col.type === 'total'){
       td.className = 'cell total-cell';
       if(stu.totalConfirmed){
         const total = (stu.totalValue === null || stu.totalValue === undefined || stu.totalValue === '') ? calcTotal(stu) : stu.totalValue;
-        td.innerHTML = '<div class="total-display"><input readonly data-si="' + si + '" data-ri="' + ri + '" data-field="total" data-num="1" inputmode="none" value="' + total + '">' +
+        td.innerHTML = '<div class="total-display"><input size="1" readonly data-si="' + si + '" data-ri="' + ri + '" data-field="total" data-num="1" inputmode="none" value="' + total + '">' +
           '<button class="edit-btn" onclick="reopenTotal(' + si + ',' + ri + ')" title="تعديل"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div>';
       } else {
         td.innerHTML = '<button class="confirm-btn" onclick="confirmTotal(' + si + ',' + ri + ')" title="تأكيد المجموع"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></button>';
@@ -1441,13 +1472,15 @@ function attendanceButtonsHTML(si, ri, stu){
 
 function attachNameHandlers(td, si, ri){
   const inp = td.querySelector('.name-input');
-  let lpTimer = null, moved = false, sx = 0, sy = 0;
+  let lpTimer = null, moved = false, sx = 0, sy = 0, lpFired = false;
+  inp.addEventListener('input', () => { inp.size = Math.max(6, inp.value.length + 2); });
 
   inp.addEventListener('pointerdown', e => {
-    moved = false; sx = e.clientX; sy = e.clientY;
+    moved = false; lpFired = false; sx = e.clientX; sy = e.clientY;
     clearTimeout(lpTimer);
     lpTimer = setTimeout(() => {
       if(moved) return;
+      lpFired = true;
       currentSectionForMenu = si;
       currentRowForMenu = ri;
       openRowMenu(si, ri);
@@ -1462,6 +1495,7 @@ function attachNameHandlers(td, si, ri){
     inp.addEventListener(ev, () => clearTimeout(lpTimer));
   });
   inp.addEventListener('click', e => {
+    if(lpFired){ e.preventDefault(); lpFired = false; return; }
     if(!inp.readOnly) return;
     e.preventDefault();
     inp.readOnly = false;
@@ -1805,7 +1839,7 @@ function openStats(si){
     openModal('statsModal');
     return;
   }
-  list.innerHTML = section.students.map(stu => {
+  list.innerHTML = section.students.map((stu, ri) => {
     const c = { present:0, absent:0, late:0 };
     Object.values(stu.attendance || {}).forEach(v => { if(c[v] !== undefined) c[v]++; });
     return '<div class="stats-item">' +
@@ -1815,9 +1849,20 @@ function openStats(si){
         '<span class="stat-pill absent"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' + c.absent + '</span>' +
         '<span class="stat-pill late"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>' + c.late + '</span>' +
       '</div>' +
+      '<button class="btn danger stats-clear" onclick="confirmClearRecord(' + si + ',' + ri + ')">مسح السجل</button>' +
     '</div>';
   }).join('');
   openModal('statsModal');
+}
+function confirmClearRecord(si, ri){
+  const stu = state.sections[si].students[ri];
+  showConfirm('مسح السجل', 'هل تريد مسح سجل التحضير للطالب <b>' + (esc(stu.name) || ('رقم ' + esc(stu.num))) + '</b>؟', () => {
+    stu.attendance = {};
+    save();
+    render();
+    openStats(si);
+    notify('تم مسح السجل', 'del');
+  });
 }
 
 /* ===== شعبة ===== */
@@ -1870,17 +1915,49 @@ function confirmDeleteAllStudents(si){
 }
 
 /* ===== ألوان الأعمدة ===== */
+const COLOR_CHOICES = ['#ffffff','#e9ece4','#f4dadd','#f5dcc8','#f2eecf','#cfe2ee','#fecaca','#fed7aa','#fef08a','#d9f99d','#bbf7d0','#a7f3d0','#bae6fd','#bfdbfe','#ddd6fe','#e9d5ff','#fbcfe8','#e5e7eb','#cbd5e1','#94a3b8','#2d3835','#1f5c55','#1f4e8c','#000000'];
+let colorsSnapshot = null;
 function openColorsDialog(){
-  const list = $('colorsList');
-  list.innerHTML = state.columns.map((c, i) =>
-    '<label style="display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px">' +
-      '<input type="color" value="' + c.color + '" oninput="state.columns[' + i + '].color=this.value" style="width:44px;height:36px;border:none;border-radius:8px;cursor:pointer;background:none">' +
-      '<span style="flex:1;font-size:14px;font-weight:600">' + esc(c.title) + '</span>' +
-    '</label>'
-  ).join('');
+  colorsSnapshot = state.columns.map(c => c.color);
+  renderColorsList();
   openModal('colorsModal');
 }
+function renderColorsList(){
+  $('colorsList').innerHTML = state.columns.map((c, i) => {
+    const cur = colColor(c);
+    const sw = COLOR_CHOICES.map(h =>
+      '<span class="cc-sw' + (h.toLowerCase() === toHex6(cur) ? ' selected' : '') + '" data-c="' + h + '" style="background:' + h + '" onclick="pickColumnColor(' + i + ',\'' + h + '\')"></span>'
+    ).join('');
+    return '<div class="cc-row">' +
+      '<div class="cc-head">' +
+        '<span class="cc-title">' + esc(c.title) + '</span>' +
+        '<span class="cc-cur" style="background:' + cur + '"></span>' +
+        '<input type="color" class="cc-input" value="' + toHex6(cur) + '" oninput="pickColumnColor(' + i + ',this.value,true)">' +
+        '<button class="btn cc-reset" onclick="resetColumnColor(' + i + ')">افتراضي</button>' +
+      '</div>' +
+      '<div class="cc-swatches">' + sw + '</div>' +
+    '</div>';
+  }).join('');
+}
+function pickColumnColor(i, hex, fromInput){
+  state.columns[i].color = hex;
+  const row = document.querySelectorAll('#colorsList .cc-row')[i];
+  if(!row) return;
+  row.querySelector('.cc-cur').style.background = hex;
+  row.querySelectorAll('.cc-sw').forEach(sw => sw.classList.toggle('selected', !fromInput && sw.dataset.c.toLowerCase() === hex.toLowerCase()));
+  if(!fromInput) row.querySelector('.cc-input').value = toHex6(hex);
+}
+function resetColumnColor(i){
+  state.columns[i].color = DEFAULT_COL_COLORS[state.columns[i].key] || '#ffffff';
+  renderColorsList();
+}
+function cancelColors(){
+  if(colorsSnapshot) state.columns.forEach((c, i) => { c.color = colorsSnapshot[i]; });
+  colorsSnapshot = null;
+  closeModal('colorsModal');
+}
 function saveColors(){
+  colorsSnapshot = null;
   save();
   closeModal('colorsModal');
   render();
@@ -1930,7 +2007,8 @@ function handleWordFile(file){
     if(!lines.length){ $('wordStatus').textContent = 'لم أجد أسماء'; return; }
     const parsed = groupSections(lines);
     window.__wordParsed = parsed;
-    let msg = 'تم العثور على ' + lines.length + ' اسم';
+    const totalNames = parsed.reduce((n, p) => n + p.names.length, 0);
+    let msg = 'تم العثور على ' + totalNames + ' اسم';
     const named = parsed.filter(p => p.sec);
     if(named.length){
       msg += ' موزعة على ' + named.length + ' شعب:\n';
@@ -1954,6 +2032,9 @@ function confirmWordImport(){
   const parsed = window.__wordParsed;
   if(!parsed) return;
   let added = 0;
+  const cleaned = new Set();
+  const hasData = st => (st.name || '').trim() || Object.values(st.scores || {}).some(v => String(v == null ? '' : v).trim()) ||
+    Object.keys(st.attendance || {}).length || (st.notes || []).length || st.totalConfirmed;
   parsed.forEach(p => {
     let section;
     if(p.sec){
@@ -1964,6 +2045,7 @@ function confirmWordImport(){
       }
     } else section = state.sections[0];
     if(!section) return;
+    if(p.names.length && !cleaned.has(section)){ cleaned.add(section); section.students = section.students.filter(hasData); }
     p.names.forEach(name => {
       const t = name.trim();
       if(!t) return;
@@ -2023,6 +2105,8 @@ function extractLines(xml){
     if(!t) return;
     if(/^[\s\d٠-٩.\-–—()\/:,،]+$/.test(t)) return;
     if(/^(الاسم|اسم الطالب|أسماء الطلاب|اسماء الطلاب|م|الرقم|التسلسل)$/.test(t)) return;
+    if(/^(?:كفايات\s*لغوية.*|اختبار.*|نشاط(?:\s*صفي)?|مشاركة|واجب|المجموع|تحضير|الدرجة.*|إحصائيات)$/.test(t)) return;
+    if((state.columns || []).some(c => normalizeAr(c.title) === normalizeAr(t))) return;
     out.push(t);
   });
   return out;
@@ -2274,6 +2358,12 @@ document.addEventListener('keydown', (e) => {
 document.addEventListener('contextmenu', e => {
   if(!(e.target.closest && e.target.closest('input:not([readonly]),textarea'))) e.preventDefault();
 });
+document.addEventListener('selectionchange', () => {
+  const ae = document.activeElement;
+  if(ae && ae.matches && ae.matches('input:not([readonly]),textarea')) return;
+  const sel = window.getSelection && window.getSelection();
+  if(sel && !sel.isCollapsed) sel.removeAllRanges();
+});
 document.addEventListener('selectstart', e => {
   const el = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
   if(!el || !el.closest('input:not([readonly]),textarea')) e.preventDefault();
@@ -2448,6 +2538,7 @@ document.addEventListener('visibilitychange', () => { if(!document.hidden) check
 /* ===== ESC ===== */
 document.addEventListener('keydown', e => {
   if(e.key === 'Escape'){
+    if($('colorsModal') && !$('colorsModal').hidden) cancelColors();
     ['rowMenuModal','studentColorModal','addSectionModal','editSectionModal','notesModal','statsModal','colorsModal','fontModal','wordModal','backupModal','confirmModal'].forEach(id => {
       const el = $(id);
       if(el && !el.hidden) el.hidden = true;
