@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>سجل الدرجات</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231f5c55'/%3E%3Ctext x='32' y='46' font-size='38' font-weight='900' text-anchor='middle' fill='%23fff' font-family='sans-serif'%3E%D8%B3%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -12,18 +12,18 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="سجل الدرجات">
 <meta name="theme-color" content="#1f5c55">
-<script>try{var t=localStorage.getItem('gradesheet_theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}</script>
+<script>(function(){var t='light';try{t=localStorage.getItem('gradesheet_theme')||'light'}catch(e){}document.documentElement.setAttribute('data-theme',t)})()</script>
 <style>
 :root{
   --bg:#f5f5f2; --bg2:#ffffff; --card:#ffffff;
   --ink:#1a1a1a; --ink2:#2d2d2d; --mut:#6b6b6b;
   --line:#d4d4cf; --line2:#b8b8b0;
   --accent:#1f5c55; --accent2:#2a7a70;
-  --blue:#1f4e8c; --green:#22a854; --greenBtn:#16a34a;
+  --blue:#1f4e8c; --green:#22a854;
   --red:#e63946; --orange:#f59e0b; --gold:#b8860b;
   --shadow:0 2px 8px rgba(0,0,0,.06);
   --shadow2:0 4px 16px rgba(0,0,0,.1);
-  --top-1:56px; --top-2:60px;
+  --top-1:52px; --top-2:0px;
   --top-total:calc(var(--top-1) + var(--top-2));
   --bot:56px;
 }
@@ -48,13 +48,18 @@
   --shadow2:0 4px 16px rgba(0,0,0,.4);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%}
+html,body{height:100%; overscroll-behavior-y:none}
+html{-webkit-text-size-adjust:100%; text-size-adjust:100%}
+body{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none}
+input,textarea,select{-webkit-user-select:text; user-select:text; -webkit-touch-callout:default}
+input[readonly]{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none; cursor:pointer}
 body{
   font-family:'Segoe UI',Tahoma,'Noto Naskh Arabic',system-ui,sans-serif;
   background:var(--bg); color:var(--ink);
   padding-top:calc(var(--top-total) + env(safe-area-inset-top,0px) + 8px);
-  padding-bottom:calc(var(--bot) + env(safe-area-inset-bottom,0px) + 8px);
-  padding-inline:10px;
+  padding-bottom:calc(52px + env(safe-area-inset-bottom, 0px) + 10px);
+  padding-left:max(10px,env(safe-area-inset-left,0px));
+  padding-right:max(10px,env(safe-area-inset-right,0px));
   transition:background-color .3s,color .3s;
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
@@ -64,26 +69,32 @@ body{
 .topbar{
   position:fixed; top:0; left:0; right:0;
   z-index:200;
+  transform:translateZ(0);
   padding-top:env(safe-area-inset-top,0px);
   background:var(--card);
   border-bottom:1px solid var(--line);
   box-shadow:var(--shadow);
 }
 .topbar-row-1{
+  position:relative;
   height:var(--top-1);
   display:flex; align-items:center; gap:8px;
-  padding-inline:10px;
+  padding-left:max(10px,env(safe-area-inset-left,0px));
+  padding-right:max(10px,env(safe-area-inset-right,0px));
 }
 .brand{
   flex:1; min-width:0;
   display:flex; align-items:center; gap:8px;
   font-weight:800; font-size:15px; color:var(--ink);
-  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.brand span{
+  position:absolute; left:50%; transform:translateX(-50%);
+  font-size:20px; font-weight:900; text-align:center; white-space:nowrap;
 }
 .brand-icon{
-  width:32px; height:32px; border-radius:8px; flex:none;
-  background:linear-gradient(135deg,var(--accent),var(--accent2));
-  display:grid; place-items:center; color:#fff; font-weight:900; font-size:16px;
+  width:34px; height:34px; border-radius:8px; flex:none;
+  display:block; object-fit:cover;
 }
 .icon-btn{
   width:42px; height:42px; border-radius:50%; flex:none;
@@ -95,8 +106,8 @@ body{
 .icon-btn:active{transform:scale(.92)}
 .icon-btn svg{width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
 .menu-dropdown{
-  position:absolute; top:calc(var(--top-1) + env(safe-area-inset-top,0px) + 6px);
-  left:12px; right:auto;
+  position:absolute; top:calc(100% + 6px);
+  left:0; right:auto;
   background:var(--card); border:1px solid var(--line);
   border-radius:14px; box-shadow:var(--shadow2);
   padding:6px; min-width:210px; z-index:300;
@@ -116,7 +127,8 @@ body{
 .topbar-row-2{
   height:var(--top-2);
   display:flex; align-items:center; gap:8px;
-  padding-inline:10px;
+  padding-left:max(10px,env(safe-area-inset-left,0px));
+  padding-right:max(10px,env(safe-area-inset-right,0px));
   border-top:1px solid var(--line);
   overflow-x:auto;
   scrollbar-width:none;
@@ -138,58 +150,68 @@ body{
 .hero{
   position:relative;
   margin-top:8px;
-  padding:38px 16px 38px;
+  padding:46px 16px 46px;
   text-align:center;
   border-radius:16px;
-  background-image:url('header-bg.png');
+  background-image:url('data:image/jpeg;base64,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');
   background-size:cover;
-  background-position:center;
+  background-position:center 75%;
   overflow:hidden;
 }
 .hero::before{
   content:''; position:absolute; inset:0;
   background:linear-gradient(180deg,
-    rgba(245,245,242,.85) 0%,
-    rgba(245,245,242,.55) 50%,
-    rgba(245,245,242,.85) 100%);
+    rgba(10,25,22,.40) 0%,
+    rgba(10,25,22,.58) 100%);
   z-index:1;
 }
-:root[data-theme="dark"] .hero::before{
-  background:linear-gradient(180deg,
-    rgba(15,20,19,.88) 0%,
-    rgba(15,20,19,.6) 50%,
-    rgba(15,20,19,.88) 100%);
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]) .hero::before{
-    background:linear-gradient(180deg,
-      rgba(15,20,19,.88) 0%,
-      rgba(15,20,19,.6) 50%,
-      rgba(15,20,19,.88) 100%);
-  }
-}
-.hero h1,.hero p{position:relative; z-index:2}
-.hero h1{font-size:30px; font-weight:900; margin:0; color:var(--accent); letter-spacing:-.5px}
-.hero p{margin:8px 0 0; color:var(--ink2); font-size:13px; font-weight:600}
+.hero h1,.hero p{position:relative; z-index:2; display:block; width:100%; text-align:center}
+.hero h1{font-size:38px; font-weight:900; margin:0; color:#fff; letter-spacing:-.5px; text-shadow:0 2px 8px rgba(0,0,0,.55)}
+.hero p{margin:8px 0 0; color:#fff; font-size:15px; font-weight:700; text-shadow:0 1px 6px rgba(0,0,0,.6)}
 
 /* ===== شريط الشعب ===== */
+.quick-actions{display:flex; flex-wrap:wrap; gap:8px; margin-top:10px}
+.float-tools{
+  position:fixed; z-index:300;
+  top:calc(env(safe-area-inset-top,0px) + 5px);
+  left:max(10px, env(safe-area-inset-left,0px));
+  display:flex; align-items:center; gap:8px;
+}
+.float-tools .icon-btn{
+  background:rgba(255,255,255,.72);
+  background:color-mix(in srgb, var(--bg2) 72%, transparent);
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  box-shadow:var(--shadow);
+}
+.menu-dropdown button.danger{color:var(--red)}
+.menu-dropdown button.danger:hover{background:var(--red); color:#fff}
 .sections-strip{
+  position:sticky;
+  top:calc(var(--top-total) + env(safe-area-inset-top,0px));
+  z-index:150;
+  background:var(--bg);
+  background:color-mix(in srgb, var(--bg) 55%, transparent);
+  -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+  box-shadow:0 2px 6px rgba(0,0,0,.06);
   display:flex; gap:10px;
   overflow-x:auto; padding:14px 4px 6px;
   scrollbar-width:none; align-items:center;
   margin-top:10px;
 }
 .sections-strip::-webkit-scrollbar{display:none}
+.sections-strip .sec-btn{pointer-events:auto}
+.sections-strip > .sec-btn:first-child{margin-inline-start:auto}
+.sections-strip > .sec-btn:last-child{margin-inline-end:auto}
 .sec-btn{
   flex:none;
-  background:var(--greenBtn); color:#fff; border:none;
-  border-radius:999px; padding:9px 22px;
-  font:inherit; font-weight:700; font-size:15px;
+  background:var(--accent); color:#fff; border:none;
+  border-radius:12px; padding:11px 26px;
+  font:inherit; font-weight:700; font-size:18px;
   cursor:pointer; white-space:nowrap;
   transition:transform .15s; user-select:none; -webkit-user-select:none; line-height:1;
 }
 .sec-btn:active{transform:scale(.95)}
-.sec-btn.add{background:var(--blue); font-size:17px; padding:9px 20px}
+.sec-btn.add{background:var(--blue); font-size:20px; padding:11px 24px}
 
 /* ===== أزرار ===== */
 .btn{
@@ -200,6 +222,7 @@ body{
   display:inline-flex; align-items:center; gap:6px;
   transition:.15s;
 }
+.btn[hidden]{display:none}
 .btn:hover{background:var(--bg2); filter:brightness(1.05)}
 .btn:active{transform:scale(.97)}
 .btn.primary{background:var(--accent); color:#fff; border-color:var(--accent)}
@@ -210,7 +233,8 @@ body{
 /* ===== بطاقة الشعبة ===== */
 .section-card{
   background:var(--card); border:1px solid var(--line);
-  border-radius:14px; margin-top:14px; overflow:hidden;
+  border-radius:14px; margin-top:10px; margin-bottom:24px;
+  overflow:hidden; overflow:clip;
   box-shadow:var(--shadow);
 }
 .section-top-actions{
@@ -252,47 +276,53 @@ body{
 
 /* ===== الجدول ===== */
 .table-wrap{overflow-x:auto; -webkit-overflow-scrolling:touch}
-table{width:100%; border-collapse:separate; border-spacing:0; min-width:900px}
+table{width:100%; border-collapse:separate; border-spacing:0; min-width:720px}
 thead th{
-  position:sticky;
-  top:calc(var(--top-total) + env(safe-area-inset-top,0px));
+  position:static;
   z-index:100;
   background:var(--bg2);
   border-bottom:2px solid var(--line2);
   border-left:1px solid var(--line);
   padding:8px 4px;
-  font-size:13px; font-weight:700; color:var(--ink);
+  font-family:var(--ff,inherit);
+  font-size:15px; font-weight:700; color:var(--ink);
   text-align:center; vertical-align:top;
 }
 thead th:last-child{border-left:none}
+.table-wrap.native-sticky{overflow:visible}
+.table-wrap.native-sticky thead th{
+  position:sticky; z-index:100;
+  top:calc(var(--top-total) + var(--sections-strip-height, 55px) + env(safe-area-inset-top,0px));
+  box-shadow:0 2px 5px rgba(0,0,0,.12);
+}
+.sticky-table-head{
+  position:fixed; display:none; overflow:hidden;
+  z-index:140; pointer-events:none;
+  background:var(--bg2); box-shadow:0 2px 6px rgba(0,0,0,.12);
+}
+.sticky-table-head table{margin:0; table-layout:fixed}
 thead th .th-inner{display:flex; flex-direction:column; align-items:center; gap:4px}
 thead th input{
   width:88%; border:none; background:transparent;
-  font:inherit; font-weight:700; font-size:13px;
+  font:inherit; font-weight:700; font-size:17px;
   color:inherit; text-align:center; padding:2px;
   border-bottom:1px dashed var(--line2); outline:none;
 }
-thead th .max-mark{font-size:11px; color:var(--red); font-weight:700}
+thead th .max-mark{font-size:15px; color:var(--mm,var(--red)); font-weight:700}
 thead th .max-mark input{
-  width:38px; display:inline-block; text-align:center;
+  width:48px; display:inline-block; text-align:center; font-size:15px;
   border-bottom:1px dashed var(--line2);
-  color:var(--red); font-weight:700;
-}
-:root[data-theme="dark"] thead th .max-mark,
-:root[data-theme="dark"] thead th .max-mark input{color:#fff}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]) thead th .max-mark,
-  :root:not([data-theme="light"]) thead th .max-mark input{color:#fff}
+  color:var(--mm,var(--red)); font-weight:700;
 }
 
-th.sec-col{background:linear-gradient(180deg,#e4e4e4,#d8d8d4); min-width:190px}
+th.sec-col{background:linear-gradient(180deg,#e4e4e4,#d8d8d4); min-width:190px; border-left:2px solid var(--line2)}
 :root[data-theme="dark"] th.sec-col{background:linear-gradient(180deg,#2d3835,#263130)}
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]) th.sec-col{background:linear-gradient(180deg,#2d3835,#263130)}
 }
-th.sec-col input{border-bottom:1px dashed var(--line2); font-weight:800; font-size:14px; width:60px}
-th.sec-col .sub-line{font-size:12px; color:var(--mut); margin-top:2px; display:flex; gap:4px; justify-content:center; align-items:center; flex-wrap:wrap}
-th.sec-col .sub-line input{width:105px; font-size:12px; font-weight:600; color:var(--ink2)}
+th.sec-col input{border-bottom:1px dashed var(--line2); font-weight:800; font-size:20px; width:72px}
+th.sec-col .sub-line{font-size:16px; color:var(--mut); margin-top:2px; display:flex; gap:4px; justify-content:center; align-items:center; flex-wrap:wrap}
+th.sec-col .sub-line input{width:125px; font-size:17px; font-weight:600; color:var(--ink2)}
 
 th.col-act{background:#e9ece4}
 th.col-par{background:#e9ece4}
@@ -301,6 +331,8 @@ th.col-tot{background:#f5dcc8}
 th.col-t1{background:#f2eecf}
 th.col-t2{background:#cfe2ee}
 th.col-att{background:#cfe2ee}
+thead th[class^="col-"]{min-width:max(92px, calc(var(--fs,14px) * 5.2))}
+thead th.col-att{min-width:170px}
 :root[data-theme="dark"] th.col-act,
 :root[data-theme="dark"] th.col-par,
 :root[data-theme="dark"] th.col-hw,
@@ -315,35 +347,45 @@ tbody td{
   border-bottom:1px solid var(--line);
   border-left:1px solid var(--line);
   padding:6px 4px; text-align:center;
-  color:var(--ink); font-size:14px;
+  color:var(--ink);
+  font-family:var(--ff,inherit); font-size:var(--fs,14px); font-weight:var(--fw,400);
 }
 tbody td:last-child{border-left:none}
 
 td.name-cell{
-  display:flex; align-items:center; gap:6px;
-  padding:6px 8px; min-width:190px; text-align:right;
+  padding:0; min-width:150px; text-align:center;
+  vertical-align:middle;
+}
+td.name-cell .name-wrapper{
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  padding:5px 4px;
+  min-height:40px;
+  box-sizing:border-box;
 }
 td.name-cell input{
   flex:1; border:none; background:transparent;
-  font:inherit; font-size:14px; color:var(--ink);
-  text-align:right; padding:4px 6px;
+  font:inherit; font-size:calc(var(--fs,14px) * 1.3); color:inherit;
+  text-align:center; padding:4px 2px;
   outline:none; border-radius:6px; min-width:0;
   transition:background-color .15s;
 }
+.name-input[readonly]{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none; cursor:default}
 td.name-cell input:not([readonly]){
   background:var(--bg2);
   box-shadow:inset 0 0 0 2px var(--accent);
 }
 td.num-cell{width:48px; background:var(--bg2); font-weight:700; font-size:13px}
+thead th.num-col{width:48px; background:linear-gradient(180deg,#e4e4e4,#d8d8d4); border-left:none}
+:root[data-theme="dark"] thead th.num-col{background:linear-gradient(180deg,#2d3835,#263130)}
 td.num-cell input{
   width:100%; border:none; background:transparent;
   text-align:center; font:inherit; font-weight:700;
-  font-size:13px; color:var(--ink); outline:none;
+  color:var(--ink); outline:none;
 }
 td.cell input{
   width:100%; border:none; background:transparent;
-  text-align:center; font:inherit; font-size:14px;
-  color:var(--ink); padding:6px 2px;
+  text-align:center; font:inherit;
+  color:inherit; padding:6px 2px;
   outline:none; border-radius:6px;
   transition:background-color .15s;
 }
@@ -352,6 +394,19 @@ td.cell input:focus{background:var(--bg2); box-shadow:inset 0 0 0 2px var(--acce
 td.total-cell{background:#f5dcc8; font-weight:800}
 :root[data-theme="dark"] td.total-cell{background:#2d3835}
 
+.th-stats{padding:7px 14px; font-size:15px; border-radius:9px; pointer-events:auto}
+.th-stats svg{width:17px; height:17px}
+.stats-clear{width:38px; height:38px; padding:0; justify-content:center; flex:none}
+.stats-clear svg{width:19px; height:19px}
+.cc-row{background:var(--bg2); border:1px solid var(--line); border-radius:12px; padding:10px}
+.cc-head{display:flex; align-items:center; gap:10px; margin-bottom:8px}
+.cc-title{flex:1; font-size:14px; font-weight:700}
+.cc-cur{width:28px; height:28px; border-radius:8px; border:1px solid var(--line2); flex:none}
+.cc-input{width:44px; height:34px; border:none; border-radius:8px; cursor:pointer; background:none; padding:0; flex:none}
+.cc-reset{padding:6px 10px; font-size:12px}
+.cc-swatches{display:flex; flex-wrap:wrap; gap:8px}
+.cc-sw{width:30px; height:30px; border-radius:9px; border:2px solid var(--line2); cursor:pointer}
+.cc-sw.selected{border-color:var(--ink); box-shadow:0 0 0 2px var(--accent)}
 .confirm-btn{
   width:34px; height:34px; border-radius:50%;
   background:transparent; border:none; cursor:pointer; padding:0;
@@ -368,7 +423,7 @@ td.total-cell .total-display{
 td.total-cell .total-display input{
   flex:1; min-width:0; font-weight:800; font-size:15px;
   border:none; background:transparent;
-  color:var(--ink); text-align:center; outline:none;
+  color:inherit; text-align:center; outline:none;
 }
 td.total-cell .edit-btn{
   border:none; background:transparent;
@@ -396,6 +451,8 @@ td.att-cell{padding:4px 2px}
 .att-btn.late{background:var(--orange)}
 .att-btn:hover{opacity:.85}
 
+.att-letter{font-size:17px; font-weight:900; line-height:1; color:#fff; font-family:inherit}
+.att-badge .att-letter{font-size:13px}
 .att-badge{
   display:inline-flex; align-items:center; justify-content:center;
   width:22px; height:22px; border-radius:50%; color:#fff; flex:none;
@@ -406,18 +463,6 @@ td.att-cell{padding:4px 2px}
 .att-badge.late{background:var(--orange)}
 
 /* ===== الشريط السفلي ===== */
-.bottombar{
-  position:fixed; left:0; right:0; bottom:0;
-  height:calc(var(--bot) + env(safe-area-inset-bottom,0px));
-  padding-bottom:env(safe-area-inset-bottom,0px);
-  background:var(--card);
-  border-top:1px solid var(--line);
-  box-shadow:0 -2px 12px rgba(0,0,0,.06);
-  display:flex; align-items:center; justify-content:center;
-  z-index:200;
-}
-.ver-text{font-size:13px; font-weight:800; color:var(--mut); letter-spacing:.5px}
-
 /* ===== مودالات ===== */
 .modal{
   position:fixed; inset:0;
@@ -431,7 +476,7 @@ td.att-cell{padding:4px 2px}
 .modal-content{
   background:var(--card); color:var(--ink);
   border-radius:18px; padding:20px;
-  width:100%; max-width:460px; max-height:88vh; overflow:auto;
+  width:100%; max-width:460px; max-height:88vh; max-height:88dvh; overflow:auto;
   box-shadow:var(--shadow2);
   animation:slideUp .25s;
 }
@@ -466,16 +511,17 @@ textarea.form-field{min-height:110px; resize:vertical}
 /* إشعار */
 .toast{
   position:fixed;
-  bottom:calc(var(--bot) + env(safe-area-inset-bottom,0px) + 14px);
+  top:calc(var(--top-1) + env(safe-area-inset-top,0px) + 9px);
   left:50%; transform:translateX(-50%);
   background:var(--accent); color:#fff;
-  padding:12px 22px; border-radius:999px;
+  padding:8px 20px; border-radius:999px;
   font-weight:700; font-size:14px;
   box-shadow:var(--shadow2); z-index:99999;
   animation:fade .2s; pointer-events:none;
   max-width:90%; text-align:center;
   display:flex; align-items:center; gap:8px;
 }
+.toast[hidden]{display:none}
 .toast svg{width:18px; height:18px; flex:none; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
 
 /* إحصائيات */
@@ -498,37 +544,55 @@ textarea.form-field{min-height:110px; resize:vertical}
 .stat-pill.absent{background:var(--red)}
 .stat-pill.late{background:var(--orange)}
 
-/* كيبورد */
+/* لوحة الأرقام */
 .num-keypad{
-  position:fixed; bottom:0; left:0; right:0;
-  z-index:10000; background:var(--bg2);
-  border-top:1px solid var(--line);
-  padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
-  display:flex; gap:6px; direction:ltr;
+  position:fixed; z-index:10000;
+  left:50%; transform:translateX(-50%);
+  bottom:calc(env(safe-area-inset-bottom,0px) + 10px);
+  width:min(480px, calc(100vw - 16px));
+  background:#000; border-radius:20px; padding:9px;
+  box-shadow:0 12px 36px rgba(0,0,0,.45);
+  display:grid; grid-template-columns:repeat(6,1fr) 1.35fr; gap:7px;
+  direction:ltr; touch-action:manipulation;
+  -webkit-user-select:none; user-select:none; -webkit-touch-callout:none;
 }
 .num-keypad[hidden]{display:none}
 .num-keypad button{
-  flex:1; font:inherit; font-size:20px; font-weight:700;
-  padding:12px 0; border-radius:9px;
-  background:var(--card); color:var(--ink);
-  border:1px solid var(--line);
-  cursor:pointer; user-select:none; -webkit-user-select:none;
-  transition:.1s;
+  height:52px; border:none; border-radius:14px;
+  background:#fff; color:#111;
+  font:inherit; font-size:26px; font-weight:700; line-height:1;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; touch-action:manipulation; padding:0;
+  transition:transform .08s, background-color .08s;
 }
-.num-keypad button:active{transform:scale(.95); background:var(--accent); color:#fff}
-.num-keypad button.kx{background:var(--bg2); font-size:16px; flex:1.2}
+.num-keypad button:active{transform:scale(.94); background:#d9d9d9}
+.num-keypad button.kdone{grid-column:7; grid-row:1 / span 2; height:auto; font-size:22px}
+.num-keypad button svg{width:26px; height:26px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round; flex:none}
+@media (min-width:768px) and (min-height:521px){
+  .num-keypad{width:600px; padding:12px; gap:9px}
+  .num-keypad button{height:62px; font-size:30px}
+  .num-keypad button.kdone{font-size:26px}
+}
+@media (max-height:520px){
+  .num-keypad{gap:5px; padding:7px; border-radius:16px}
+  .num-keypad button{height:42px; font-size:22px}
+  .num-keypad button.kdone{font-size:18px}
+}
+.num-active{box-shadow:inset 0 0 0 2px var(--accent) !important; background:var(--bg2) !important; border-radius:6px}
 
 /* Word */
+.drop-input{position:absolute; inset:0; width:100%; height:100%; opacity:0; cursor:pointer; font-size:0}
 .drop-zone{
-  border:2px dashed var(--blue); border-radius:12px;
+  position:relative;
+  border:2px dashed var(--accent); border-radius:12px;
   padding:26px 14px; text-align:center;
-  cursor:pointer; background:rgba(31,78,140,.04);
+  cursor:pointer; background:rgba(31,92,85,.06);
   transition:.15s; margin-bottom:12px;
 }
-.drop-zone:hover,.drop-zone.dragover{background:rgba(31,78,140,.12); border-color:var(--accent)}
-.drop-zone svg{width:38px; height:38px; color:var(--blue); margin-bottom:8px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
+.drop-zone:hover,.drop-zone.dragover{background:rgba(31,92,85,.14); border-color:var(--accent)}
+.drop-zone svg{width:38px; height:38px; color:var(--accent); margin-bottom:8px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
 .drop-zone p{font-size:14px; color:var(--mut); margin:3px 0}
-.drop-zone b{color:var(--blue); font-size:15px}
+.drop-zone b{color:var(--accent); font-size:15px}
 
 /* Zoom */
 .zoom-bar{
@@ -570,18 +634,22 @@ textarea.form-field{min-height:110px; resize:vertical}
 }
 .zoom-preview span{font-weight:700; transition:font-size .15s}
 
-/* Pull to refresh */
-.pull-indicator{
-  position:fixed; top:calc(var(--top-total) + env(safe-area-inset-top,0px) + 10px);
-  left:50%; transform:translateX(-50%);
-  background:var(--accent); color:#fff;
-  padding:10px 22px; border-radius:999px;
-  font-weight:700; font-size:13px;
-  box-shadow:var(--shadow2);
-  z-index:9999; pointer-events:none;
-  display:flex; align-items:center; gap:8px;
+/* سحب للتحديث */
+.pull-area{
+  position:fixed; left:0; right:0;
+  top:calc(var(--top-total) + env(safe-area-inset-top,0px));
+  height:0; overflow:hidden; z-index:90;
+  display:flex; align-items:flex-end; justify-content:center;
+  background:var(--bg); pointer-events:none;
 }
-.pull-indicator svg{width:16px; height:16px; fill:none; stroke:currentColor; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
+.pull-inner{display:flex; flex-direction:column; align-items:center; gap:0; padding-bottom:12px}
+.pull-dots{width:60px; height:60px; color:var(--accent); display:block}
+.pull-icon{width:46px; height:46px; border-radius:12px; display:none; margin-bottom:8px; box-shadow:var(--shadow)}
+.pull-text{font-size:14px; font-weight:700; color:var(--mut)}
+.pull-area.refreshing .pull-dots{display:none}
+.pull-area.refreshing .pull-icon{display:block; animation:pullspin 1s linear infinite}
+@keyframes pullspin{to{transform:rotate(360deg)}}
+.pull-anim{transition:height .25s ease, transform .25s ease}
 
 /* ===== وضع التحديد ===== */
 .select-mode-bar{
@@ -593,7 +661,7 @@ textarea.form-field{min-height:110px; resize:vertical}
   display:flex; align-items:center; gap:10px;
   box-shadow:var(--shadow2); z-index:9999;
   font-weight:700; font-size:14px;
-  max-width:94%;
+  max-width:94%; flex-wrap:wrap; justify-content:center; border-radius:22px;
 }
 .select-mode-bar[hidden]{display:none}
 .select-mode-bar .count{
@@ -653,28 +721,34 @@ tr.select-row td.att-cell{cursor:default}
 }
 
 @media (max-width:600px){
-  :root{--top-1:52px; --top-2:56px; --bot:52px}
-  body{padding-inline:6px}
+  :root{--top-1:52px; --top-2:0px; --bot:52px}
+  body{padding-left:max(6px,env(safe-area-inset-left,0px)); padding-right:max(6px,env(safe-area-inset-right,0px))}
   .hero{padding:28px 12px}
-  .hero h1{font-size:24px}
-  .hero p{font-size:12px}
-  .sec-btn{font-size:13px; padding:8px 15px}
-  .sec-btn.add{font-size:15px; padding:8px 14px}
+  .hero h1{font-size:30px}
+  .hero p{font-size:13px}
+  .sec-btn{font-size:16px; padding:9px 18px}
+  .sec-btn.add{font-size:18px; padding:9px 16px}
   .action-btn{padding:8px 12px; font-size:12px; gap:5px}
   .action-btn svg{width:16px; height:16px}
   .icon-btn{width:38px; height:38px}
   .icon-btn svg{width:18px; height:18px}
   .brand{font-size:13px}
+  .brand span{font-size:17px}
   .brand-icon{width:28px; height:28px; font-size:14px}
   .btn{padding:8px 12px; font-size:12px}
   .tool-btn{padding:7px 11px; font-size:12px}
-  tbody td{font-size:13px; padding:5px 3px}
+  tbody td{padding:5px 3px}
   td.name-cell{padding:5px 6px; min-width:140px}
-  td.name-cell input{font-size:13px}
   .att-btn{width:26px; height:26px}
   .att-btn svg{width:14px; height:14px}
   td.num-cell{width:40px}
-  thead th{font-size:12px; padding:6px 3px}
+  thead th{font-size:13px; padding:6px 3px}
+  thead th input{font-size:14px}
+  thead th .max-mark, thead th .max-mark input{font-size:13px}
+  th.sec-col input{font-size:17px}
+  th.sec-col .sub-line, th.sec-col .sub-line input{font-size:14px}
+  th.sec-col .sub-line input{width:95px}
+  .th-stats{padding:6px 10px; font-size:13px}
   .num-keypad button{font-size:18px; padding:11px 0}
   .section-top-actions{padding:8px 10px}
   .zoom-btn{width:40px; height:40px}
@@ -684,65 +758,58 @@ tr.select-row td.att-cell{cursor:default}
 }
 @media (min-width:1024px){
   .hero{padding:52px 20px}
-  .hero h1{font-size:38px}
+  .hero h1{font-size:46px}
 }
 </style>
 </head>
 <body>
 
-<header class="topbar">
-  <div class="topbar-row-1">
-    <div class="brand">
-      <div class="brand-icon">س</div>
-      <span>سجل الدرجات</span>
-    </div>
-    <button class="icon-btn" id="menuBtn" onclick="toggleMenu(event)" aria-label="القائمة">
-      <svg viewBox="0 0 24 24"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
-    </button>
+<div class="float-tools">
     <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" aria-label="تبديل المظهر">
       <svg id="themeIcon" viewBox="0 0 24 24">
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
       </svg>
     </button>
+    <button class="icon-btn" id="menuBtn" onclick="toggleMenu(event)" aria-label="القائمة">
+      <svg viewBox="0 0 24 24"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
     <div class="menu-dropdown" id="menuDropdown" hidden>
+      <button onclick="closeMenu();openBackupDialog()">
+        <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
+        نسخة احتياطية
+      </button>
+      <button onclick="closeMenu();openWordDialog()">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+        استيراد من Excel
+      </button>
       <button onclick="closeMenu();openColorsDialog()">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="8" cy="10" r="1" fill="currentColor"/><circle cx="12" cy="7" r="1" fill="currentColor"/><circle cx="16" cy="10" r="1" fill="currentColor"/></svg>
         تغيير الألوان
+      </button>
+      <button class="danger" onclick="closeMenu();confirmClearAllRecords()">
+        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        مسح كل سجل الطلاب
       </button>
       <a href="https://t.me/ra3k_n" target="_blank" rel="noopener" onclick="closeMenu()">
         <svg viewBox="0 0 24 24" style="fill:currentColor;stroke:none"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
         تيليجرام
       </a>
     </div>
-  </div>
-  <div class="topbar-row-2">
-    <button class="action-btn primary" onclick="openBackupDialog()">
-      <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
-      نسخة احتياطية
-    </button>
-    <button class="action-btn blue" onclick="openWordDialog()">
-      <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      استيراد من Word
-    </button>
-  </div>
-</header>
+</div>
 
 <main>
   <div class="hero">
     <h1>سجل الدرجات</h1>
-    <p>نظام إدارة الدرجات والحضور</p>
+    <p>نظام إدارة الدرجات</p>
   </div>
   <div class="sections-strip" id="sectionsStrip"></div>
   <div id="sectionsContainer"></div>
 </main>
 
-<footer class="bottombar">
-  <span class="ver-text">الإصدار v2.0</span>
-</footer>
-
 <div class="select-mode-bar" id="selectModeBar" hidden>
   <span>وضع التحديد</span>
   <span class="count" id="selectCount">0</span>
+  <button onclick="selectAllStudents()">تحديد الكل</button>
   <button onclick="deleteSelectedStudents()">حذف المحددين</button>
   <button onclick="exitSelectMode()">إلغاء</button>
 </div>
@@ -763,10 +830,10 @@ tr.select-row td.att-cell{cursor:default}
     <div class="color-palette" id="studentColorPalette"></div>
     <div style="display:flex; align-items:center; gap:10px; margin:14px 0; justify-content:center">
       <span style="font-size:14px; color:var(--mut)">لون مخصص:</span>
-      <input type="color" id="studentCustomColor" style="width:60px; height:40px; border:none; border-radius:8px; cursor:pointer; background:none">
+      <input type="color" id="studentCustomColor" oninput="pickCustomColor(this.value)" style="width:60px; height:40px; border:none; border-radius:8px; cursor:pointer; background:none">
     </div>
     <div class="modal-actions">
-      <button class="btn primary" onclick="applyCustomColor()">تطبيق اللون المخصص</button>
+      <button class="btn primary" onclick="applyPendingColor()">تطبيق</button>
       <button class="btn" onclick="removeStudentColor()">إزالة اللون</button>
       <button class="btn" onclick="closeModal('studentColorModal')">إلغاء</button>
     </div>
@@ -776,7 +843,7 @@ tr.select-row td.att-cell{cursor:default}
 <div class="modal" id="addSectionModal" hidden>
   <div class="modal-content">
     <h3>إضافة شعبة جديدة</h3>
-    <input class="form-field" id="newSectionInput" inputmode="none" data-num="1" placeholder="رقم الشعبة — مثال: 105">
+    <input class="form-field" id="newSectionInput" inputmode="none" data-num="1" readonly placeholder="رقم الشعبة — مثال: 105">
     <div class="modal-actions">
       <button class="btn primary" onclick="confirmAddSection()">إضافة</button>
       <button class="btn" onclick="closeModal('addSectionModal')">إلغاء</button>
@@ -804,7 +871,8 @@ tr.select-row td.att-cell{cursor:default}
       <button class="btn primary" onclick="saveNote()">حفظ</button>
       <button class="btn" onclick="closeModal('notesModal')">إلغاء</button>
     </div>
-    <div id="notesList" style="margin-top:16px"></div>
+    <div class="modal-actions" id="notesToolbar" style="margin-top:12px"></div>
+    <div id="notesList" style="margin-top:12px"></div>
   </div>
 </div>
 
@@ -813,6 +881,7 @@ tr.select-row td.att-cell{cursor:default}
     <h3 id="statsTitle">إحصائيات</h3>
     <div class="stats-list" id="statsList"></div>
     <div class="modal-actions" style="margin-top:14px">
+      <button class="btn danger" onclick="confirmClearSectionRecord()">مسح السجل</button>
       <button class="btn" onclick="closeModal('statsModal')">إغلاق</button>
     </div>
   </div>
@@ -824,7 +893,7 @@ tr.select-row td.att-cell{cursor:default}
     <div id="colorsList" style="display:flex; flex-direction:column; gap:8px; margin-bottom:14px"></div>
     <div class="modal-actions">
       <button class="btn primary" onclick="saveColors()">حفظ</button>
-      <button class="btn" onclick="closeModal('colorsModal')">إلغاء</button>
+      <button class="btn" onclick="cancelColors()">إلغاء</button>
     </div>
   </div>
 </div>
@@ -859,14 +928,6 @@ tr.select-row td.att-cell{cursor:default}
           <option value="900">عريض جداً</option>
         </select>
       </label>
-      <label style="display:flex; gap:8px; align-items:center; flex-wrap:wrap">
-        <span style="min-width:80px; font-size:13px; color:var(--mut)">المحاذاة:</span>
-        <select class="form-field" id="fontAlign" style="flex:1; margin:0" onchange="previewFont()">
-          <option value="right">يمين</option>
-          <option value="center">وسط</option>
-          <option value="left">يسار</option>
-        </select>
-      </label>
     </div>
     <div class="modal-actions">
       <button class="btn primary" onclick="saveFont()">حفظ</button>
@@ -876,45 +937,17 @@ tr.select-row td.att-cell{cursor:default}
   </div>
 </div>
 
-<div class="modal" id="zoomModal" hidden>
-  <div class="modal-content">
-    <h3>تكبير اسم الطالب</h3>
-    <div class="zoom-preview">
-      <span id="zoomPreviewText">محمد أحمد</span>
-    </div>
-    <div class="zoom-bar">
-      <button class="zoom-btn" onclick="zoomStep(-10)" aria-label="تصغير">
-        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </button>
-      <div class="zoom-slider">
-        <input type="range" id="zoomSlider" min="80" max="250" step="10" value="100" oninput="updateZoom()">
-      </div>
-      <button class="zoom-btn" onclick="zoomStep(10)" aria-label="تكبير">
-        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </button>
-    </div>
-    <div style="text-align:center; font-weight:700; color:var(--mut); margin-bottom:8px">
-      <span id="zoomPercent">100%</span>
-    </div>
-    <div class="modal-actions">
-      <button class="btn primary" onclick="saveZoom()">حفظ</button>
-      <button class="btn" onclick="resetZoom()">افتراضي</button>
-      <button class="btn" onclick="closeModal('zoomModal')">إلغاء</button>
-    </div>
-  </div>
-</div>
-
 <div class="modal" id="wordModal" hidden>
   <div class="modal-content">
-    <h3>استيراد أسماء من Word</h3>
+    <h3>استيراد أسماء من Excel</h3>
     <div class="drop-zone" id="wordDrop">
       <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      <p><b>اسحب ملف Word هنا</b></p>
+      <p><b>اسحب ملف Excel هنا</b></p>
       <p>أو اضغط للاختيار من الجهاز</p>
-      <p style="font-size:12px; margin-top:6px">يدعم .docx — يمكن أن يحتوي على كل الشعب معاً</p>
+      <p style="font-size:12px; margin-top:6px">يدعم .xlsx و .csv — يمكن أن يحتوي على كل الشعب (ورقة لكل شعبة، أو عمود للشعبة)</p>
+      <input type="file" id="wordFileInput" class="drop-input" aria-label="اختيار ملف Excel">
     </div>
-    <input type="file" id="wordFileInput" accept=".docx" hidden>
-    <div id="wordStatus" style="font-size:13px; color:var(--mut); line-height:1.8; margin-bottom:10px"></div>
+    <div id="wordStatus" style="font-size:13px; color:var(--mut); line-height:1.8; margin-bottom:10px; white-space:pre-line"></div>
     <div class="modal-actions">
       <button class="btn primary" id="wordImportBtn" hidden onclick="confirmWordImport()">إضافة الأسماء</button>
       <button class="btn" onclick="closeModal('wordModal')">إغلاق</button>
@@ -929,14 +962,14 @@ tr.select-row td.att-cell{cursor:default}
     <div class="menu-list">
       <button class="menu-item" onclick="createBackup()">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        إنشاء نسخة وحفظها
+        إنشاء نسخة
       </button>
       <button class="menu-item" onclick="document.getElementById('restoreFileInput').click()">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        استعادة نسخة من ملف
+        استعادة نسخة
       </button>
     </div>
-    <input type="file" id="restoreFileInput" accept=".json" hidden>
+    <input type="file" id="restoreFileInput" accept="application/json,.json,text/plain" hidden>
     <div class="modal-actions" style="margin-top:14px">
       <button class="btn" onclick="closeModal('backupModal')">إغلاق</button>
     </div>
@@ -956,7 +989,16 @@ tr.select-row td.att-cell{cursor:default}
 
 <div class="num-keypad" id="numKeypad" hidden></div>
 <div id="toastBox" hidden></div>
-<div id="pullIndicator" class="pull-indicator" hidden></div>
+<div id="pullArea" class="pull-area" aria-hidden="true">
+  <div class="pull-inner">
+    <svg class="pull-dots" viewBox="0 0 60 60">
+      <defs><filter id="pullGoo" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur in="SourceGraphic" stdDeviation="2.4" result="b"/><feColorMatrix in="b" mode="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -8"/></filter></defs>
+      <g filter="url(#pullGoo)" fill="currentColor"><circle id="pd1" r="5" cx="30" cy="30"/><circle id="pd2" r="5" cx="30" cy="30"/></g>
+    </svg>
+    <img class="pull-icon" id="pullIcon" alt="">
+    <div class="pull-text" id="pullText">اسحب للأسفل للتحديث</div>
+  </div>
+</div>
 
 <script>
 /* =========================================================
@@ -965,16 +1007,34 @@ tr.select-row td.att-cell{cursor:default}
 const STORAGE_KEY = 'gradesheet_v4';
 
 const DEFAULT_COLUMNS = [
-  { key:'act', title:'نشاط صفي', max:'15', color:'#e9ece4', type:'number' },
+  { key:'act', title:'نشاط', max:'15', color:'#e9ece4', type:'number' },
   { key:'par', title:'مشاركة',    max:'10', color:'#e9ece4', type:'number' },
   { key:'hw',  title:'واجب',      max:'15', color:'#f4dadd', type:'number' },
-  { key:'tot', title:'المجموع',                 color:'#f5dcc8', type:'total'  },
-  { key:'t1',  title:'اختبار الفترة الأولى /', max:'20', color:'#f2eecf', type:'number' },
-  { key:'t2',  title:'اختبار الفترة الثانية /',max:'20', color:'#cfe2ee', type:'number' },
+  { key:'tot', title:'المجموع',    max:'40',    color:'#f5dcc8', type:'total'  },
+  { key:'t1',  title:'اختبار 1', max:'20', color:'#f2eecf', type:'number' },
+  { key:'t2',  title:'اختبار 2',max:'20', color:'#cfe2ee', type:'number' },
   { key:'att', title:'تحضير',                    color:'#cfe2ee', type:'attendance' }
 ];
 
 const DEFAULT_SECTIONS = ['101','102','103','104','206'];
+
+const DEFAULT_COL_COLORS = {};
+DEFAULT_COLUMNS.forEach(c => { DEFAULT_COL_COLORS[c.key] = c.color; });
+function isDarkTheme(){ return document.documentElement.getAttribute('data-theme') === 'dark'; }
+function colColor(col){
+  if(isDarkTheme() && col.color === DEFAULT_COL_COLORS[col.key]) return '#2d3835';
+  return col.color || '#ffffff';
+}
+function toHex6(c){
+  c = String(c || '').trim();
+  if(/^#[0-9a-f]{3}$/i.test(c)) c = '#' + c[1]+c[1]+c[2]+c[2]+c[3]+c[3];
+  return /^#[0-9a-f]{6}$/i.test(c) ? c.toLowerCase() : '#ffffff';
+}
+function textOn(c){
+  const h = toHex6(c);
+  const r = parseInt(h.slice(1,3),16), g = parseInt(h.slice(3,5),16), b = parseInt(h.slice(5,7),16);
+  return (0.299*r + 0.587*g + 0.114*b) > 150 ? '#1a1a1a' : '#ffffff';
+}
 
 let state = null;
 let openedTools = new Set();
@@ -983,7 +1043,6 @@ let searchText = {};
 let currentSectionForMenu = -1;
 let currentRowForMenu = -1;
 let editingSection = -1;
-let zoomContext = { si:-1, ri:-1, val:100 };
 let notesContext = { si:-1, ri:-1 };
 let selectModeSections = new Set();
 let selectedStudents = {};
@@ -996,7 +1055,7 @@ const STUDENT_COLORS = [
 ];
 
 function todayKey(){
-  const d = new Date(Date.now() - 350*60000);
+  const d = new Date(Date.now() - 330*60000);
   return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
 }
 function esc(s){
@@ -1037,6 +1096,22 @@ function makeStudent(n){
   };
 }
 
+function migrateTotals(){
+  (state.sections || []).forEach(sec => (sec.students || []).forEach(stu => {
+    const v = stu.totalValue;
+    if(v !== null && v !== undefined && v !== '' && Number(v) === calcTotal(stu)) stu.totalValue = null;
+    stu.totalConfirmed = false;
+  }));
+}
+function migrateColumns(st){
+  (st.columns || []).forEach(c => {
+    if(c.key === 'tot' && c.max === undefined) c.max = '40';
+    if(c.key === 'act' && c.title === 'نشاط صفي') c.title = 'نشاط';
+    if(c.key === 't1' && /^اختبار الفترة الأولى/.test(c.title || '')) c.title = 'اختبار 1';
+    if(c.key === 't2' && /^اختبار الفترة الثانية/.test(c.title || '')) c.title = 'اختبار 2';
+  });
+}
+
 state = load();
 if(!state){
   state = {
@@ -1045,6 +1120,15 @@ if(!state){
     lastBackup: null, day: todayKey()
   };
 } else {
+  migrateColumns(state);
+  migrateTotals();
+  try{
+    if(!localStorage.getItem('gradesheet_lb_reset')){
+      state.lastBackup = null;
+      localStorage.setItem('gradesheet_lb_reset', '1');
+      save();
+    }
+  }catch(e){}
   state.sections.forEach(s => {
     if(!s.font) s.font = { family:'', size:14, weight:400, align:'right' };
     s.students.forEach(stu => {
@@ -1088,8 +1172,11 @@ document.addEventListener('click', (e) => {
 
 /* ===== العرض ===== */
 function render(){
+  closeKeypad(false);
   renderSectionsStrip();
   renderSectionsContainer();
+  searchOpen.forEach(si => { if(state.sections[si]) filterSection(si); });
+  setupStickyTableHeads();
 }
 function renderSectionsStrip(){
   const strip = $('sectionsStrip');
@@ -1098,10 +1185,12 @@ function renderSectionsStrip(){
     const b = document.createElement('button');
     b.className = 'sec-btn';
     b.textContent = 'شعبة ' + s.sec;
-    b.onclick = () => scrollToSection(i);
-    let timer;
+    let timer, secFired = false;
+    b.onclick = () => { if(secFired){ secFired = false; return; } scrollToSection(i); };
     b.addEventListener('pointerdown', () => {
+      secFired = false;
       timer = setTimeout(() => {
+        secFired = true;
         currentSectionForMenu = i;
         openSectionMenu(i);
       }, 650);
@@ -1125,6 +1214,103 @@ function renderSectionsContainer(){
   state.sections.forEach((s, si) => c.appendChild(buildSectionCard(s, si)));
 }
 
+function setupStickyTableHeads(){
+  if(window.__stickyTableHeadsCleanup) window.__stickyTableHeadsCleanup();
+  document.querySelectorAll('.sticky-table-head').forEach(el => el.remove());
+  const heads = [];
+  const wrapCleanups = [];
+  const strip = document.querySelector('.sections-strip');
+  const syncStripHeight = () => {
+    const height = strip ? strip.getBoundingClientRect().height : 0;
+    document.documentElement.style.setProperty('--sections-strip-height', `${height}px`);
+  };
+  syncStripHeight();
+  const probe = document.createElement('div');
+  probe.style.cssText = 'position:fixed;visibility:hidden;pointer-events:none;width:0;height:0';
+  document.body.appendChild(probe);
+  document.querySelectorAll('.table-wrap').forEach(wrap => {
+    const table = wrap.querySelector('table');
+    const sourceHead = table && table.querySelector('thead');
+    wrap.classList.remove('native-sticky');
+    if(!table || !sourceHead) return;
+    if(window.CSS && CSS.supports && CSS.supports('overflow', 'clip') && table.offsetWidth <= wrap.clientWidth + 1){
+      wrap.classList.add('native-sticky');
+      return;
+    }
+
+    const bar = document.createElement('div');
+    bar.className = 'sticky-table-head';
+    const cloneTable = document.createElement('table');
+    cloneTable.className = table.className;
+    cloneTable.style.cssText = table.style.cssText;
+    cloneTable.style.width = table.getBoundingClientRect().width + 'px';
+    cloneTable.style.minWidth = '0';
+    const cloneHead = sourceHead.cloneNode(true);
+    cloneHead.querySelectorAll('[data-num]').forEach(el => el.removeAttribute('data-num'));
+    cloneHead.querySelectorAll('input,button').forEach(el => {
+      el.tabIndex = -1;
+      el.setAttribute('aria-hidden','true');
+    });
+    cloneTable.appendChild(cloneHead);
+    bar.appendChild(cloneTable);
+    document.body.appendChild(bar);
+
+    const sync = () => {
+      const firstTh = sourceHead.querySelector('th');
+      if(!firstTh) return;
+      const top = firstTh.getBoundingClientRect().top;
+      probe.style.top = 'calc(var(--top-total) + var(--sections-strip-height, 55px) + env(safe-area-inset-top,0px))';
+      const topLimit = parseFloat(getComputedStyle(probe).top) || 0;
+      const wrapRect = wrap.getBoundingClientRect();
+      const headHeight = sourceHead.getBoundingClientRect().height;
+      const active = top < topLimit && wrapRect.bottom > topLimit + headHeight;
+      if(!active){
+        bar.style.display = 'none';
+        return;
+      }
+      const srcRow = sourceHead.children[0].children;
+      const clRow = cloneHead.children[0].children;
+      for(let i = 0; i < srcRow.length && i < clRow.length; i++){
+        const w = srcRow[i].getBoundingClientRect().width;
+        if(w) clRow[i].style.width = w + 'px';
+      }
+      cloneTable.style.width = table.getBoundingClientRect().width + 'px';
+      bar.style.display = 'block';
+      bar.style.top = topLimit + 'px';
+      bar.style.left = wrapRect.left + 'px';
+      bar.style.width = wrap.clientWidth + 'px';
+      cloneTable.style.transform = 'translateX(' + (-wrap.scrollLeft) + 'px)';
+    };
+    const widths = [...sourceHead.children[0].children].map(th => th.getBoundingClientRect().width);
+    [...cloneHead.children[0].children].forEach((th, i) => {
+      if(widths[i]) th.style.width = widths[i] + 'px';
+    });
+    wrap.addEventListener('scroll', sync, {passive:true});
+    wrapCleanups.push(() => wrap.removeEventListener('scroll', sync));
+    heads.push(sync);
+  });
+  const update = () => {
+    syncStripHeight();
+    heads.forEach(fn => fn());
+  };
+  window.addEventListener('scroll', update, {passive:true});
+  window.addEventListener('resize', update);
+  let rzT = null;
+  const redo = () => { clearTimeout(rzT); rzT = setTimeout(() => { if(!activeNumInput) setupStickyTableHeads(); }, 250); };
+  window.addEventListener('resize', redo);
+  window.addEventListener('orientationchange', redo);
+  window.__stickyTableHeadsCleanup = () => {
+    window.removeEventListener('scroll', update);
+    window.removeEventListener('resize', update);
+    window.removeEventListener('resize', redo);
+    window.removeEventListener('orientationchange', redo);
+    clearTimeout(rzT);
+    wrapCleanups.forEach(cleanup => cleanup());
+    probe.remove();
+  };
+  update();
+}
+
 function buildSectionCard(section, si){
   const card = document.createElement('div');
   card.className = 'section-card';
@@ -1142,9 +1328,8 @@ function buildSectionCard(section, si){
       <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       إضافة طالب
     </button>
-    <button class="btn" onclick="openStats(${si})">
-      <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg>
-      إحصائيات
+    <button class="btn" onclick="toggleSearch(${si})" aria-label="بحث">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     </button>
   `;
   card.appendChild(top);
@@ -1169,19 +1354,7 @@ function buildSectionCard(section, si){
   `;
   card.appendChild(tools);
 
-  if(searchOpen.has(si)){
-    const sr = document.createElement('div');
-    sr.className = 'search-row';
-    const inp = document.createElement('input');
-    inp.type = 'text';
-    inp.placeholder = 'ابحث...';
-    inp.value = searchText[si] || '';
-    inp.setAttribute('inputmode','none');
-    inp.dataset.num = '1';
-    inp.oninput = (e) => { searchText[si] = e.target.value; filterSection(si); };
-    sr.appendChild(inp);
-    card.appendChild(sr);
-  }
+  if(searchOpen.has(si)) card.appendChild(buildSearchRow(si));
 
   card.appendChild(buildTable(section, si));
   return card;
@@ -1193,10 +1366,9 @@ function buildTable(section, si){
   const tbl = document.createElement('table');
   const font = section.font || {};
 
-  tbl.style.fontFamily = font.family || '';
-  tbl.style.fontSize = (font.size || 14) + 'px';
-  tbl.style.fontWeight = font.weight || '';
-  tbl.style.textAlign = font.align || '';
+  if(font.family) tbl.style.setProperty('--ff', font.family);
+  tbl.style.setProperty('--fs', (font.size || 14) + 'px');
+  if(font.weight) tbl.style.setProperty('--fw', font.weight);
 
   const thead = document.createElement('thead');
   const tr = document.createElement('tr');
@@ -1205,27 +1377,39 @@ function buildTable(section, si){
   th0.className = 'sec-col';
   th0.innerHTML = `
     <div class="th-inner">
-      <div>شعبة ( <input class="inline-edit" data-field="sec" data-si="${si}" value="${esc(section.sec)}" inputmode="none" data-num="1"> )</div>
+      <div>شعبة ( <input size="1" class="inline-edit" data-field="sec" data-si="${si}" value="${esc(section.sec)}" inputmode="none" data-num="1" readonly> )</div>
       <div class="sub-line">
-        <input class="inline-edit" data-field="title" data-si="${si}" value="${esc(section.title)}">
-        <input class="inline-edit" data-field="level" data-si="${si}" value="${esc(section.level)}" style="width:34px">
+        <input size="1" class="inline-edit" data-field="title" data-si="${si}" value="${esc(section.title)}">
+        <input size="1" class="inline-edit" data-field="level" data-si="${si}" value="${esc(section.level)}" style="width:34px">
       </div>
     </div>
   `;
+  th0.colSpan = 2;
   tr.appendChild(th0);
 
   state.columns.forEach((col, ci) => {
     const th = document.createElement('th');
     th.className = 'col-' + col.key;
+    if(col.type === 'attendance'){
+      th.style.background = 'var(--card)';
+    } else {
+      const hbg = colColor(col), htc = textOn(hbg);
+      th.style.background = hbg; th.style.color = htc;
+      th.style.setProperty('--mm', htc === '#ffffff' ? '#ffffff' : '#e63946');
+    }
     let maxHtml = '';
-    if(col.type === 'number' && col.max !== undefined){
-      maxHtml = '<div class="max-mark">( <input class="inline-edit" data-col="' + ci + '" data-field="max" value="' + esc(col.max) + '" inputmode="none" data-num="1"> )</div>';
+    if((col.type === 'number' || col.type === 'total') && col.max !== undefined){
+      maxHtml = '<div class="max-mark">( <input size="1" class="inline-edit" data-col="' + ci + '" data-field="max" value="' + esc(col.max) + '" inputmode="none" data-num="1" readonly> )</div>';
     } else if(col.type === 'total'){
       maxHtml = '<div class="max-mark">( <span>مجموع</span> )</div>';
     }
+    const statsHtml = col.type === 'attendance'
+      ? '<button class="btn th-stats" onclick="openStats(' + si + ')"><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><rect x="7" y="10" width="3" height="7"/><rect x="12" y="6" width="3" height="11"/><rect x="17" y="13" width="3" height="4"/></svg>إحصائيات</button>'
+      : '';
     th.innerHTML = `
       <div class="th-inner">
-        <input class="inline-edit" data-col="${ci}" data-field="title" value="${esc(col.title)}">
+        ${statsHtml}
+        <input size="1" class="inline-edit" data-col="${ci}" data-field="title" value="${esc(col.title)}">
         ${maxHtml}
       </div>
     `;
@@ -1251,7 +1435,7 @@ function buildStudentRow(stu, si, ri){
 
   const tdName = document.createElement('td');
   tdName.className = 'name-cell';
-  if(stu.color) tdName.style.background = stu.color;
+  if(stu.color){ tdName.style.background = stu.color; tdName.style.color = textOn(stu.color); }
 
   const attStatus = stu.attendance[state.day] || '';
   const badge = attStatus ? attBadgeHTML(attStatus) : '';
@@ -1260,7 +1444,8 @@ function buildStudentRow(stu, si, ri){
     ? '<button class="select-check ' + ((si+'-'+ri) in selectedStudents ? 'checked' : '') + '"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></button>'
     : '';
 
-  tdName.innerHTML = checkbox + badge + '<input class="name-input" readonly data-si="' + si + '" data-ri="' + ri + '" data-field="name" value="' + esc(stu.name) + '" placeholder="اسم الطالب" style="font-size:' + Math.round(14*(stu.zoom||1)) + 'px">';
+  tdName.innerHTML = '<div class="name-wrapper">' + checkbox + badge + '<input class="name-input" size="' + Math.max(6, String(stu.name || '').length + 2) + '" readonly data-si="' + si + '" data-ri="' + ri + '" data-field="name" value="' + esc(stu.name) + '" placeholder="اسم الطالب">' + '</div>';
+  tdName.addEventListener('contextmenu', e => { if(e.target.closest('.name-input[readonly]') || !e.target.closest('input')) e.preventDefault(); });
 
   if(!selectModeSections.has(si)){
     attachNameHandlers(tdName, si, ri);
@@ -1269,31 +1454,30 @@ function buildStudentRow(stu, si, ri){
     inp.style.pointerEvents = 'none';
     tdName.addEventListener('click', () => toggleStudentSelection(si, ri));
   }
-  tr.appendChild(tdName);
-
   const tdNum = document.createElement('td');
   tdNum.className = 'num-cell';
-  tdNum.innerHTML = '<input readonly data-si="' + si + '" data-ri="' + ri + '" data-field="num" value="' + esc(stu.num) + '" inputmode="none" data-num="1">';
+  tdNum.innerHTML = '<input size="1" readonly data-si="' + si + '" data-ri="' + ri + '" data-field="num" value="' + esc(stu.num) + '" inputmode="none" data-num="1">';
   tr.appendChild(tdNum);
+  tr.appendChild(tdName);
 
   state.columns.forEach((col, ci) => {
     const td = document.createElement('td');
     td.className = 'cell';
-    td.style.background = col.color;
+    if(col.type === 'attendance'){
+      td.style.background = 'transparent';
+    } else {
+      const cbg = colColor(col);
+      td.style.background = cbg;
+      td.style.color = textOn(cbg);
+    }
 
     if(col.type === 'number'){
       const v = stu.scores[col.key] ?? '';
-      td.innerHTML = '<input data-si="' + si + '" data-ri="' + ri + '" data-col="' + ci + '" data-field="score" value="' + esc(v) + '" inputmode="none" data-num="1">';
+      td.innerHTML = '<input size="1" data-si="' + si + '" data-ri="' + ri + '" data-col="' + ci + '" data-field="score" value="' + esc(v) + '" inputmode="none" data-num="1" readonly>';
     }
     else if(col.type === 'total'){
       td.className = 'cell total-cell';
-      if(stu.totalConfirmed){
-        const total = stu.totalValue ?? calcTotal(stu);
-        td.innerHTML = '<div class="total-display"><input readonly value="' + total + '">' +
-          '<button class="edit-btn" onclick="reopenTotal(' + si + ',' + ri + ')" title="تعديل"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button></div>';
-      } else {
-        td.innerHTML = '<button class="confirm-btn" onclick="confirmTotal(' + si + ',' + ri + ')" title="تأكيد المجموع"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></button>';
-      }
+      td.innerHTML = '<div class="total-display"><input size="1" readonly data-si="' + si + '" data-ri="' + ri + '" data-field="total" data-num="1" inputmode="none" value="' + esc(totalText(stu)) + '"></div>';
     }
     else if(col.type === 'attendance'){
       td.className = 'cell att-cell';
@@ -1311,29 +1495,33 @@ function attBadgeHTML(status){
     absent:  '<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
     late:    '<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/>'
   };
+  const letters = { present:'ح', absent:'غ' };
+  if(letters[status]) return '<span class="att-badge ' + status + '"><span class="att-letter">' + letters[status] + '</span></span>';
   return '<span class="att-badge ' + status + '"><svg viewBox="0 0 24 24">' + icons[status] + '</svg></span>';
 }
 function attendanceButtonsHTML(si, ri, stu){
   const current = stu.attendance[state.day] || '';
   const config = [
-    { key:'present', icon:'<polyline points="20 6 9 17 4 12"/>', label:'حاضر' },
-    { key:'absent',  icon:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>', label:'غائب' },
+    { key:'present', letter:'ح', label:'حاضر' },
+    { key:'absent',  letter:'غ', label:'غائب' },
     { key:'late',    icon:'<circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/>', label:'متأخر' }
   ];
   return config.map(c =>
-    '<button class="att-btn ' + c.key + (current === c.key ? ' on' : '') + '" onclick="toggleAttendance(' + si + ',' + ri + ',\'' + c.key + '\')" aria-label="' + c.label + '" title="' + c.label + '"><svg viewBox="0 0 24 24">' + c.icon + '</svg></button>'
+    '<button class="att-btn ' + c.key + (current === c.key ? ' on' : '') + '" onclick="toggleAttendance(' + si + ',' + ri + ',\'' + c.key + '\')" aria-label="' + c.label + '" title="' + c.label + '">' + (c.letter ? '<span class="att-letter">' + c.letter + '</span>' : '<svg viewBox="0 0 24 24">' + c.icon + '</svg>') + '</button>'
   ).join('');
 }
 
 function attachNameHandlers(td, si, ri){
   const inp = td.querySelector('.name-input');
-  let lpTimer = null, moved = false, sx = 0, sy = 0;
+  let lpTimer = null, moved = false, sx = 0, sy = 0, lpFired = false;
+  inp.addEventListener('input', () => { inp.size = Math.max(6, inp.value.length + 2); });
 
   inp.addEventListener('pointerdown', e => {
-    moved = false; sx = e.clientX; sy = e.clientY;
+    moved = false; lpFired = false; sx = e.clientX; sy = e.clientY;
     clearTimeout(lpTimer);
     lpTimer = setTimeout(() => {
       if(moved) return;
+      lpFired = true;
       currentSectionForMenu = si;
       currentRowForMenu = ri;
       openRowMenu(si, ri);
@@ -1348,6 +1536,7 @@ function attachNameHandlers(td, si, ri){
     inp.addEventListener(ev, () => clearTimeout(lpTimer));
   });
   inp.addEventListener('click', e => {
+    if(lpFired){ e.preventDefault(); lpFired = false; return; }
     if(!inp.readOnly) return;
     e.preventDefault();
     inp.readOnly = false;
@@ -1384,6 +1573,12 @@ function sortStudents(section){
   section.students.forEach((stu, i) => stu.num = i + 1);
 }
 
+document.addEventListener('click', (e) => {
+  if(!openedTools.size) return;
+  if(e.target.closest && (e.target.closest('.tools-panel') || e.target.closest('button[onclick^="toggleTools"]'))) return;
+  openedTools.clear();
+  document.querySelectorAll('.tools-panel').forEach(el => { el.hidden = true; });
+});
 function toggleTools(si){
   if(openedTools.has(si)) openedTools.delete(si);
   else openedTools.add(si);
@@ -1391,21 +1586,56 @@ function toggleTools(si){
   if(el) el.hidden = !openedTools.has(si);
 }
 function filterSection(si){
-  const q = (searchText[si] || '').trim();
+  const q = normalizeAr(searchText[si] || '');
   state.sections[si].students.forEach((stu, ri) => {
     const tr = document.querySelector('#section_' + si + ' tbody tr[data-ri="' + ri + '"]');
     if(!tr) return;
-    if(!q){ tr.hidden = false; return; }
-    const n = String(stu.num);
-    const name = (stu.name || '').toLowerCase();
-    tr.hidden = !(n.startsWith(q) || name.includes(q.toLowerCase()));
+    tr.hidden = !!q && !normalizeAr(stu.name).includes(q);
   });
 }
+function buildSearchRow(si){
+  const sr = document.createElement('div');
+  sr.className = 'search-row';
+  const inp = document.createElement('input');
+  inp.type = 'text';
+  inp.placeholder = 'ابحث بالاسم';
+  inp.value = searchText[si] || '';
+  inp.oninput = (e) => { searchText[si] = e.target.value; filterSection(si); };
+  sr.appendChild(inp);
+  return sr;
+}
+function openSearch(si){
+  const card = $('section_' + si);
+  if(!card || card.querySelector('.search-row')) return;
+  searchOpen.add(si);
+  const sr = buildSearchRow(si);
+  const anchor = card.querySelector('.tools-panel') || card.querySelector('.section-top-actions');
+  anchor.after(sr);
+  sr.querySelector('input').focus();
+}
+function closeSearch(si){
+  searchOpen.delete(si);
+  delete searchText[si];
+  const card = $('section_' + si);
+  if(!card) return;
+  const sr = card.querySelector('.search-row');
+  if(sr) sr.remove();
+  card.querySelectorAll('tbody tr').forEach(tr => { tr.hidden = false; });
+}
+function toggleSearch(si){
+  if(searchOpen.has(si)) closeSearch(si); else openSearch(si);
+}
+document.addEventListener('click', (e) => {
+  if(!searchOpen.size) return;
+  if(e.target.closest && (e.target.closest('.search-row') || e.target.closest('[aria-label="بحث"]'))) return;
+  [...searchOpen].forEach(closeSearch);
+});
 function scrollToSection(si){
   const el = $('section_' + si);
   if(!el) return;
-  const h = document.querySelector('.topbar').offsetHeight;
-  const y = el.getBoundingClientRect().top + window.pageYOffset - h - 12;
+  const strip = document.querySelector('.sections-strip');
+  const h = (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top-1')) || 0) + (strip ? strip.offsetHeight : 0);
+  const y = el.getBoundingClientRect().top + window.pageYOffset - h - 8;
   window.scrollTo({ top: y, behavior: 'smooth' });
 }
 function addStudent(si){
@@ -1416,20 +1646,10 @@ function addStudent(si){
   render();
   notify('تمت إضافة طالب جديد', 'add');
 }
-function confirmTotal(si, ri){
-  const stu = state.sections[si].students[ri];
-  stu.totalConfirmed = true;
-  stu.totalValue = calcTotal(stu);
-  save();
-  render();
-  notify('تم تأكيد المجموع: ' + stu.totalValue);
-}
-function reopenTotal(si, ri){
-  const stu = state.sections[si].students[ri];
-  stu.totalConfirmed = false;
-  stu.totalValue = null;
-  save();
-  render();
+function totalText(stu){
+  if(stu.totalValue !== null && stu.totalValue !== undefined && stu.totalValue !== '') return stu.totalValue;
+  const any = state.columns.some(c => c.type === 'number' && String(stu.scores[c.key] == null ? '' : stu.scores[c.key]).trim() !== '');
+  return any ? calcTotal(stu) : '';
 }
 function calcTotal(stu){
   let t = 0;
@@ -1444,7 +1664,7 @@ function toggleAttendance(si, ri, key){
   save();
   render();
   const names = { present:'حاضر', absent:'غائب', late:'متأخر' };
-  notify('تم تسجيل: ' + (stu.attendance[today] ? names[key] : 'إزالة'));
+  notify(stu.attendance[today] ? 'تم تسجيل: ' + names[key] : 'تم إزالة');
 }
 
 /* ===== قائمة الطالب ===== */
@@ -1457,10 +1677,6 @@ function openRowMenu(si, ri){
     '<button class="menu-item" onclick="closeModal(\'rowMenuModal\');openNotesDialog(' + si + ',' + ri + ')">' +
       '<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>' +
       (notesCount ? 'الملاحظات (' + notesCount + ')' : 'إضافة ملاحظة') +
-    '</button>' +
-    '<button class="menu-item" onclick="openZoomDialog(' + si + ',' + ri + ')">' +
-      '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>' +
-      'تكبير اسم الطالب' +
     '</button>' +
     '<button class="menu-item" onclick="openStudentColorDialog(' + si + ',' + ri + ')">' +
       '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="8" cy="10" r="1" fill="currentColor"/><circle cx="12" cy="7" r="1" fill="currentColor"/><circle cx="16" cy="10" r="1" fill="currentColor"/></svg>' +
@@ -1475,7 +1691,7 @@ function openRowMenu(si, ri){
 function confirmDeleteStudent(si, ri){
   closeModal('rowMenuModal');
   const stu = state.sections[si].students[ri];
-  showConfirm('حذف الطالب', 'هل تريد حذف <b>' + esc(stu.name || 'طالب رقم '+stu.num) + '</b> مع درجاته وملاحظاته؟', () => {
+  showConfirm('حذف الطالب', 'هل متأكد من حذف الطالب <b>' + esc(stu.name || 'رقم ' + stu.num) + '</b> مع درجاته وملاحظاته؟', () => {
     state.sections[si].students.splice(ri, 1);
     state.sections[si].students.forEach((s, i) => s.num = i + 1);
     save();
@@ -1497,6 +1713,13 @@ function exitSelectMode(){
   render();
   updateSelectBar();
 }
+function selectAllStudents(){
+  selectModeSections.forEach(si => {
+    state.sections[si].students.forEach((stu, ri) => { selectedStudents[si + '-' + ri] = true; });
+  });
+  render();
+  updateSelectBar();
+}
 function toggleStudentSelection(si, ri){
   const key = si + '-' + ri;
   if(selectedStudents[key]) delete selectedStudents[key];
@@ -1514,7 +1737,7 @@ function updateSelectBar(){
 function deleteSelectedStudents(){
   const keys = Object.keys(selectedStudents);
   if(keys.length === 0){ notify('لم تحدد أي طالب'); return; }
-  showConfirm('حذف الطلاب', 'هل تريد حذف <b>' + keys.length + '</b> طالب محدد؟', () => {
+  showConfirm('حذف الطلاب', 'هل متأكد من حذف <b>' + keys.length + '</b> من الطلاب المحددين؟', () => {
     const grouped = {};
     keys.forEach(k => {
       const parts = k.split('-');
@@ -1534,32 +1757,41 @@ function deleteSelectedStudents(){
 }
 
 /* ===== لون الطالب ===== */
+let pendingStudentColor = null;
 function openStudentColorDialog(si, ri){
   closeModal('rowMenuModal');
   studentColorContext = { si, ri };
+  pendingStudentColor = null;
   const stu = state.sections[si].students[ri];
   $('studentColorTitle').textContent = 'لون: ' + (stu.name || 'طالب رقم ' + stu.num);
 
   const pal = $('studentColorPalette');
   pal.innerHTML = STUDENT_COLORS.map(c => {
-    const sel = stu.color === c ? ' selected' : '';
-    return '<span class="' + sel.trim() + '" style="background:' + c + '" onclick="applyStudentColor(\'' + c + '\')"></span>';
+    return '<span data-color="' + c + '" style="background:' + c + '" onclick="pickStudentColor(\'' + c + '\', this)"></span>';
   }).join('') +
-  '<span class="none ' + (stu.color ? '' : 'selected') + '" onclick="removeStudentColor()">✕</span>';
+  '<span class="none" data-color="" onclick="pickStudentColor(\'\', this)">✕</span>';
 
   $('studentCustomColor').value = stu.color || '#ffffff';
   openModal('studentColorModal');
 }
-function applyStudentColor(color){
+function pickStudentColor(color, el){
+  pendingStudentColor = color;
+  document.querySelectorAll('#studentColorPalette span').forEach(x => x.classList.remove('selected'));
+  el.classList.add('selected');
+  if(color) $('studentCustomColor').value = color;
+}
+function pickCustomColor(color){
+  pendingStudentColor = color;
+  document.querySelectorAll('#studentColorPalette span').forEach(x => x.classList.remove('selected'));
+}
+function applyPendingColor(){
+  if(pendingStudentColor === null){ notify('اختر لونًا أولاً'); return; }
   const si = studentColorContext.si, ri = studentColorContext.ri;
-  state.sections[si].students[ri].color = color;
+  state.sections[si].students[ri].color = pendingStudentColor;
   save();
   closeModal('studentColorModal');
   render();
-  notify('تم تطبيق اللون');
-}
-function applyCustomColor(){
-  applyStudentColor($('studentCustomColor').value);
+  notify(pendingStudentColor ? 'تم تطبيق اللون' : 'تم إزالة اللون');
 }
 function removeStudentColor(){
   const si = studentColorContext.si, ri = studentColorContext.ri;
@@ -1570,60 +1802,87 @@ function removeStudentColor(){
   notify('تم إزالة اللون');
 }
 
-/* ===== Zoom ===== */
-function openZoomDialog(si, ri){
-  closeModal('rowMenuModal');
-  zoomContext = { si, ri, val: 100 };
-  const stu = state.sections[si].students[ri];
-  $('zoomPreviewText').textContent = stu.name || ('طالب رقم ' + stu.num);
-  $('zoomSlider').value = Math.round((stu.zoom || 1) * 100);
-  updateZoom();
-  openModal('zoomModal');
-}
-function zoomStep(d){
-  const v = Math.max(80, Math.min(250, zoomContext.val + d));
-  $('zoomSlider').value = v;
-  updateZoom();
-}
-function updateZoom(){
-  zoomContext.val = +$('zoomSlider').value;
-  const px = Math.round(16 * zoomContext.val / 100);
-  $('zoomPreviewText').style.fontSize = px + 'px';
-  $('zoomPercent').textContent = zoomContext.val + '%';
-}
-function saveZoom(){
-  const stu = state.sections[zoomContext.si].students[zoomContext.ri];
-  stu.zoom = zoomContext.val / 100;
-  save();
-  closeModal('zoomModal');
-  render();
-  notify('تم حفظ حجم الاسم: ' + zoomContext.val + '%');
-}
-function resetZoom(){ $('zoomSlider').value = 100; updateZoom(); }
-
 /* ===== الملاحظات ===== */
+let notesSelectMode = false, notesSelected = new Set();
 function openNotesDialog(si, ri){
   notesContext = { si, ri };
+  notesSelectMode = false;
+  notesSelected = new Set();
   const stu = state.sections[si].students[ri];
-  $('notesTitle').textContent = 'ملاحظات: ' + (stu.name || 'طالب رقم ' + stu.num);
+  $('notesTitle').textContent = 'ملاحظات: ' + (stu.name || stu.num);
   $('noteText').value = '';
   renderNotesList(stu);
   openModal('notesModal');
   setTimeout(() => $('noteText').focus(), 100);
 }
+function renderNotesToolbar(stu){
+  const bar = $('notesToolbar');
+  const has = (stu.notes || []).length > 0;
+  if(!has){ bar.innerHTML = ''; return; }
+  if(!notesSelectMode){
+    bar.innerHTML = '<button class="btn" onclick="toggleNotesSelect()">تحديد للحذف</button>';
+  } else {
+    bar.innerHTML =
+      '<button class="btn" onclick="notesSelectAll()">تحديد الكل</button>' +
+      '<button class="btn danger" onclick="deleteSelectedNotes()">حذف المحدد</button>' +
+      '<button class="btn danger" onclick="deleteAllNotes()">حذف الكل</button>' +
+      '<button class="btn" onclick="toggleNotesSelect()">إلغاء</button>';
+  }
+}
 function renderNotesList(stu){
   const list = $('notesList');
   const notes = stu.notes || [];
+  renderNotesToolbar(stu);
   if(notes.length === 0){
     list.innerHTML = '<p style="text-align:center;color:var(--mut);font-size:13px">لا توجد ملاحظات سابقة</p>';
     return;
   }
-  list.innerHTML = notes.map(n =>
-    '<div style="background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:6px">' +
-      '<div style="font-size:14px;line-height:1.6">' + esc(n.text) + '</div>' +
-      '<div style="font-size:11px;color:var(--mut);margin-top:4px">' + formatDate(n.date) + '</div>' +
+  list.innerHTML = notes.map((n, i) =>
+    '<div ' + (notesSelectMode ? 'onclick="toggleNoteSel(' + i + ')" ' : '') + 'style="display:flex;gap:10px;align-items:flex-start;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:6px' + (notesSelectMode ? ';cursor:pointer' : '') + '">' +
+      (notesSelectMode ? '<span class="select-check ' + (notesSelected.has(i) ? 'checked' : '') + '"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></span>' : '') +
+      '<div style="flex:1;min-width:0"><div style="font-size:14px;line-height:1.6">' + esc(n.text) + '</div>' +
+      '<div style="font-size:11px;color:var(--mut);margin-top:4px">' + formatDate(n.date) + '</div></div>' +
     '</div>'
   ).join('');
+}
+function currentNotesStudent(){ return state.sections[notesContext.si].students[notesContext.ri]; }
+function toggleNotesSelect(){
+  notesSelectMode = !notesSelectMode;
+  notesSelected = new Set();
+  renderNotesList(currentNotesStudent());
+}
+function toggleNoteSel(i){
+  if(notesSelected.has(i)) notesSelected.delete(i); else notesSelected.add(i);
+  renderNotesList(currentNotesStudent());
+}
+function notesSelectAll(){
+  const stu = currentNotesStudent();
+  notesSelected = new Set((stu.notes || []).map((_, i) => i));
+  renderNotesList(stu);
+}
+function deleteSelectedNotes(){
+  if(notesSelected.size === 0){ notify('لم تحدد أي ملاحظة'); return; }
+  const n = notesSelected.size;
+  showConfirm('حذف الملاحظات', 'هل متأكد من حذف <b>' + n + '</b> من الملاحظات المحددة؟', () => {
+    const stu = currentNotesStudent();
+    stu.notes = (stu.notes || []).filter((_, i) => !notesSelected.has(i));
+    notesSelected = new Set();
+    notesSelectMode = false;
+    save();
+    renderNotesList(stu);
+    notify('تم حذف الملاحظات', 'del');
+  });
+}
+function deleteAllNotes(){
+  showConfirm('حذف كل الملاحظات', 'هل متأكد من حذف <b>كل الملاحظات</b> لهذا الطالب؟', () => {
+    const stu = currentNotesStudent();
+    stu.notes = [];
+    notesSelected = new Set();
+    notesSelectMode = false;
+    save();
+    renderNotesList(stu);
+    notify('تم حذف كل الملاحظات', 'del');
+  });
 }
 function formatDate(ts){
   try{
@@ -1643,7 +1902,9 @@ function saveNote(){
 }
 
 /* ===== إحصائيات ===== */
+let statsSection = -1;
 function openStats(si){
+  statsSection = si;
   const section = state.sections[si];
   $('statsTitle').textContent = 'إحصائيات — شعبة ' + section.sec;
   const list = $('statsList');
@@ -1652,7 +1913,7 @@ function openStats(si){
     openModal('statsModal');
     return;
   }
-  list.innerHTML = section.students.map(stu => {
+  list.innerHTML = section.students.map((stu, ri) => {
     const c = { present:0, absent:0, late:0 };
     Object.values(stu.attendance || {}).forEach(v => { if(c[v] !== undefined) c[v]++; });
     return '<div class="stats-item">' +
@@ -1662,9 +1923,43 @@ function openStats(si){
         '<span class="stat-pill absent"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' + c.absent + '</span>' +
         '<span class="stat-pill late"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>' + c.late + '</span>' +
       '</div>' +
+      '<button class="btn danger stats-clear" aria-label="مسح السجل" onclick="confirmClearRecord(' + si + ',' + ri + ')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></button>' +
     '</div>';
   }).join('');
   openModal('statsModal');
+}
+function confirmClearAllRecords(){
+  showConfirm('مسح كل سجل الطلاب', 'هل متأكد من مسح <b>كل سجل الطلاب</b> في جميع الشعب؟ (الأسماء والدرجات والتحضير والملاحظات، ويبقى لكل شعبة صف فارغ)', () => {
+    if(selectModeSections.size) { selectModeSections.clear(); selectedStudents = {}; updateSelectBar(); }
+    state.sections.forEach(sec => { sec.students = [makeStudent(1)]; });
+    Object.keys(searchText).forEach(k => delete searchText[k]);
+    searchOpen.clear();
+    save();
+    render();
+    notify('تم مسح السجل', 'del');
+  });
+}
+function confirmClearSectionRecord(){
+  const si = statsSection;
+  if(si < 0 || !state.sections[si]) return;
+  const sec = state.sections[si];
+  showConfirm('مسح السجل', 'هل متأكد من مسح سجل التحضير لكل طلاب <b>شعبة ' + esc(sec.sec) + '</b>؟', () => {
+    sec.students.forEach(stu => { stu.attendance = {}; });
+    save();
+    render();
+    openStats(si);
+    notify('تم مسح السجل', 'del');
+  });
+}
+function confirmClearRecord(si, ri){
+  const stu = state.sections[si].students[ri];
+  showConfirm('مسح السجل', 'هل متأكد من مسح سجل التحضير للطالب <b>' + (esc(stu.name) || ('رقم ' + esc(stu.num))) + '</b>؟', () => {
+    stu.attendance = {};
+    save();
+    render();
+    openStats(si);
+    notify('تم مسح السجل', 'del');
+  });
 }
 
 /* ===== شعبة ===== */
@@ -1700,7 +1995,7 @@ function confirmRenameSection(){
 function confirmDeleteSection(){
   const si = currentSectionForMenu;
   closeModal('editSectionModal');
-  showConfirm('حذف الشعبة', 'هل تريد حذف <b>شعبة ' + esc(state.sections[si].sec) + '</b> مع كل طلابها؟', () => {
+  showConfirm('حذف الشعبة', 'هل متأكد من حذف <b>شعبة ' + esc(state.sections[si].sec) + '</b> مع كل طلابها؟', () => {
     state.sections.splice(si, 1);
     save();
     render();
@@ -1708,7 +2003,7 @@ function confirmDeleteSection(){
   });
 }
 function confirmDeleteAllStudents(si){
-  showConfirm('حذف جميع الطلاب', 'هل تريد حذف <b>كل طلاب شعبة ' + esc(state.sections[si].sec) + '</b>؟', () => {
+  showConfirm('حذف جميع الطلاب', 'هل متأكد من حذف <b>كل طلاب شعبة ' + esc(state.sections[si].sec) + '</b>؟', () => {
     state.sections[si].students = [];
     save();
     render();
@@ -1717,17 +2012,50 @@ function confirmDeleteAllStudents(si){
 }
 
 /* ===== ألوان الأعمدة ===== */
+const COLOR_CHOICES = ['#ffffff','#e9ece4','#f4dadd','#f5dcc8','#f2eecf','#cfe2ee','#fecaca','#fed7aa','#fef08a','#d9f99d','#bbf7d0','#a7f3d0','#bae6fd','#bfdbfe','#ddd6fe','#e9d5ff','#fbcfe8','#e5e7eb','#cbd5e1','#94a3b8','#2d3835','#1f5c55','#1f4e8c','#000000'];
+let colorsSnapshot = null;
 function openColorsDialog(){
-  const list = $('colorsList');
-  list.innerHTML = state.columns.map((c, i) =>
-    '<label style="display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:10px">' +
-      '<input type="color" value="' + c.color + '" oninput="state.columns[' + i + '].color=this.value" style="width:44px;height:36px;border:none;border-radius:8px;cursor:pointer;background:none">' +
-      '<span style="flex:1;font-size:14px;font-weight:600">' + esc(c.title) + '</span>' +
-    '</label>'
-  ).join('');
+  colorsSnapshot = state.columns.map(c => c.color);
+  renderColorsList();
   openModal('colorsModal');
 }
+function renderColorsList(){
+  $('colorsList').innerHTML = state.columns.map((c, i) => {
+    if(c.type === 'attendance') return '';
+    const cur = colColor(c);
+    const sw = COLOR_CHOICES.map(h =>
+      '<span class="cc-sw' + (h.toLowerCase() === toHex6(cur) ? ' selected' : '') + '" data-c="' + h + '" style="background:' + h + '" onclick="pickColumnColor(' + i + ',\'' + h + '\')"></span>'
+    ).join('');
+    return '<div class="cc-row" data-i="' + i + '">' +
+      '<div class="cc-head">' +
+        '<span class="cc-title">' + esc(c.title) + '</span>' +
+        '<span class="cc-cur" style="background:' + cur + '"></span>' +
+        '<input type="color" class="cc-input" value="' + toHex6(cur) + '" oninput="pickColumnColor(' + i + ',this.value,true)">' +
+        '<button class="btn cc-reset" onclick="resetColumnColor(' + i + ')">افتراضي</button>' +
+      '</div>' +
+      '<div class="cc-swatches">' + sw + '</div>' +
+    '</div>';
+  }).join('');
+}
+function pickColumnColor(i, hex, fromInput){
+  state.columns[i].color = hex;
+  const row = document.querySelector('#colorsList .cc-row[data-i="' + i + '"]');
+  if(!row) return;
+  row.querySelector('.cc-cur').style.background = hex;
+  row.querySelectorAll('.cc-sw').forEach(sw => sw.classList.toggle('selected', !fromInput && sw.dataset.c.toLowerCase() === hex.toLowerCase()));
+  if(!fromInput) row.querySelector('.cc-input').value = toHex6(hex);
+}
+function resetColumnColor(i){
+  state.columns[i].color = DEFAULT_COL_COLORS[state.columns[i].key] || '#ffffff';
+  renderColorsList();
+}
+function cancelColors(){
+  if(colorsSnapshot) state.columns.forEach((c, i) => { c.color = colorsSnapshot[i]; });
+  colorsSnapshot = null;
+  closeModal('colorsModal');
+}
 function saveColors(){
+  colorsSnapshot = null;
   save();
   closeModal('colorsModal');
   render();
@@ -1743,7 +2071,6 @@ function openFontDialog(si){
   $('fontSize').value = f.size || 14;
   $('fontSizeVal').textContent = (f.size || 14) + 'px';
   $('fontWeight').value = f.weight || 400;
-  $('fontAlign').value = f.align || 'right';
   openModal('fontModal');
 }
 function previewFont(){ $('fontSizeVal').textContent = $('fontSize').value + 'px'; }
@@ -1751,8 +2078,7 @@ function saveFont(){
   state.sections[editingSection].font = {
     family: $('fontFamily').value,
     size: +$('fontSize').value,
-    weight: +$('fontWeight').value,
-    align: $('fontAlign').value
+    weight: +$('fontWeight').value
   };
   save();
   closeModal('fontModal');
@@ -1763,7 +2089,6 @@ function resetFont(){
   $('fontFamily').value = '';
   $('fontSize').value = 14;
   $('fontWeight').value = 400;
-  $('fontAlign').value = 'right';
   previewFont();
 }
 
@@ -1776,11 +2101,13 @@ function openWordDialog(){
 }
 function handleWordFile(file){
   $('wordStatus').textContent = 'جارٍ القراءة...';
-  readDocx(file).then(lines => {
+  $('wordImportBtn').hidden = true;
+  return readImportFile(file).then(lines => {
     if(!lines.length){ $('wordStatus').textContent = 'لم أجد أسماء'; return; }
     const parsed = groupSections(lines);
     window.__wordParsed = parsed;
-    let msg = 'تم العثور على ' + lines.length + ' اسم';
+    const totalNames = parsed.reduce((n, p) => n + p.names.length, 0);
+    let msg = 'تم العثور على ' + totalNames + ' اسم';
     const named = parsed.filter(p => p.sec);
     if(named.length){
       msg += ' موزعة على ' + named.length + ' شعب:\n';
@@ -1788,7 +2115,7 @@ function handleWordFile(file){
     } else msg += ' — ستُضاف إلى الشعبة الأولى';
     $('wordStatus').textContent = msg;
     $('wordImportBtn').hidden = false;
-  }).catch(() => { $('wordStatus').textContent = 'تعذّر قراءة الملف'; });
+  }).catch(err => { console.error(err); $('wordStatus').textContent = 'تعذّر قراءة الملف. تأكد أنه ملف Excel بصيغة xlsx (' + ((err && err.message) || err) + ')'; });
 }
 function groupSections(lines){
   const out = []; let cur = null;
@@ -1802,8 +2129,11 @@ function groupSections(lines){
 }
 function confirmWordImport(){
   const parsed = window.__wordParsed;
-  if(!parsed) return;
+  if(!parsed){ notify('اختر ملف Excel أولاً'); return; }
   let added = 0;
+  const cleaned = new Set();
+  const hasData = st => (st.name || '').trim() || Object.values(st.scores || {}).some(v => String(v == null ? '' : v).trim()) ||
+    Object.keys(st.attendance || {}).length || (st.notes || []).length || st.totalConfirmed;
   parsed.forEach(p => {
     let section;
     if(p.sec){
@@ -1814,6 +2144,7 @@ function confirmWordImport(){
       }
     } else section = state.sections[0];
     if(!section) return;
+    if(p.names.length && !cleaned.has(section)){ cleaned.add(section); section.students = section.students.filter(hasData); }
     p.names.forEach(name => {
       const t = name.trim();
       if(!t) return;
@@ -1833,49 +2164,304 @@ function confirmWordImport(){
 function normalizeAr(s){
   return String(s || '').replace(/[\u064B-\u0652\u0640]/g,'').replace(/[أإآ]/g,'ا').replace(/ى/g,'ي').replace(/ة/g,'ه').trim().toLowerCase();
 }
-async function readDocx(file){
-  const buf = new Uint8Array(await file.arrayBuffer());
-  const dv = new DataView(buf.buffer);
+function readFileBuffer(file){
+  if(file.arrayBuffer) return file.arrayBuffer();
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result);
+    r.onerror = () => rej(r.error || new Error('read'));
+    r.readAsArrayBuffer(file);
+  });
+}
+function readFileText(file){
+  if(file.text) return file.text();
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(String(r.result));
+    r.onerror = () => rej(r.error || new Error('read'));
+    r.readAsText(file);
+  });
+}
+/* فك ضغط deflate بدون الاعتماد على المتصفح (للمتصفحات القديمة) */
+function inflateRaw(data, hint){
+  const LBASE = [3,4,5,6,7,8,9,10,11,13,15,17,19,23,27,31,35,43,51,59,67,83,99,115,131,163,195,227,258];
+  const LEXT  = [0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0];
+  const DBASE = [1,2,3,4,5,7,9,13,17,25,33,49,65,97,129,193,257,385,513,769,1025,1537,2049,3073,4097,6145,8193,12289,16385,24577];
+  const DEXT  = [0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13];
+  const ORDER = [16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15];
+  let out = new Uint8Array(hint > 0 ? hint : data.length * 4), op = 0;
+  let ip = 0, bb = 0, bc = 0;
+  function bits(n){
+    let v = bb;
+    while(bc < n){
+      if(ip >= data.length) throw new Error('eof');
+      v |= data[ip++] << bc; bc += 8;
+    }
+    bb = v >>> n; bc -= n;
+    return v & ((1 << n) - 1);
+  }
+  function grow(n){
+    if(op + n <= out.length) return;
+    let size = out.length * 2;
+    while(size < op + n) size *= 2;
+    const o = new Uint8Array(size); o.set(out.subarray(0, op)); out = o;
+  }
+  function huff(lengths){
+    const count = new Uint16Array(16), symbol = new Uint16Array(lengths.length), offs = new Uint16Array(16);
+    for(let i = 0; i < lengths.length; i++) count[lengths[i]]++;
+    for(let l = 1; l < 15; l++) offs[l + 1] = offs[l] + count[l];
+    for(let i = 0; i < lengths.length; i++) if(lengths[i]) symbol[offs[lengths[i]]++] = i;
+    return { count, symbol };
+  }
+  function decode(h){
+    let code = 0, first = 0, index = 0;
+    for(let len = 1; len <= 15; len++){
+      code |= bits(1);
+      const c = h.count[len];
+      if(code - c < first) return h.symbol[index + (code - first)];
+      index += c; first += c; first <<= 1; code <<= 1;
+    }
+    throw new Error('bad code');
+  }
+  function codes(lc, dc){
+    for(;;){
+      let sym = decode(lc);
+      if(sym < 256){ grow(1); out[op++] = sym; }
+      else if(sym === 256) return;
+      else {
+        sym -= 257;
+        if(sym >= 29) throw new Error('bad sym');
+        const len = LBASE[sym] + bits(LEXT[sym]);
+        const ds = decode(dc);
+        const dist = DBASE[ds] + bits(DEXT[ds]);
+        if(dist > op) throw new Error('bad dist');
+        grow(len);
+        for(let i = 0; i < len; i++){ out[op] = out[op - dist]; op++; }
+      }
+    }
+  }
+  let last;
+  do{
+    last = bits(1);
+    const type = bits(2);
+    if(type === 0){
+      bb = 0; bc = 0;
+      const len = data[ip] | (data[ip + 1] << 8);
+      ip += 4;
+      grow(len); out.set(data.subarray(ip, ip + len), op); ip += len; op += len;
+    } else if(type === 1){
+      const l = new Uint8Array(288);
+      for(let i = 0; i < 144; i++) l[i] = 8;
+      for(let i = 144; i < 256; i++) l[i] = 9;
+      for(let i = 256; i < 280; i++) l[i] = 7;
+      for(let i = 280; i < 288; i++) l[i] = 8;
+      codes(huff(l), huff(new Uint8Array(30).fill(5)));
+    } else if(type === 2){
+      const nlen = bits(5) + 257, ndist = bits(5) + 1, ncode = bits(4) + 4;
+      const cl = new Uint8Array(19);
+      for(let i = 0; i < ncode; i++) cl[ORDER[i]] = bits(3);
+      const clh = huff(cl);
+      const lens = new Uint8Array(nlen + ndist);
+      let i = 0;
+      while(i < nlen + ndist){
+        const sym = decode(clh);
+        if(sym < 16){ lens[i++] = sym; }
+        else {
+          let prev = 0, rep;
+          if(sym === 16){ prev = lens[i - 1]; rep = 3 + bits(2); }
+          else if(sym === 17){ rep = 3 + bits(3); }
+          else { rep = 11 + bits(7); }
+          while(rep--) lens[i++] = prev;
+        }
+      }
+      codes(huff(lens.subarray(0, nlen)), huff(lens.subarray(nlen)));
+    } else throw new Error('bad block');
+  } while(!last);
+  return out.subarray(0, op);
+}
+function cleanLine(raw){
+  let t = String(raw == null ? '' : raw).replace(/\s+/g,' ').trim();
+  t = t.replace(/^[\s\d٠-٩]+[.\-–)\]:،]+\s*/,'').trim();
+  if(!t) return null;
+  if(/^[\s\d٠-٩.\-–—()\/:,،]+$/.test(t)) return null;
+  if(/^(الاسم|اسم الطالب|أسماء الطلاب|اسماء الطلاب|م|الرقم|التسلسل)$/.test(t)) return null;
+  if(/^(?:كفايات\s*لغوية.*|اختبار.*|نشاط(?:\s*صفي)?|مشاركة|واجب|المجموع|تحضير|الدرجة.*|إحصائيات)$/.test(t)) return null;
+  if((state.columns || []).some(c => normalizeAr(c.title) === normalizeAr(t))) return null;
+  return t;
+}
+
+/* ===== Excel / CSV ===== */
+async function inflateEntry(data, method, us){
+  if(method === 0) return data;
+  if(typeof DecompressionStream === 'function'){
+    try{
+      const ds = new DecompressionStream('deflate-raw');
+      const w = ds.writable.getWriter();
+      w.write(data); w.close();
+      return new Uint8Array(await new Response(ds.readable).arrayBuffer());
+    }catch(err){}
+  }
+  return inflateRaw(data, us);
+}
+async function readZipFiles(file, want){
+  const buf = new Uint8Array(await readFileBuffer(file));
+  const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
   let e = buf.length - 22;
   while(e >= 0 && dv.getUint32(e, true) !== 0x06054b50) e--;
   if(e < 0) throw new Error('not zip');
   const n = dv.getUint16(e + 10, true);
   let p = dv.getUint32(e + 16, true);
+  const out = {};
   for(let i = 0; i < n; i++){
     if(dv.getUint32(p, true) !== 0x02014b50) break;
     const method = dv.getUint16(p + 10, true);
-    const cs = dv.getUint32(p + 20, true);
-    const nl = dv.getUint16(p + 28, true);
-    const xl = dv.getUint16(p + 30, true);
-    const cl = dv.getUint16(p + 32, true);
+    const cs = dv.getUint32(p + 20, true), us = dv.getUint32(p + 24, true);
+    const nl = dv.getUint16(p + 28, true), xl = dv.getUint16(p + 30, true), cl = dv.getUint16(p + 32, true);
     const off = dv.getUint32(p + 42, true);
     const name = new TextDecoder().decode(buf.subarray(p + 46, p + 46 + nl));
-    if(name === 'word/document.xml'){
+    if(want(name)){
       const start = off + 30 + dv.getUint16(off + 26, true) + dv.getUint16(off + 28, true);
-      const data = buf.subarray(start, start + cs);
-      if(method === 0) return extractLines(new TextDecoder().decode(data));
-      const ds = new DecompressionStream('deflate-raw');
-      const w = ds.writable.getWriter();
-      w.write(data); w.close();
-      const xml = await new Response(ds.readable).text();
-      return extractLines(xml);
+      const raw = await inflateEntry(buf.subarray(start, start + cs), method, us);
+      out[name] = new TextDecoder().decode(raw);
     }
     p += 46 + nl + xl + cl;
   }
-  throw new Error('no document');
-}
-function extractLines(xml){
-  const doc = new DOMParser().parseFromString(xml, 'application/xml');
-  const out = [];
-  [...doc.getElementsByTagName('w:p')].forEach(para => {
-    let t = [...para.getElementsByTagName('w:t')].map(x => x.textContent).join('').replace(/\s+/g,' ').trim();
-    t = t.replace(/^[\s\d٠-٩]+[.\-–)\]:،]+\s*/,'').trim();
-    if(!t) return;
-    if(/^[\s\d٠-٩.\-–—()\/:,،]+$/.test(t)) return;
-    if(/^(الاسم|اسم الطالب|أسماء الطلاب|اسماء الطلاب|م|الرقم|التسلسل)$/.test(t)) return;
-    out.push(t);
-  });
   return out;
+}
+function colIndex(ref){
+  const m = /^([A-Za-z]+)/.exec(ref || '');
+  if(!m) return -1;
+  let n = 0;
+  for(const ch of m[1].toUpperCase()) n = n * 26 + (ch.charCodeAt(0) - 64);
+  return n - 1;
+}
+async function readXlsx(file){
+  const files = await readZipFiles(file, n => /^xl\/(workbook\.xml|_rels\/workbook\.xml\.rels|sharedStrings\.xml|worksheets\/[^\/]+\.xml)$/i.test(n));
+  if(!files['xl/workbook.xml']) throw new Error('ليس ملف xlsx');
+  const parse = x => new DOMParser().parseFromString(x, 'application/xml');
+  const rels = {};
+  if(files['xl/_rels/workbook.xml.rels']){
+    [...parse(files['xl/_rels/workbook.xml.rels']).getElementsByTagName('Relationship')]
+      .forEach(r => { rels[r.getAttribute('Id')] = r.getAttribute('Target'); });
+  }
+  const shared = [];
+  if(files['xl/sharedStrings.xml']){
+    [...parse(files['xl/sharedStrings.xml']).getElementsByTagName('si')].forEach(si => {
+      let t = '';
+      [...si.getElementsByTagName('t')].forEach(x => { if(!(x.closest && x.closest('rPh'))) t += x.textContent; });
+      shared.push(t);
+    });
+  }
+  const sheets = [];
+  [...parse(files['xl/workbook.xml']).getElementsByTagName('sheet')].forEach((sh, idx) => {
+    if(sh.getAttribute('state') === 'hidden') return;
+    let rid = sh.getAttribute('r:id');
+    if(!rid){ for(const a of sh.attributes){ if(/:id$/.test(a.name)) rid = a.value; } }
+    let target = rels[rid];
+    if(!target) target = 'worksheets/sheet' + (idx + 1) + '.xml';
+    const path = target.charAt(0) === '/' ? target.slice(1) : 'xl/' + target;
+    const xml = files[path];
+    if(!xml) return;
+    const rows = [];
+    [...parse(xml).getElementsByTagName('row')].forEach(row => {
+      const cells = [];
+      let run = 0;
+      [...row.getElementsByTagName('c')].forEach(c => {
+        let ci = colIndex(c.getAttribute('r'));
+        if(ci < 0) ci = run;
+        run = ci + 1;
+        const t = c.getAttribute('t');
+        let v = '';
+        if(t === 'inlineStr'){
+          v = [...c.getElementsByTagName('t')].map(x => x.textContent).join('');
+        } else {
+          const ve = c.getElementsByTagName('v')[0];
+          v = ve ? ve.textContent : '';
+          if(t === 's') v = shared[parseInt(v, 10)] || '';
+        }
+        cells[ci] = v;
+      });
+      rows.push(cells);
+    });
+    sheets.push({ name: sh.getAttribute('name') || '', rows });
+  });
+  return sheets;
+}
+function xlsxSheetsToLines(sheets){
+  const secRe = /^(?:شعبة|الشعبة|فصل|الفصل|الصف)\s*[\(\[]?\s*(\d+)/;
+  const NAME_HEAD = /^(اسم الطالب|اسم الطالبه|الطالب|الطالبه|الاسم|اسم|الاسماء|اسماء الطلاب|اسماء|الاسم الرباعي|الاسم الكامل|اسم الطالب الرباعي|الاسم الثلاثي|name|student name|full name|students)$/;
+  const SEC_HEAD = /^(الشعبه|شعبه|الفصل|فصل|section|class)$/;
+  const SKIP = /^(كشف|سجل|متابعه|المرحله|العام|السنه|مدرسه|وزاره|المعلم|المعلمه|الماده|التاريخ|ملاحظات|ملاحظه|المجموع|الاجمالي|الدرجه|الدرجات|الصف|الحضور|الغياب|م|الرقم|التسلسل|رقم|الجوال|الهاتف|الهويه|الايميل|البريد)(\s|$)/;
+  const nameOf = (raw, minWords) => {
+    const t = cleanLine(raw);
+    if(!t) return null;
+    const n = normalizeAr(t);
+    if(/\d/.test(n) || SKIP.test(n) || NAME_HEAD.test(n) || SEC_HEAD.test(n)) return null;
+    if(!/^[A-Za-z\u0600-\u06FF\s.'’\-]+$/.test(n)) return null;
+    const w = n.split(' ').filter(Boolean).length;
+    if(w < minWords || w > 8) return null;
+    return t;
+  };
+  const lines = [];
+  const processBlock = (rows) => {
+    let hdr = -1, nameCol = -1, secCol = -1;
+    for(let r = 0; r < Math.min(rows.length, 25) && hdr < 0; r++){
+      rows[r].forEach((c, i) => { if(hdr < 0 && NAME_HEAD.test(normalizeAr(c))){ hdr = r; nameCol = i; } });
+      if(hdr >= 0) rows[r].forEach((c, i) => { if(SEC_HEAD.test(normalizeAr(c))) secCol = i; });
+    }
+    if(nameCol < 0){
+      for(const minW of [2, 1]){
+        const score = {};
+        rows.forEach(r => r.forEach((c, i) => { if(nameOf(c, minW)) score[i] = (score[i] || 0) + 1; }));
+        let best = -1, bs = 0;
+        Object.keys(score).forEach(k => { if(score[k] > bs){ bs = score[k]; best = +k; } });
+        if(best >= 0){ nameCol = best; break; }
+      }
+    }
+    if(nameCol < 0) return;
+    let lastSec = null;
+    rows.forEach((cells, r) => {
+      if(r <= hdr) return;
+      if(secCol >= 0){
+        const sm = (cells[secCol] || '').match(/\d+/);
+        if(sm && sm[0] !== lastSec){ lastSec = sm[0]; lines.push('شعبة ' + sm[0]); }
+      }
+      const nmv = nameOf(cells[nameCol], 1);
+      if(nmv) lines.push(nmv);
+    });
+  };
+  sheets.forEach(sh => {
+    const nm = String(sh.name || '').trim();
+    const mm = nm.match(secRe) || nm.match(/^(\d{1,4})$/);
+    if(mm) lines.push('شعبة ' + mm[1]);
+    const rows = sh.rows.map(r => Array.from(r, v => (v == null ? '' : String(v).trim())));
+    const blocks = [];
+    rows.forEach(cells => {
+      const mi = cells.findIndex(c => c && secRe.test(c));
+      if(mi >= 0){ blocks.push({ marker: cells[mi], rows: [] }); return; }
+      if(!blocks.length) blocks.push({ marker: null, rows: [] });
+      blocks[blocks.length - 1].rows.push(cells);
+    });
+    blocks.forEach(bl => {
+      if(bl.marker) lines.push(bl.marker);
+      processBlock(bl.rows);
+    });
+  });
+  return lines.map(cleanLine).filter(Boolean);
+}
+function csvToLines(text){
+  const lines = [];
+  String(text).replace(/^\uFEFF/, '').split(/\r?\n/).forEach(line => {
+    const cells = line.split(/[,;\t]/).map(c => c.replace(/^"|"$/g, '').trim());
+    for(const c of cells){ if(c && /[A-Za-z\u0600-\u06FF]/.test(c)){ lines.push(c); break; } }
+  });
+  return lines.map(cleanLine).filter(Boolean);
+}
+async function readImportFile(file){
+  const nm = String(file.name || '').toLowerCase();
+  if(/\.xls$/.test(nm)) throw new Error('صيغة xls القديمة غير مدعومة، احفظ الملف بصيغة xlsx');
+  if(/\.(csv|txt)$/.test(nm)) return csvToLines(await readFileText(file));
+  return xlsxSheetsToLines(await readXlsx(file));
 }
 
 /* ===== النسخة الاحتياطية ===== */
@@ -1884,35 +2470,53 @@ function openBackupDialog(){
   openModal('backupModal');
 }
 async function createBackup(){
+  const now = Date.now();
   try{
-    const text = JSON.stringify(state);
-    const fname = 'grades-backup-' + new Date().toISOString().slice(0,10) + '.json';
-    const f = new File([text], fname, { type: 'application/json' });
-    if(navigator.canShare && navigator.canShare({ files: [f] })){
-      await navigator.share({ files: [f] });
-    } else {
+    const text = JSON.stringify(Object.assign({}, state, { lastBackup: now }));
+    const d = new Date();
+    const fname = 'grades-backup-' + d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0') + '.json';
+    let done = false;
+    let file = null;
+    try{ file = new File([text], fname, { type: 'application/json' }); }catch(e){ file = null; }
+    if(file && navigator.canShare && navigator.share){
+      let can = false;
+      try{ can = navigator.canShare({ files: [file] }); }catch(e){ can = false; }
+      if(can){
+        try{
+          await navigator.share({ files: [file], title: fname });
+          done = true;
+        }catch(err){
+          if(err && err.name === 'AbortError') return;
+        }
+      }
+    }
+    if(!done){
       const url = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
       const a = document.createElement('a');
-      a.href = url; a.download = fname;
-      document.body.appendChild(a); a.click(); a.remove();
-      setTimeout(() => URL.revokeObjectURL(url), 4000);
+      a.href = url; a.download = fname; a.style.display = 'none';
+      document.body.appendChild(a); a.click();
+      setTimeout(() => { a.remove(); URL.revokeObjectURL(url); }, 60000);
     }
-    state.lastBackup = Date.now();
+    state.lastBackup = now;
     save();
     closeModal('backupModal');
     notify('تم إنشاء النسخة الاحتياطية');
-  }catch(e){ notify('تعذّر إنشاء النسخة'); }
+  }catch(e){
+    notify('تعذّر إنشاء النسخة');
+  }
 }
 $('restoreFileInput').addEventListener('change', async (e) => {
   const file = e.target.files[0];
-  e.target.value = '';
   if(!file) return;
   try{
-    const text = await file.text();
+    const text = await readFileText(file);
+    e.target.value = '';
     const data = JSON.parse(text);
     if(!Array.isArray(data.sections) || !Array.isArray(data.columns)) throw 0;
-    showConfirm('استعادة نسخة', 'سيتم استبدال كل البيانات الحالية. متأكد؟', () => {
+    showConfirm('استعادة نسخة', 'هل متأكد من استعادة النسخة؟ سيتم استبدال كل البيانات الحالية', () => {
       state = data;
+      migrateColumns(state);
+      migrateTotals();
       if(!state.day) state.day = todayKey();
       state.sections.forEach(s => {
         if(!s.font) s.font = { family:'', size:14, weight:400, align:'right' };
@@ -1929,7 +2533,7 @@ $('restoreFileInput').addEventListener('change', async (e) => {
       render();
       notify('تمت استعادة النسخة');
     });
-  }catch(err){ notify('الملف غير صالح'); }
+  }catch(err){ e.target.value = ''; notify('الملف غير صالح'); }
 });
 
 /* ===== تأكيد ===== */
@@ -1965,59 +2569,234 @@ try{
   });
 }catch(e){}
 
-/* ===== كيبورد ===== */
+/* ===== لوحة الأرقام (تظهر تحت الخانة) ===== */
 const keypad = $('numKeypad');
+const ICON_BACK = '<svg viewBox="0 0 24 24"><path d="M21 5H9l-6 7 6 7h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1z"/><line x1="12" y1="9.5" x2="17" y2="14.5"/><line x1="17" y1="9.5" x2="12" y2="14.5"/></svg>';
+const ICON_X = '<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+const AR_DIGITS = '٠١٢٣٤٥٦٧٨٩';
 (function(){
-  ['1','2','3','4','5','6','7','8','9','.','0'].forEach(k => {
+  [1,2,3,4,5,'del',6,7,8,9,0,'cancel','done'].forEach(k => {
     const b = document.createElement('button');
-    b.type = 'button'; b.textContent = k; b.dataset.kp = k;
+    b.type = 'button';
+    if(k === 'cancel'){ b.className = 'kx'; b.dataset.kp = 'cancel'; b.innerHTML = ICON_X; b.setAttribute('aria-label','إلغاء'); }
+    else if(k === 'del'){ b.className = 'kx'; b.dataset.kp = 'del'; b.innerHTML = ICON_BACK; b.setAttribute('aria-label','حذف'); }
+    else if(k === 'done'){ b.className = 'kx kdone'; b.dataset.kp = 'done'; b.textContent = 'تم'; }
+    else { b.dataset.kp = String(k); b.textContent = AR_DIGITS[k]; }
     keypad.appendChild(b);
   });
-  const bs = document.createElement('button');
-  bs.type = 'button'; bs.className = 'kx'; bs.dataset.kp = 'backspace'; bs.textContent = '⌫';
-  keypad.appendChild(bs);
-  const ok = document.createElement('button');
-  ok.type = 'button'; ok.className = 'kx'; ok.dataset.kp = 'ok'; ok.textContent = 'تم';
-  keypad.appendChild(ok);
 })();
-let activeNumInput = null;
-function showKeypad(input){ activeNumInput = input; keypad.hidden = false; }
-function hideKeypad(){ activeNumInput = null; keypad.hidden = true; }
 
-document.addEventListener('focusin', (e) => {
-  const t = e.target;
-  if(t && t.dataset && t.dataset.num) showKeypad(t);
-});
-document.addEventListener('focusout', () => {
-  setTimeout(() => {
-    const a = document.activeElement;
-    if(!a || !a.dataset || !a.dataset.num) hideKeypad();
-  }, 150);
-});
-['pointerdown','touchstart','mousedown'].forEach(ev => {
-  keypad.addEventListener(ev, (e) => {
-    if(e.target.closest('button')) e.preventDefault();
-  }, { passive: false });
-});
-keypad.addEventListener('click', (e) => {
-  const b = e.target.closest('button');
-  if(!b || !activeNumInput) return;
-  e.preventDefault();
-  const key = b.dataset.kp;
-  const el = activeNumInput;
-  if(key === 'ok'){ el.blur(); hideKeypad(); return; }
-  if(key === 'backspace'){
-    const s = el.selectionStart ?? el.value.length;
-    const en = el.selectionEnd ?? s;
-    if(s !== en) el.setRangeText('', s, en, 'end');
-    else if(s > 0) el.setRangeText('', s-1, s, 'end');
-    else return;
-  } else {
-    const s = el.selectionStart ?? el.value.length;
-    const en = el.selectionEnd ?? s;
-    el.setRangeText(key, s, en, 'end');
-  }
+let activeNumInput = null, numOriginal = '', numFresh = false, numChanged = false, openedByPointer = null, lastPtr = 0, kpGhost = { until: 0, rect: null };
+
+function setNumValue(el, v){
+  el.value = v;
+  numChanged = true;
   el.dispatchEvent(new Event('input', { bubbles: true }));
+}
+function resetKeypadViewport(){
+  keypad.style.left = ''; keypad.style.top = ''; keypad.style.bottom = '';
+  keypad.style.transform = ''; keypad.style.transformOrigin = '';
+}
+function isZoomed(){ return !!(window.visualViewport && window.visualViewport.scale > 1.02); }
+function syncKeypadViewport(){
+  const vv = window.visualViewport;
+  if(!vv || keypad.hidden) return;
+  if(!isZoomed()){ resetKeypadViewport(); return; }
+  const k = 1 / vv.scale;
+  keypad.style.left = (vv.offsetLeft + vv.width / 2) + 'px';
+  keypad.style.bottom = 'auto';
+  keypad.style.top = (vv.offsetTop + vv.height - 10 * k - keypad.offsetHeight) + 'px';
+  keypad.style.transformOrigin = '50% 100%';
+  keypad.style.transform = 'translateX(-50%) scale(' + k + ')';
+}
+function reserveKeypadSpace(){
+  document.body.style.paddingBottom = 'calc(' + (keypad.offsetHeight + 24) + 'px + env(safe-area-inset-bottom,0px))';
+}
+function placeKeypad(){
+  if(!activeNumInput) return;
+  if(!document.body.contains(activeNumInput)){ closeKeypad(false); return; }
+  syncKeypadViewport();
+  if(isZoomed()) return;
+  const kTop = keypad.getBoundingClientRect().top;
+  const mc = activeNumInput.closest('.modal-content');
+  if(mc){
+    mc.style.transform = '';
+    const over = activeNumInput.getBoundingClientRect().bottom - (kTop - 12);
+    if(over > 0){
+      const room = Math.max(mc.getBoundingClientRect().top - 8, 0);
+      mc.style.transform = 'translateY(' + (-Math.min(over, room)) + 'px)';
+    }
+    return;
+  }
+  reserveKeypadSpace();
+  const r = activeNumInput.getBoundingClientRect();
+  const strip = document.querySelector('.sections-strip');
+  const limit = (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--top-1')) || 0) + (strip ? strip.offsetHeight : 0) + 70;
+  if(r.bottom > kTop - 10){
+    const step = Math.min(r.bottom - (kTop - 14), Math.max(r.top - limit, 0));
+    if(step > 0) window.scrollBy(0, step);
+  }
+}
+function openKeypad(input){
+  if(activeNumInput === input){ placeKeypad(); return; }
+  if(activeNumInput) closeKeypad(true);
+  activeNumInput = input;
+  numOriginal = input.value;
+  numFresh = input.value !== '';
+  numChanged = false;
+  input.classList.add('num-active');
+  keypad.hidden = false;
+  syncKeypadViewport();
+  reserveKeypadSpace();
+  setTimeout(placeKeypad, 120);
+}
+function closeKeypad(commit){
+  const el = activeNumInput;
+  keypad.hidden = true;
+  resetKeypadViewport();
+  if(!el) return;
+  activeNumInput = null;
+  openedByPointer = null;
+  el.classList.remove('num-active');
+  document.body.style.paddingBottom = '';
+  const mc = el.closest && el.closest('.modal-content');
+  if(mc) mc.style.transform = '';
+  if(commit && numChanged && document.body.contains(el)){
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+}
+function cancelKeypad(){
+  const el = activeNumInput;
+  if(!el) return;
+  if(numChanged){
+    el.value = numOriginal;
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  numChanged = false;
+  closeKeypad(false);
+}
+function keypadPress(key){
+  const el = activeNumInput;
+  if(!el) return;
+  if(key === 'done'){
+    kpGhost = { rect: keypad.getBoundingClientRect(), until: Date.now() + 450 };
+    closeKeypad(true);
+    return;
+  }
+  if(key === 'cancel'){
+    kpGhost = { rect: keypad.getBoundingClientRect(), until: Date.now() + 450 };
+    cancelKeypad();
+    return;
+  }
+  if(key === 'del'){
+    if(!el.value) return;
+    numFresh = false;
+    setNumValue(el, el.value.slice(0, -1));
+    return;
+  }
+  const base = numFresh ? '' : el.value;
+  numFresh = false;
+  if(base.length >= 6) return;
+  setNumValue(el, base + key);
+}
+
+const KP_EVENT = window.PointerEvent ? 'pointerdown' : 'touchstart';
+keypad.addEventListener(KP_EVENT, (e) => {
+  e.preventDefault();
+  const b = e.target.closest && e.target.closest('button');
+  if(b) keypadPress(b.dataset.kp);
+}, { passive: false });
+keypad.addEventListener('mousedown', e => e.preventDefault());
+keypad.addEventListener('contextmenu', e => e.preventDefault());
+
+function evPoint(e){ const t = (e.touches && e.touches[0]) || e; return { x: t.clientX, y: t.clientY }; }
+function ghostBlocked(e){
+  if(Date.now() >= kpGhost.until || !kpGhost.rect) return false;
+  const p = evPoint(e), r = kpGhost.rect;
+  return p.x >= r.left && p.x <= r.right && p.y >= r.top && p.y <= r.bottom;
+}
+function numTarget(e){
+  const t = e.target && e.target.closest ? e.target.closest('[data-num]') : null;
+  if(!t || t.disabled || t.closest('.sticky-table-head')) return null;
+  return t;
+}
+/* تفتح اللوحة فور اللمس، والإغلاق عند لمس أي مكان آخر */
+document.addEventListener(KP_EVENT, (e) => {
+  lastPtr = Date.now();
+  if(keypad.contains(e.target)) return;
+  const t = numTarget(e);
+  if(t){
+    if(ghostBlocked(e)) return;
+    openedByPointer = t;
+    openKeypad(t);
+    return;
+  }
+  if(activeNumInput) closeKeypad(true);
+}, true);
+if(window.PointerEvent){
+  document.addEventListener('pointerup', () => { openedByPointer = null; }, true);
+  document.addEventListener('pointercancel', () => {
+    if(activeNumInput && openedByPointer === activeNumInput && !numChanged) closeKeypad(false);
+    openedByPointer = null;
+  }, true);
+}
+/* بعد الضغط على X لا تنتقل الضغطة إلى ما تحت اللوحة */
+document.addEventListener('click', e => {
+  if(ghostBlocked(e)){ e.stopPropagation(); e.preventDefault(); }
+}, true);
+document.addEventListener('focusin', e => {
+  if(Date.now() - lastPtr < 700) return;
+  const t = numTarget(e);
+  if(t) openKeypad(t);
+});
+function pinTopbar(){
+  const vv = window.visualViewport, tb = document.querySelector('.float-tools');
+  if(!vv || !tb) return;
+  if(vv.scale <= 1.02 && Math.abs(vv.offsetLeft) < 1 && Math.abs(vv.offsetTop) < 1){
+    tb.style.transform = ''; tb.style.transformOrigin = '';
+    return;
+  }
+  tb.style.transformOrigin = '0 0';
+  tb.style.transform = 'translate(' + vv.offsetLeft + 'px,' + vv.offsetTop + 'px) scale(' + (1 / vv.scale) + ')';
+}
+if(window.visualViewport){
+  window.visualViewport.addEventListener('resize', syncKeypadViewport);
+  window.visualViewport.addEventListener('scroll', syncKeypadViewport);
+  window.visualViewport.addEventListener('resize', pinTopbar);
+  window.visualViewport.addEventListener('scroll', pinTopbar);
+}
+window.addEventListener('resize', () => placeKeypad());
+window.addEventListener('orientationchange', () => setTimeout(placeKeypad, 250));
+
+document.addEventListener('keydown', (e) => {
+  if(!activeNumInput || e.ctrlKey || e.metaKey || e.altKey) return;
+  const k = e.key;
+  if(/^[0-9٠-٩]$/.test(k)){
+    e.preventDefault();
+    const i = AR_DIGITS.indexOf(k);
+    keypadPress(i >= 0 ? String(i) : k);
+  } else if(k === 'Backspace' || k === 'Delete'){
+    e.preventDefault(); keypadPress('del');
+  } else if(k === 'Escape'){
+    e.preventDefault(); cancelKeypad();
+  } else if(k === 'Enter' || k === 'Tab'){
+    closeKeypad(true);
+  }
+});
+
+/* منع قائمة النظام (نسخ / بحث / ترجمة) عند الضغط المطول */
+document.addEventListener('contextmenu', e => {
+  if(!(e.target.closest && e.target.closest('input:not([readonly]),textarea'))) e.preventDefault();
+});
+document.addEventListener('selectionchange', () => {
+  const ae = document.activeElement;
+  if(ae && ae.matches && ae.matches('input:not([readonly]),textarea')) return;
+  const sel = window.getSelection && window.getSelection();
+  if(sel && !sel.isCollapsed) sel.removeAllRanges();
+});
+document.addEventListener('selectstart', e => {
+  const el = e.target && e.target.nodeType === 1 ? e.target : (e.target && e.target.parentElement);
+  if(!el || !el.closest('input:not([readonly]),textarea')) e.preventDefault();
 });
 
 /* ===== إدخال ===== */
@@ -2041,6 +2820,12 @@ document.addEventListener('input', (e) => {
     updateTotalFor(si, ri);
     return;
   }
+  if(si !== undefined && ri !== undefined && field === 'total'){
+    const stu = state.sections[si].students[ri];
+    stu.totalValue = t.value === '' ? null : t.value;
+    save();
+    return;
+  }
   if(si !== undefined && ri !== undefined && field === 'num'){
     const stu = state.sections[si].students[ri];
     stu.num = t.value;
@@ -2062,7 +2847,7 @@ document.addEventListener('input', (e) => {
 
 document.addEventListener('change', (e) => {
   const t = e.target;
-  if(t.dataset && t.dataset.si !== undefined && t.dataset.field && t.dataset.field !== 'name'){
+  if(t.dataset && t.dataset.si !== undefined && t.dataset.ri === undefined && ['sec','title','level'].includes(t.dataset.field)){
     const field = t.dataset.field;
     if(field === 'sec') notify('تم حفظ رقم الشعبة: ' + t.value);
     else if(field === 'title') notify('تم حفظ العنوان: ' + t.value);
@@ -2071,10 +2856,10 @@ document.addEventListener('change', (e) => {
     if(field === 'sec') renderSectionsStrip();
     save();
   }
-  if(t.dataset && t.dataset.col !== undefined && t.dataset.field){
+  if(t.dataset && t.dataset.col !== undefined && t.dataset.ri === undefined && ['title','max'].includes(t.dataset.field)){
     const field = t.dataset.field;
     if(field === 'title') notify('تم حفظ عنوان العمود: ' + t.value);
-    else if(field === 'max') notify('تم حفظ الدرجة العظمى: ' + t.value);
+    else if(field === 'max') notify('تم تغير الدرجة');
     state.columns[+t.dataset.col][field] = t.value;
     save();
   }
@@ -2082,17 +2867,16 @@ document.addEventListener('change', (e) => {
 
 function updateTotalFor(si, ri){
   const stu = state.sections[si].students[ri];
-  if(!stu.totalConfirmed) return;
-  const total = calcTotal(stu);
-  stu.totalValue = total;
+  stu.totalValue = null;
+  stu.totalConfirmed = false;
   const input = document.querySelector('#section_' + si + ' tbody tr[data-ri="' + ri + '"] .total-display input');
-  if(input) input.value = total;
+  if(input) input.value = totalText(stu);
+  save();
 }
 
 /* ===== Word Drop ===== */
 const wordDrop = $('wordDrop');
 const wordInput = $('wordFileInput');
-wordDrop.addEventListener('click', () => wordInput.click());
 wordDrop.addEventListener('dragover', e => { e.preventDefault(); wordDrop.classList.add('dragover'); });
 wordDrop.addEventListener('dragleave', e => { e.preventDefault(); wordDrop.classList.remove('dragover'); });
 wordDrop.addEventListener('drop', e => {
@@ -2101,10 +2885,10 @@ wordDrop.addEventListener('drop', e => {
   const f = e.dataTransfer.files[0];
   if(f) handleWordFile(f);
 });
-wordInput.addEventListener('change', e => {
-  const f = e.target.files[0];
+wordInput.addEventListener('change', async e => {
+  const f = e.target.files && e.target.files[0];
+  if(f){ try{ await handleWordFile(f); }catch(err){} }
   e.target.value = '';
-  if(f) handleWordFile(f);
 });
 
 /* ===== اليوم ===== */
@@ -2118,42 +2902,73 @@ function checkDay(){
 setInterval(checkDay, 60000);
 document.addEventListener('visibilitychange', () => { if(!document.hidden) checkDay(); });
 
-/* ===== Pull to Refresh ===== */
-let pullStart = 0, pulling = false, pullDist = 0;
-const pullIndicator = $('pullIndicator');
-function showPull(d, text){
-  pullIndicator.hidden = false;
-  pullIndicator.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="7 13 12 18 17 13"/><line x1="12" y1="4" x2="12" y2="18"/></svg><span>' + text + '</span>';
-  pullIndicator.style.opacity = Math.min(1, d/70);
-}
-function hidePull(){ pullIndicator.hidden = true; }
-document.addEventListener('touchstart', e => {
-  if(window.scrollY <= 0 && e.touches.length === 1){
-    if(document.querySelector('.modal:not([hidden])')) return;
-    pullStart = e.touches[0].clientY;
-    pulling = true; pullDist = 0;
+/* ===== سحب للتحديث ===== */
+(function(){
+  const area = $('pullArea'), txt = $('pullText'), pd1 = $('pd1'), pd2 = $('pd2');
+  const mainEl = document.querySelector('main');
+  const brandImg = document.querySelector('.brand-icon');
+  if(brandImg) $('pullIcon').src = brandImg.src;
+  const MAX = 120, TRIGGER = 80, HOLD = 96;
+  let sx = 0, sy = 0, active = false, decided = false, shown = 0, busy = false;
+
+  function paint(h){
+    shown = h;
+    area.style.height = h + 'px';
+    mainEl.style.transform = h > 0 ? 'translateY(' + h + 'px)' : '';
+    const p = Math.min(h / TRIGGER, 1);
+    const th = h * 0.09, d = 18 * (1 - p), r = 5 + 2 * p;
+    const dx = d * Math.cos(th), dy = d * Math.sin(th);
+    pd1.setAttribute('cx', 30 + dx); pd1.setAttribute('cy', 30 + dy);
+    pd2.setAttribute('cx', 30 - dx); pd2.setAttribute('cy', 30 - dy);
+    pd1.setAttribute('r', r); pd2.setAttribute('r', r);
+    area.style.opacity = Math.min(1, h / 24);
+    txt.textContent = h >= TRIGGER ? 'أفلت للتحديث' : 'اسحب للأسفل للتحديث';
   }
-}, { passive: true });
-document.addEventListener('touchmove', e => {
-  if(!pulling) return;
-  pullDist = e.touches[0].clientY - pullStart;
-  if(pullDist > 12 && window.scrollY <= 0){
-    showPull(pullDist, pullDist > 90 ? 'أفلت للتحديث' : 'اسحب للأسفل');
-  } else hidePull();
-}, { passive: true });
-document.addEventListener('touchend', () => {
-  if(!pulling) return;
-  pulling = false;
-  if(pullDist > 90){
-    showPull(200, 'تم التحديث');
-    setTimeout(() => location.reload(), 500);
-  } else hidePull();
-});
+  function collapse(){
+    area.classList.add('pull-anim'); mainEl.classList.add('pull-anim');
+    paint(0);
+    setTimeout(() => { area.classList.remove('pull-anim'); mainEl.classList.remove('pull-anim'); }, 300);
+  }
+  function refresh(){
+    busy = true;
+    area.classList.add('pull-anim', 'refreshing'); mainEl.classList.add('pull-anim');
+    paint(HOLD);
+    txt.textContent = 'جارٍ التحديث';
+    try{ save(); }catch(e){}
+    setTimeout(() => location.reload(), 800);
+  }
+  document.addEventListener('touchstart', e => {
+    if(busy || e.touches.length !== 1 || window.scrollY > 0) return;
+    if(document.querySelector('.modal:not([hidden])') || activeNumInput) return;
+    sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+    active = true; decided = false;
+  }, { passive: true });
+  document.addEventListener('touchmove', e => {
+    if(!active) return;
+    const dx = e.touches[0].clientX - sx, dy = e.touches[0].clientY - sy;
+    if(!decided){
+      if(Math.abs(dx) > 8 && Math.abs(dx) > Math.abs(dy)){ active = false; return; }
+      if(Math.abs(dy) <= 8) return;
+      decided = true;
+    }
+    if(dy <= 0 || window.scrollY > 0){ if(shown > 0) paint(0); return; }
+    paint(Math.min(dy * 0.6, MAX));
+  }, { passive: true });
+  function end(){
+    if(!active) return;
+    active = false;
+    if(shown >= TRIGGER) refresh(); else if(shown > 0) collapse();
+  }
+  document.addEventListener('touchend', end);
+  document.addEventListener('touchcancel', end);
+  paint(0);
+})();
 
 /* ===== ESC ===== */
 document.addEventListener('keydown', e => {
   if(e.key === 'Escape'){
-    ['rowMenuModal','studentColorModal','addSectionModal','editSectionModal','notesModal','statsModal','colorsModal','fontModal','zoomModal','wordModal','backupModal','confirmModal'].forEach(id => {
+    if($('colorsModal') && !$('colorsModal').hidden) cancelColors();
+    ['rowMenuModal','studentColorModal','addSectionModal','editSectionModal','notesModal','statsModal','colorsModal','fontModal','wordModal','backupModal','confirmModal'].forEach(id => {
       const el = $(id);
       if(el && !el.hidden) el.hidden = true;
     });
@@ -2166,6 +2981,37 @@ document.addEventListener('visibilitychange', () => { if(document.hidden) save()
 
 updateThemeIcon();
 render();
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js', {updateViaCache:'none'}).catch(() => {});
+}
+
+/* تحديث تلقائي: عند وجود نسخة جديدة من الموقع تُحمَّل وتبقى البيانات محفوظة في الجهاز */
+(function(){
+  if(typeof fetch !== 'function') return;
+  const url = location.href.split('#')[0].split('?')[0];
+  let baseline = null, busy = false;
+  async function sig(){
+    const r = await fetch(url, { cache: 'no-store' });
+    if(!r.ok) throw new Error('x');
+    const t = await r.text();
+    let h = 0;
+    for(let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) | 0;
+    return t.length + ':' + h;
+  }
+  async function check(){
+    if(busy) return;
+    busy = true;
+    try{
+      const v = await sig();
+      if(baseline === null) baseline = v;
+      else if(v !== baseline){ save(); location.reload(); }
+    }catch(e){}
+    busy = false;
+  }
+  check();
+  document.addEventListener('visibilitychange', () => { if(!document.hidden) check(); });
+  setInterval(() => { if(!document.hidden) check(); }, 5 * 60 * 1000);
+})();
 </script>
 </body>
 </html>
