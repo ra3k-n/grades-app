@@ -23,7 +23,7 @@
   --red:#e63946; --orange:#f59e0b; --gold:#b8860b;
   --shadow:0 2px 8px rgba(0,0,0,.06);
   --shadow2:0 4px 16px rgba(0,0,0,.1);
-  --top-1:52px; --top-2:0px;
+  --top-1:0px; --top-2:0px;
   --top-total:calc(var(--top-1) + var(--top-2));
   --bot:56px;
 }
@@ -149,7 +149,7 @@ body{
 /* ===== الهيرو ===== */
 .hero{
   position:relative;
-  margin-top:8px;
+  margin-top:44px;
   padding:46px 16px 46px;
   text-align:center;
   border-radius:16px;
@@ -190,18 +190,17 @@ body{
   top:calc(var(--top-total) + env(safe-area-inset-top,0px));
   z-index:150;
   background:var(--bg);
-  background:color-mix(in srgb, var(--bg) 55%, transparent);
+  background:color-mix(in srgb, var(--bg) 72%, transparent);
   -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
   box-shadow:0 2px 6px rgba(0,0,0,.06);
   display:flex; gap:10px;
-  overflow-x:auto; padding:14px 4px 6px;
+  overflow-x:auto; padding:5px 4px 5px 100px;
   scrollbar-width:none; align-items:center;
   margin-top:10px;
 }
 .sections-strip::-webkit-scrollbar{display:none}
 .sections-strip .sec-btn{pointer-events:auto}
 .sections-strip > .sec-btn:first-child{margin-inline-start:auto}
-.sections-strip > .sec-btn:last-child{margin-inline-end:auto}
 .sec-btn{
   flex:none;
   background:var(--accent); color:#fff; border:none;
@@ -511,7 +510,7 @@ textarea.form-field{min-height:110px; resize:vertical}
 /* إشعار */
 .toast{
   position:fixed;
-  top:calc(var(--top-1) + env(safe-area-inset-top,0px) + 9px);
+  top:calc(var(--top-1) + env(safe-area-inset-top,0px) + 58px);
   left:50%; transform:translateX(-50%);
   background:var(--accent); color:#fff;
   padding:8px 20px; border-radius:999px;
@@ -721,7 +720,7 @@ tr.select-row td.att-cell{cursor:default}
 }
 
 @media (max-width:600px){
-  :root{--top-1:52px; --top-2:0px; --bot:52px}
+  :root{--top-1:0px; --top-2:0px; --bot:52px}
   body{padding-left:max(6px,env(safe-area-inset-left,0px)); padding-right:max(6px,env(safe-area-inset-right,0px))}
   .hero{padding:28px 12px}
   .hero h1{font-size:30px}
@@ -1648,12 +1647,17 @@ function addStudent(si){
 }
 function totalText(stu){
   if(stu.totalValue !== null && stu.totalValue !== undefined && stu.totalValue !== '') return stu.totalValue;
-  const any = state.columns.some(c => c.type === 'number' && String(stu.scores[c.key] == null ? '' : stu.scores[c.key]).trim() !== '');
+  const any = totalCols().some(c => String(stu.scores[c.key] == null ? '' : stu.scores[c.key]).trim() !== '');
   return any ? calcTotal(stu) : '';
+}
+function totalCols(){
+  const ti = state.columns.findIndex(c => c.type === 'total');
+  const cols = ti >= 0 ? state.columns.slice(0, ti) : state.columns;
+  return cols.filter(c => c.type === 'number');
 }
 function calcTotal(stu){
   let t = 0;
-  state.columns.forEach(c => { if(c.type === 'number') t += num(stu.scores[c.key]); });
+  totalCols().forEach(c => { t += num(stu.scores[c.key]); });
   return t;
 }
 function toggleAttendance(si, ri, key){
@@ -2817,7 +2821,7 @@ document.addEventListener('input', (e) => {
     const c = state.columns[col];
     stu.scores[c.key] = t.value;
     save();
-    updateTotalFor(si, ri);
+    if(totalCols().some(x => x.key === c.key)) updateTotalFor(si, ri);
     return;
   }
   if(si !== undefined && ri !== undefined && field === 'total'){
