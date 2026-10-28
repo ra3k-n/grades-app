@@ -194,13 +194,15 @@ body{
   -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
   box-shadow:0 2px 6px rgba(0,0,0,.06);
   display:flex; gap:10px;
-  overflow-x:auto; padding:5px 4px 5px 100px;
+  overflow-x:auto; padding:5px 100px; scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch;
   scrollbar-width:none; align-items:center;
   margin-top:10px;
 }
 .sections-strip::-webkit-scrollbar{display:none}
 .sections-strip .sec-btn{pointer-events:auto}
 .sections-strip > .sec-btn:first-child{margin-inline-start:auto}
+.sections-strip > .sec-btn:last-child{margin-inline-end:auto}
+.sections-strip .sec-btn{scroll-snap-align:center}
 .sec-btn{
   flex:none;
   background:var(--accent); color:#fff; border:none;
@@ -759,6 +761,60 @@ tr.select-row td.att-cell{cursor:default}
   .hero{padding:52px 20px}
   .hero h1{font-size:46px}
 }
+
+/* ===== موشن جرافيك ===== */
+@keyframes popIn{0%{transform:scale(.88); opacity:0} 60%{transform:scale(1.03); opacity:1} 100%{transform:none; opacity:1}}
+@keyframes riseIn{from{transform:translateY(18px); opacity:0} to{transform:none; opacity:1}}
+@keyframes dropIn{from{transform:translateY(-10px) scale(.96); opacity:0} to{transform:none; opacity:1}}
+@keyframes toastIn{from{transform:translate(-50%,-14px) scale(.9); opacity:0} to{transform:translate(-50%,0) scale(1); opacity:1}}
+@keyframes rowIn{from{transform:translateX(14px); opacity:0} to{transform:none; opacity:1}}
+@keyframes heroIn{from{transform:scale(1.06); opacity:0} to{transform:none; opacity:1}}
+.hero h1{animation:riseIn .6s cubic-bezier(.2,.8,.2,1) both}
+.hero p{animation:riseIn .6s .12s cubic-bezier(.2,.8,.2,1) both}
+.hero::before{animation:heroIn .8s ease both}
+.float-tools .icon-btn{animation:popIn .5s cubic-bezier(.2,.8,.2,1) both}
+.float-tools .icon-btn:nth-child(2){animation-delay:.08s}
+.icon-btn{transition:transform .2s cubic-bezier(.2,.8,.2,1), background-color .2s, color .2s, border-color .2s}
+.icon-btn:hover{transform:scale(1.08)}
+#themeBtn svg{transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+#themeBtn:active svg{transform:rotate(180deg) scale(.8)}
+.menu-dropdown:not([hidden]){animation:dropIn .22s cubic-bezier(.2,.8,.2,1); transform-origin:top left}
+.menu-dropdown button,.menu-dropdown a{transition:background-color .18s, color .18s, transform .18s}
+.menu-dropdown button:hover{transform:translateX(-3px)}
+.menu-dropdown:not([hidden]) > *{animation:riseIn .3s both}
+.menu-dropdown:not([hidden]) > *:nth-child(2){animation-delay:.04s}
+.menu-dropdown:not([hidden]) > *:nth-child(3){animation-delay:.08s}
+.menu-dropdown:not([hidden]) > *:nth-child(4){animation-delay:.12s}
+.sections-strip{animation:riseIn .5s .1s cubic-bezier(.2,.8,.2,1) both}
+.sec-btn{transition:transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s, filter .2s; animation:popIn .45s cubic-bezier(.2,.8,.2,1) both}
+.sec-btn:hover{transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,.18); filter:brightness(1.06)}
+.sec-btn:nth-child(2){animation-delay:.05s} .sec-btn:nth-child(3){animation-delay:.1s}
+.sec-btn:nth-child(4){animation-delay:.15s} .sec-btn:nth-child(5){animation-delay:.2s}
+.sec-btn:nth-child(n+6){animation-delay:.25s}
+.section-card{animation:riseIn .5s cubic-bezier(.2,.8,.2,1) both}
+.section-card tbody tr{animation:rowIn .35s cubic-bezier(.2,.8,.2,1) both}
+.section-card tbody tr:nth-child(2){animation-delay:.03s} .section-card tbody tr:nth-child(3){animation-delay:.06s}
+.section-card tbody tr:nth-child(4){animation-delay:.09s} .section-card tbody tr:nth-child(5){animation-delay:.12s}
+.section-card tbody tr:nth-child(n+6){animation-delay:.15s}
+.section-card tbody tr{transition:background-color .2s}
+.modal{animation:fade .25s ease}
+.modal-content{animation:popIn .35s cubic-bezier(.2,.8,.2,1)}
+.menu-item{transition:background-color .2s, color .2s, border-color .2s, transform .2s}
+.menu-item:hover{transform:translateX(-4px)}
+.menu-item:active{transform:scale(.97)}
+.btn{transition:transform .2s cubic-bezier(.2,.8,.2,1), background-color .2s, filter .2s, box-shadow .2s}
+.btn:hover{transform:translateY(-1px); box-shadow:0 4px 10px rgba(0,0,0,.12)}
+.btn:active{transform:scale(.95)}
+.toast{animation:toastIn .35s cubic-bezier(.2,.8,.2,1)}
+.att-btn{transition:transform .2s cubic-bezier(.2,.8,.2,1), opacity .2s}
+.att-btn:active{transform:scale(.8)}
+.att-btn.on{animation:popIn .3s both}
+.select-mode-bar:not([hidden]){animation:riseIn .3s both}
+.form-field{transition:border-color .2s, box-shadow .2s}
+.form-field:focus{box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent)}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms !important; animation-delay:0s !important; transition-duration:.01ms !important}
+}
 </style>
 </head>
 <body>
@@ -773,13 +829,13 @@ tr.select-row td.att-cell{cursor:default}
       <svg viewBox="0 0 24 24"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
     </button>
     <div class="menu-dropdown" id="menuDropdown" hidden>
-      <button onclick="closeMenu();openBackupDialog()">
-        <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
-        نسخة احتياطية
+      <button onclick="closeMenu();createBackup()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        إنشاء نسخة
       </button>
-      <button onclick="closeMenu();openWordDialog()">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
-        استيراد من Excel
+      <button onclick="closeMenu();document.getElementById('restoreFileInput').click()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        استعادة نسخة
       </button>
       <button onclick="closeMenu();openColorsDialog()">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="8" cy="10" r="1" fill="currentColor"/><circle cx="12" cy="7" r="1" fill="currentColor"/><circle cx="16" cy="10" r="1" fill="currentColor"/></svg>
@@ -787,12 +843,8 @@ tr.select-row td.att-cell{cursor:default}
       </button>
       <button class="danger" onclick="closeMenu();confirmClearAllRecords()">
         <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-        مسح كل سجل الطلاب
+        مسح السجل
       </button>
-      <a href="https://t.me/ra3k_n" target="_blank" rel="noopener" onclick="closeMenu()">
-        <svg viewBox="0 0 24 24" style="fill:currentColor;stroke:none"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
-        تيليجرام
-      </a>
     </div>
 </div>
 
@@ -1933,9 +1985,13 @@ function openStats(si){
   openModal('statsModal');
 }
 function confirmClearAllRecords(){
-  showConfirm('مسح كل سجل الطلاب', 'هل متأكد من مسح <b>كل سجل الطلاب</b> في جميع الشعب؟ (الأسماء والدرجات والتحضير والملاحظات، ويبقى لكل شعبة صف فارغ)', () => {
+  showConfirm('مسح السجل', 'هل متأكد من مسح <b>السجل كاملاً</b>؟ سيتم حذف كل الشعب والطلاب والأسماء والدرجات والتحضير والملاحظات نهائياً ولا يمكن التراجع.', () => {
     if(selectModeSections.size) { selectModeSections.clear(); selectedStudents = {}; updateSelectBar(); }
-    state.sections.forEach(sec => { sec.students = [makeStudent(1)]; });
+    state = {
+      columns: DEFAULT_COLUMNS.map(c => ({...c})),
+      sections: [],
+      lastBackup: null, day: todayKey()
+    };
     Object.keys(searchText).forEach(k => delete searchText[k]);
     searchOpen.clear();
     save();
