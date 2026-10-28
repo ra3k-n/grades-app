@@ -763,58 +763,87 @@ tr.select-row td.att-cell{cursor:default}
 }
 
 /* ===== موشن جرافيك ===== */
-@keyframes popIn{0%{transform:scale(.88); opacity:0} 60%{transform:scale(1.03); opacity:1} 100%{transform:none; opacity:1}}
-@keyframes riseIn{from{transform:translateY(18px); opacity:0} to{transform:none; opacity:1}}
-@keyframes dropIn{from{transform:translateY(-10px) scale(.96); opacity:0} to{transform:none; opacity:1}}
-@keyframes toastIn{from{transform:translate(-50%,-14px) scale(.9); opacity:0} to{transform:translate(-50%,0) scale(1); opacity:1}}
-@keyframes rowIn{from{transform:translateX(14px); opacity:0} to{transform:none; opacity:1}}
-@keyframes heroIn{from{transform:scale(1.06); opacity:0} to{transform:none; opacity:1}}
-.hero h1{animation:riseIn .6s cubic-bezier(.2,.8,.2,1) both}
-.hero p{animation:riseIn .6s .12s cubic-bezier(.2,.8,.2,1) both}
-.hero::before{animation:heroIn .8s ease both}
-.float-tools .icon-btn{animation:popIn .5s cubic-bezier(.2,.8,.2,1) both}
-.float-tools .icon-btn:nth-child(2){animation-delay:.08s}
-.icon-btn{transition:transform .2s cubic-bezier(.2,.8,.2,1), background-color .2s, color .2s, border-color .2s}
-.icon-btn:hover{transform:scale(1.08)}
-#themeBtn svg{transition:transform .5s cubic-bezier(.2,.8,.2,1)}
-#themeBtn:active svg{transform:rotate(180deg) scale(.8)}
-.menu-dropdown:not([hidden]){animation:dropIn .22s cubic-bezier(.2,.8,.2,1); transform-origin:top left}
-.menu-dropdown button,.menu-dropdown a{transition:background-color .18s, color .18s, transform .18s}
-.menu-dropdown button:hover{transform:translateX(-3px)}
-.menu-dropdown:not([hidden]) > *{animation:riseIn .3s both}
-.menu-dropdown:not([hidden]) > *:nth-child(2){animation-delay:.04s}
-.menu-dropdown:not([hidden]) > *:nth-child(3){animation-delay:.08s}
-.menu-dropdown:not([hidden]) > *:nth-child(4){animation-delay:.12s}
-.sections-strip{animation:riseIn .5s .1s cubic-bezier(.2,.8,.2,1) both}
-.sec-btn{transition:transform .2s cubic-bezier(.2,.8,.2,1), box-shadow .2s, filter .2s; animation:popIn .45s cubic-bezier(.2,.8,.2,1) both}
-.sec-btn:hover{transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,.18); filter:brightness(1.06)}
-.sec-btn:nth-child(2){animation-delay:.05s} .sec-btn:nth-child(3){animation-delay:.1s}
-.sec-btn:nth-child(4){animation-delay:.15s} .sec-btn:nth-child(5){animation-delay:.2s}
-.sec-btn:nth-child(n+6){animation-delay:.25s}
-.section-card{animation:riseIn .5s cubic-bezier(.2,.8,.2,1) both}
-.section-card tbody tr{animation:rowIn .35s cubic-bezier(.2,.8,.2,1) both}
-.section-card tbody tr:nth-child(2){animation-delay:.03s} .section-card tbody tr:nth-child(3){animation-delay:.06s}
-.section-card tbody tr:nth-child(4){animation-delay:.09s} .section-card tbody tr:nth-child(5){animation-delay:.12s}
-.section-card tbody tr:nth-child(n+6){animation-delay:.15s}
-.section-card tbody tr{transition:background-color .2s}
-.modal{animation:fade .25s ease}
-.modal-content{animation:popIn .35s cubic-bezier(.2,.8,.2,1)}
-.menu-item{transition:background-color .2s, color .2s, border-color .2s, transform .2s}
-.menu-item:hover{transform:translateX(-4px)}
-.menu-item:active{transform:scale(.97)}
-.btn{transition:transform .2s cubic-bezier(.2,.8,.2,1), background-color .2s, filter .2s, box-shadow .2s}
-.btn:hover{transform:translateY(-1px); box-shadow:0 4px 10px rgba(0,0,0,.12)}
-.btn:active{transform:scale(.95)}
-.toast{animation:toastIn .35s cubic-bezier(.2,.8,.2,1)}
-.att-btn{transition:transform .2s cubic-bezier(.2,.8,.2,1), opacity .2s}
-.att-btn:active{transform:scale(.8)}
-.att-btn.on{animation:popIn .3s both}
-.select-mode-bar:not([hidden]){animation:riseIn .3s both}
+@keyframes popIn{0%{transform:scale(.7); opacity:0} 55%{transform:scale(1.06); opacity:1} 100%{transform:none; opacity:1}}
+@keyframes popOut{from{transform:none; opacity:1} to{transform:scale(.85) translateY(12px); opacity:0}}
+@keyframes fadeOut{from{opacity:1} to{opacity:0}}
+@keyframes riseIn{from{transform:translateY(40px); opacity:0} to{transform:none; opacity:1}}
+@keyframes dropIn{from{transform:translateY(-16px) scale(.9); opacity:0} to{transform:none; opacity:1}}
+@keyframes dropOut{from{transform:none; opacity:1} to{transform:translateY(-12px) scale(.92); opacity:0}}
+@keyframes toastIn{from{transform:translate(-50%,-30px) scale(.8); opacity:0} to{transform:translate(-50%,0) scale(1); opacity:1}}
+@keyframes rowIn{from{transform:translateX(40px); opacity:0} to{transform:none; opacity:1}}
+@keyframes heroIn{from{transform:scale(1.15); opacity:0} to{transform:none; opacity:1}}
+@keyframes shimmer{0%{background-position:-200% 0} 100%{background-position:200% 0}}
+@keyframes floaty{0%,100%{transform:translateY(0)} 50%{transform:translateY(-3px)}}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(58,154,140,.55)} 100%{box-shadow:0 0 0 14px rgba(58,154,140,0)}}
+
+/* دخول الصفحة (مرة واحدة عند الفتح) */
+.hero{animation:heroIn .9s cubic-bezier(.2,.8,.2,1) both}
+.hero h1{animation:riseIn .8s .15s cubic-bezier(.2,.8,.2,1) both}
+.hero p{animation:riseIn .8s .35s cubic-bezier(.2,.8,.2,1) both}
+.hero::after{content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
+  background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.22) 50%,transparent 65%);
+  background-size:200% 100%; animation:shimmer 4s 1s ease-in-out infinite}
+.float-tools .icon-btn{animation:popIn .7s cubic-bezier(.2,.8,.2,1) both}
+.float-tools .icon-btn:nth-child(2){animation-delay:.12s}
+.sections-strip{animation:riseIn .7s .25s cubic-bezier(.2,.8,.2,1) both}
+.sec-btn{animation:popIn .6s cubic-bezier(.2,.8,.2,1) both}
+.sec-btn:nth-child(1){animation-delay:.35s} .sec-btn:nth-child(2){animation-delay:.45s}
+.sec-btn:nth-child(3){animation-delay:.55s} .sec-btn:nth-child(4){animation-delay:.65s}
+.sec-btn:nth-child(5){animation-delay:.75s} .sec-btn:nth-child(n+6){animation-delay:.85s}
+.sec-btn.add{animation:popIn .6s .9s cubic-bezier(.2,.8,.2,1) both, ring 2.4s 1.6s ease-out 2}
+body.intro .section-card{animation:riseIn .8s .3s cubic-bezier(.2,.8,.2,1) both}
+body.intro .section-card tbody tr{animation:rowIn .6s cubic-bezier(.2,.8,.2,1) both}
+body.intro .section-card tbody tr:nth-child(1){animation-delay:.5s} body.intro .section-card tbody tr:nth-child(2){animation-delay:.6s}
+body.intro .section-card tbody tr:nth-child(3){animation-delay:.7s} body.intro .section-card tbody tr:nth-child(4){animation-delay:.8s}
+body.intro .section-card tbody tr:nth-child(5){animation-delay:.9s} body.intro .section-card tbody tr:nth-child(n+6){animation-delay:1s}
+
+/* تفاعل الأزرار */
+.icon-btn{transition:transform .25s cubic-bezier(.2,.8,.2,1), background-color .2s, color .2s, border-color .2s}
+.icon-btn:hover{transform:scale(1.12) rotate(-6deg)}
+.icon-btn:active{transform:scale(.85)}
+#themeBtn svg{transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+#themeBtn:active svg{transform:rotate(200deg) scale(.7)}
+.sec-btn{transition:transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s, filter .2s}
+.sec-btn:hover{transform:translateY(-4px) scale(1.04); box-shadow:0 10px 20px rgba(0,0,0,.22); filter:brightness(1.08)}
+.sec-btn:active{transform:scale(.9)}
+.btn{transition:transform .25s cubic-bezier(.2,.8,.2,1), background-color .2s, filter .2s, box-shadow .2s}
+.btn:hover{transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,.16)}
+.btn:active{transform:scale(.92)}
+.tool-btn{transition:transform .25s cubic-bezier(.2,.8,.2,1), background-color .2s, color .2s}
+.tool-btn:hover{transform:translateY(-2px)}
+.tool-btn:active{transform:scale(.93)}
+.att-btn{transition:transform .25s cubic-bezier(.2,.8,.2,1), opacity .2s}
+.att-btn:hover{transform:scale(1.15)}
+.att-btn:active{transform:scale(.75)}
+.att-btn.on{animation:popIn .45s both}
+tbody tr{transition:background-color .2s, transform .2s}
+tbody tr:hover{transform:translateX(-2px)}
+.menu-item{transition:background-color .2s, color .2s, border-color .2s, transform .25s cubic-bezier(.2,.8,.2,1)}
+.menu-item:hover{transform:translateX(-6px)}
+.menu-item:active{transform:scale(.95)}
+
+/* القائمة */
+.menu-dropdown:not([hidden]){animation:dropIn .3s cubic-bezier(.2,.8,.2,1); transform-origin:top left}
+.menu-dropdown.closing{animation:dropOut .18s ease forwards}
+.menu-dropdown:not([hidden]) > *{animation:riseIn .4s both}
+.menu-dropdown:not([hidden]) > *:nth-child(1){animation-delay:.04s}
+.menu-dropdown:not([hidden]) > *:nth-child(2){animation-delay:.09s}
+.menu-dropdown:not([hidden]) > *:nth-child(3){animation-delay:.14s}
+.menu-dropdown:not([hidden]) > *:nth-child(4){animation-delay:.19s}
+.menu-dropdown button,.menu-dropdown a{transition:background-color .18s, color .18s, transform .22s}
+.menu-dropdown button:hover{transform:translateX(-5px)}
+
+/* النوافذ */
+.modal{animation:fade .3s ease}
+.modal.closing{animation:fadeOut .2s ease forwards}
+.modal-content{animation:popIn .45s cubic-bezier(.2,.8,.2,1)}
+.modal.closing .modal-content{animation:popOut .2s ease forwards}
+.toast{animation:toastIn .45s cubic-bezier(.2,.8,.2,1)}
+.select-mode-bar:not([hidden]){animation:riseIn .4s both}
 .form-field{transition:border-color .2s, box-shadow .2s}
-.form-field:focus{box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent)}
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation-duration:.01ms !important; animation-delay:0s !important; transition-duration:.01ms !important}
-}
+.form-field:focus{box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent)}
+.num-keypad:not([hidden]){animation:riseIn .3s both}
+.num-keypad button{transition:transform .1s, background-color .1s}
 </style>
 </head>
 <body>
@@ -1207,16 +1236,26 @@ function notify(text, icon){
   clearTimeout(box._t);
   box._t = setTimeout(() => { box.hidden = true; }, 2000);
 }
-function closeModal(id){ const el = $(id); if(el) el.hidden = true; }
+function closeModal(id){
+  const el = $(id);
+  if(!el || el.hidden) return;
+  el.classList.add('closing');
+  setTimeout(() => { el.classList.remove('closing'); el.hidden = true; }, 200);
+}
 function openModal(id){ const el = $(id); if(el) el.hidden = false; }
 
 /* ===== القائمة ☰ ===== */
 function toggleMenu(e){
   if(e) e.stopPropagation();
   const menu = $('menuDropdown');
-  menu.hidden = !menu.hidden;
+  if(menu.hidden) menu.hidden = false; else closeMenu();
 }
-function closeMenu(){ $('menuDropdown').hidden = true; }
+function closeMenu(){
+  const m = $('menuDropdown');
+  if(m.hidden) return;
+  m.classList.add('closing');
+  setTimeout(() => { m.classList.remove('closing'); m.hidden = true; }, 180);
+}
 document.addEventListener('click', (e) => {
   if(!e.target.closest('#menuDropdown') && !e.target.closest('#menuBtn')) closeMenu();
 });
@@ -3039,6 +3078,8 @@ document.addEventListener('keydown', e => {
 window.addEventListener('pagehide', save);
 document.addEventListener('visibilitychange', () => { if(document.hidden) save(); });
 
+document.body.classList.add('intro');
+setTimeout(() => document.body.classList.remove('intro'), 2200);
 updateThemeIcon();
 render();
 if('serviceWorker' in navigator){
