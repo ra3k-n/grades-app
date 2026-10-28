@@ -780,17 +780,14 @@ tr.select-row td.att-cell{cursor:default}
 .hero{animation:heroIn .9s cubic-bezier(.2,.8,.2,1) both}
 .hero h1{animation:riseIn .8s .15s cubic-bezier(.2,.8,.2,1) both}
 .hero p{animation:riseIn .8s .35s cubic-bezier(.2,.8,.2,1) both}
-.hero::after{content:''; position:absolute; inset:0; z-index:1; pointer-events:none;
-  background:linear-gradient(110deg,transparent 35%,rgba(255,255,255,.22) 50%,transparent 65%);
-  background-size:200% 100%; animation:shimmer 4s 1s ease-in-out infinite}
 .float-tools .icon-btn{animation:popIn .7s cubic-bezier(.2,.8,.2,1) both}
 .float-tools .icon-btn:nth-child(2){animation-delay:.12s}
-.sections-strip{animation:riseIn .7s .25s cubic-bezier(.2,.8,.2,1) both}
-.sec-btn{animation:popIn .6s cubic-bezier(.2,.8,.2,1) both}
-.sec-btn:nth-child(1){animation-delay:.35s} .sec-btn:nth-child(2){animation-delay:.45s}
-.sec-btn:nth-child(3){animation-delay:.55s} .sec-btn:nth-child(4){animation-delay:.65s}
-.sec-btn:nth-child(5){animation-delay:.75s} .sec-btn:nth-child(n+6){animation-delay:.85s}
-.sec-btn.add{animation:popIn .6s .9s cubic-bezier(.2,.8,.2,1) both, ring 2.4s 1.6s ease-out 2}
+body.intro .sections-strip{animation:riseIn .7s .25s cubic-bezier(.2,.8,.2,1) both}
+body.intro .sec-btn{animation:popIn .6s cubic-bezier(.2,.8,.2,1) both}
+body.intro .sec-btn:nth-child(1){animation-delay:.35s} body.intro .sec-btn:nth-child(2){animation-delay:.45s}
+body.intro .sec-btn:nth-child(3){animation-delay:.55s} body.intro .sec-btn:nth-child(4){animation-delay:.65s}
+body.intro .sec-btn:nth-child(5){animation-delay:.75s} body.intro .sec-btn:nth-child(n+6){animation-delay:.85s}
+body.intro .sec-btn.add{animation:popIn .6s .9s cubic-bezier(.2,.8,.2,1) both, ring 2.4s 1.6s ease-out 2}
 body.intro .section-card{animation:riseIn .8s .3s cubic-bezier(.2,.8,.2,1) both}
 body.intro .section-card tbody tr{animation:rowIn .6s cubic-bezier(.2,.8,.2,1) both}
 body.intro .section-card tbody tr:nth-child(1){animation-delay:.5s} body.intro .section-card tbody tr:nth-child(2){animation-delay:.6s}
@@ -799,27 +796,33 @@ body.intro .section-card tbody tr:nth-child(5){animation-delay:.9s} body.intro .
 
 /* تفاعل الأزرار */
 .icon-btn{transition:transform .25s cubic-bezier(.2,.8,.2,1), background-color .2s, color .2s, border-color .2s}
-.icon-btn:hover{transform:scale(1.12) rotate(-6deg)}
-.icon-btn:active{transform:scale(.85)}
+.icon-btn:active{transform:scale(.88)}
+@media (hover:hover){.icon-btn:hover{transform:scale(1.08)}}
+.float-tools .icon-btn,.float-tools .icon-btn:hover,.float-tools .icon-btn:active,.float-tools .icon-btn:focus{
+  color:var(--ink); border-color:var(--line);
+  background:rgba(255,255,255,.72);
+  background:color-mix(in srgb, var(--bg2) 72%, transparent);
+}
+.float-tools .icon-btn svg{stroke:currentColor}
 #themeBtn svg{transition:transform .6s cubic-bezier(.2,.8,.2,1)}
 #themeBtn:active svg{transform:rotate(200deg) scale(.7)}
 .sec-btn{transition:transform .25s cubic-bezier(.2,.8,.2,1), box-shadow .25s, filter .2s}
-.sec-btn:hover{transform:translateY(-4px) scale(1.04); box-shadow:0 10px 20px rgba(0,0,0,.22); filter:brightness(1.08)}
+@media (hover:hover){.sec-btn:hover{transform:translateY(-4px) scale(1.04); box-shadow:0 10px 20px rgba(0,0,0,.22); filter:brightness(1.08)}}
 .sec-btn:active{transform:scale(.9)}
 .btn{transition:transform .25s cubic-bezier(.2,.8,.2,1), background-color .2s, filter .2s, box-shadow .2s}
-.btn:hover{transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,.16)}
+@media (hover:hover){.btn:hover{transform:translateY(-2px); box-shadow:0 6px 14px rgba(0,0,0,.16)}}
 .btn:active{transform:scale(.92)}
 .tool-btn{transition:transform .25s cubic-bezier(.2,.8,.2,1), background-color .2s, color .2s}
-.tool-btn:hover{transform:translateY(-2px)}
+@media (hover:hover){.tool-btn:hover{transform:translateY(-2px)}}
 .tool-btn:active{transform:scale(.93)}
 .att-btn{transition:transform .25s cubic-bezier(.2,.8,.2,1), opacity .2s}
-.att-btn:hover{transform:scale(1.15)}
+@media (hover:hover){.att-btn:hover{transform:scale(1.15)}}
 .att-btn:active{transform:scale(.75)}
 .att-btn.on{animation:popIn .45s both}
 tbody tr{transition:background-color .2s, transform .2s}
-tbody tr:hover{transform:translateX(-2px)}
+@media (hover:hover){tbody tr:hover{transform:translateX(-2px)}}
 .menu-item{transition:background-color .2s, color .2s, border-color .2s, transform .25s cubic-bezier(.2,.8,.2,1)}
-.menu-item:hover{transform:translateX(-6px)}
+@media (hover:hover){.menu-item:hover{transform:translateX(-6px)}}
 .menu-item:active{transform:scale(.95)}
 
 /* القائمة */
@@ -831,7 +834,7 @@ tbody tr:hover{transform:translateX(-2px)}
 .menu-dropdown:not([hidden]) > *:nth-child(3){animation-delay:.14s}
 .menu-dropdown:not([hidden]) > *:nth-child(4){animation-delay:.19s}
 .menu-dropdown button,.menu-dropdown a{transition:background-color .18s, color .18s, transform .22s}
-.menu-dropdown button:hover{transform:translateX(-5px)}
+@media (hover:hover){.menu-dropdown button:hover{transform:translateX(-5px)}}
 
 /* النوافذ */
 .modal{animation:fade .3s ease}
