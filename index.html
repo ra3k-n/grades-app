@@ -976,6 +976,42 @@ html.vt-run *{transition:none!important}
 .chip.sel{background:var(--accent); color:#fff; border-color:var(--accent)}
 .scope-label{font-size:13px; font-weight:700; color:var(--ink2); margin:2px 0 6px}
 @media (prefers-reduced-motion:reduce){.glass-bar,.greet,.view{animation:none}}
+
+/* ===== شاشة الترحيب ===== */
+.onb{position:fixed; inset:0; z-index:900; background:var(--bg); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px 22px calc(24px + env(safe-area-inset-bottom,0px)); animation:fade .35s ease}
+.onb[hidden]{display:none}
+.onb.closing{animation:fadeOut .3s ease forwards}
+.onb-skip{position:absolute; top:calc(env(safe-area-inset-top,0px) + 16px); left:18px; border:none; background:transparent; color:var(--ink2); font:inherit; font-size:15px; font-weight:800; padding:8px 12px; border-radius:12px; cursor:pointer}
+.onb-skip:hover{background:color-mix(in srgb, var(--ink) 8%, transparent)}
+.onb-body{flex:1; width:100%; max-width:420px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center}
+.onb-slide{animation:riseIn .55s cubic-bezier(.2,.8,.2,1) both; width:100%}
+.onb-ico{width:96px; height:96px; margin:0 auto 24px; border-radius:28px; background:var(--accent); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 14px 34px color-mix(in srgb, var(--accent) 40%, transparent)}
+.onb-ico svg{width:46px; height:46px; fill:none; stroke:currentColor; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round}
+.onb h2{font-size:26px; font-weight:900; color:var(--ink); margin:0 0 10px}
+.onb p{font-size:16px; line-height:1.9; color:var(--ink2); margin:0}
+.onb-dots{display:flex; gap:7px; margin:18px 0}
+.onb-dots i{width:8px; height:8px; border-radius:99px; background:var(--line2); transition:width .35s cubic-bezier(.2,.8,.2,1), background-color .3s}
+.onb-dots i.on{width:26px; background:var(--accent)}
+.onb-next{width:100%; max-width:420px; height:52px; border:none; border-radius:16px; background:var(--accent); color:#fff; font:inherit; font-size:17px; font-weight:800; cursor:pointer; transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.onb-next:active{transform:scale(.97)}
+.stage-opts{display:flex; flex-direction:column; gap:10px; margin:16px 0 14px; text-align:right}
+.stage-opt{border:2px solid var(--line); background:var(--card); color:var(--ink); border-radius:16px; padding:14px 16px; font:inherit; cursor:pointer; text-align:right; transition:border-color .25s, background-color .25s, transform .2s}
+.stage-opt b{display:block; font-size:16px; font-weight:800}
+.stage-opt span{font-size:13px; color:var(--mut); font-weight:600}
+.stage-opt.sel{border-color:var(--accent); background:color-mix(in srgb, var(--accent) 12%, var(--card))}
+.stage-opt:active{transform:scale(.98)}
+
+/* ===== بطاقة التثبيت ===== */
+.install-card{margin:14px 0 0; padding:12px; border-radius:18px; background:var(--card); border:1px solid var(--line); box-shadow:var(--shadow); position:relative}
+.install-card[hidden]{display:none}
+.install-title{font-size:13px; font-weight:800; color:var(--ink2); margin:0 2px 8px; padding-left:28px}
+.install-x{position:absolute; top:6px; left:6px; width:28px; height:28px; border:none; background:transparent; color:var(--mut); font-size:18px; cursor:pointer; border-radius:50%}
+.install-row{display:flex; flex-wrap:wrap; gap:8px}
+.install-btn{flex:1 1 120px; display:inline-flex; align-items:center; justify-content:center; gap:7px; height:42px; border:1px solid var(--line); background:var(--bg2); color:var(--ink); border-radius:12px; font:inherit; font-size:13.5px; font-weight:800; cursor:pointer; transition:transform .25s cubic-bezier(.2,.8,.2,1), background-color .2s, color .2s}
+.install-btn svg{width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
+.install-btn:hover{background:var(--accent); color:#fff; border-color:var(--accent)}
+.install-btn:active{transform:scale(.95)}
+.guide-steps{margin:0 0 12px; padding:0 20px 0 0; font-size:15px; line-height:2; color:var(--ink2)}
 </style>
 </head>
 <body>
@@ -1018,6 +1054,15 @@ html.vt-run *{transition:none!important}
   <section class="greet" id="greet">
     <div class="greet-hello" id="greetHello">صباح الخير</div>
     <div class="greet-date" id="greetDate"></div>
+    <div class="install-card" id="installCard" hidden>
+      <button class="install-x" onclick="hideInstallCard()" aria-label="إخفاء">×</button>
+      <div class="install-title">ثبّت التطبيق على جهازك</div>
+      <div class="install-row">
+        <button class="install-btn" onclick="installApp('desktop')"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="13" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>تثبيت على الكمبيوتر</button>
+        <button class="install-btn" onclick="installApp('android')"><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="2.5"/><line x1="11" y1="18" x2="13" y2="18"/></svg>تثبيت على أندرويد</button>
+        <button class="install-btn" onclick="installApp('ios')"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><polyline points="7 8 12 3 17 8"/><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>للآيفون: الشاشة الرئيسية</button>
+      </div>
+    </div>
   </section>
 
   <div class="view" id="viewRecords">
@@ -1044,6 +1089,11 @@ html.vt-run *{transition:none!important}
       <label for="teacherName">اسم المعلم (اختياري)</label>
       <input class="form-field" id="teacherName" maxlength="40" placeholder="يظهر في التحية فقط" autocomplete="off" oninput="saveTeacherName(this.value)">
       <p class="set-note">يُحفظ الاسم في جهازك فقط، وإذا تركته فارغاً تظهر التحية بدون اسم.</p>
+      <label style="margin-top:14px">المرحلة الدراسية</label>
+      <div class="chip-row" id="stageChips">
+        <button type="button" class="chip" data-stage="class" onclick="setStage('class')">ابتدائي / متوسط (فصل)</button>
+        <button type="button" class="chip" data-stage="sec" onclick="setStage('sec')">ثانوي (شعبة)</button>
+      </div>
     </div>
     <div class="set-card">
       <h3>الاشتراك</h3>
@@ -1063,6 +1113,22 @@ html.vt-run *{transition:none!important}
     </div>
   </div>
 </main>
+
+
+<div class="onb" id="onb" hidden>
+  <button class="onb-skip" id="onbSkip" onclick="finishOnboarding(true)">تخطي</button>
+  <div class="onb-body" id="onbBody"></div>
+  <div class="onb-dots" id="onbDots"></div>
+  <button class="onb-next" id="onbNext" onclick="nextOnboarding()">التالي</button>
+</div>
+
+<div class="modal" id="installModal" hidden>
+  <div class="modal-content">
+    <h3 id="installTitle">طريقة التثبيت</h3>
+    <ol class="guide-steps" id="installSteps"></ol>
+    <div class="modal-actions"><button class="btn" onclick="closeModal('installModal')">حسناً</button></div>
+  </div>
+</div>
 
 <div class="modal" id="schedModal" hidden>
   <div class="modal-content">
@@ -2921,7 +2987,7 @@ function showView(v){
   $('tabSchedule').classList.toggle('active', v === 'schedule');
   $('settingsBtn').classList.toggle('active', v === 'settings');
   if(v === 'schedule') renderSchedule();
-  if(v === 'settings') $('teacherName').value = loadProfile().name || '';
+  if(v === 'settings'){ $('teacherName').value = loadProfile().name || ''; markStageChips(); }
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
@@ -2975,6 +3041,125 @@ function openSchedCell(day, period){
   $('schedClear').onclick = () => done('');
   openModal('schedModal');
   setTimeout(() => { try{ inp.focus(); }catch(e){} }, 60);
+}
+
+
+/* ===== المرحلة الدراسية (الفرق في المسمى فقط) ===== */
+function getStage(){ return loadProfile().stage === 'class' ? 'class' : 'sec'; }
+function saveProfile(patch){
+  const p = Object.assign(loadProfile(), patch);
+  try{ localStorage.setItem('gradesheet_profile', JSON.stringify(p)); }catch(e){}
+}
+function L(t){
+  if(getStage() !== 'class' || !t) return t;
+  return t.replace(/الشعب(?!ة)/g, 'الفصول').replace(/شعبة/g, 'فصل');
+}
+function labelNode(n){
+  if(n.nodeType === 3){ const v = L(n.nodeValue); if(v !== n.nodeValue) n.nodeValue = v; return; }
+  if(n.nodeType !== 1 || /^(SCRIPT|STYLE)$/.test(n.tagName)) return;
+  if(n.placeholder){ const v = L(n.placeholder); if(v !== n.placeholder) n.placeholder = v; }
+  const a = n.getAttribute && n.getAttribute('aria-label'); if(a){ const v = L(a); if(v !== a) n.setAttribute('aria-label', v); }
+  n.childNodes.forEach(labelNode);
+}
+function initStageLabels(){
+  if(getStage() !== 'class') return;
+  labelNode(document.body);
+  new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(labelNode))).observe(document.body, {childList:true, subtree:true});
+}
+function markStageChips(){
+  document.querySelectorAll('#stageChips .chip').forEach(c => c.classList.toggle('sel', c.dataset.stage === getStage()));
+}
+function setStage(v){
+  if(v === getStage()) return;
+  saveProfile({stage:v});
+  try{ save(); }catch(e){}
+  location.reload();
+}
+
+/* ===== شاشة الترحيب ===== */
+const ONB_VERSION = 1;
+const ONB_SLIDES = [
+  {since:1, icon:'<path d="M4 4h12a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4z"/><line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="14" y2="13"/>', title:'أهلاً بك في سجل الطلاب', text:'سجّل الدرجات والحضور لكل شعبة بسرعة وبساطة، ويعمل التطبيق حتى بدون إنترنت.'},
+  {since:1, icon:'<rect x="3" y="4" width="18" height="17" rx="3"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="16" y1="2" x2="16" y2="6"/>', title:'جدول الحصص', text:'رتّب حصصك الأسبوعية في مكان واحد، مع التحية والتاريخ الهجري والميلادي كل يوم.'},
+  {since:1, icon:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>', title:'بياناتك في جهازك', text:'كل شيء محفوظ في جهازك فقط. أنشئ نسخة احتياطية من القائمة ☰ بين فترة وأخرى.'},
+  {since:1, setup:true, icon:'<path d="M12 3l9 5-9 5-9-5z"/><path d="M7 11v5c0 1.5 2.2 3 5 3s5-1.5 5-3v-5"/>', title:'ما مرحلتك الدراسية؟', text:''}
+];
+let onbList = [], onbIdx = 0, onbStage = null;
+function onbSeen(){ try{ return parseInt(localStorage.getItem('gradesheet_onboard') || '0', 10) || 0; }catch(e){ return 0; } }
+function maybeOnboard(){
+  const seen = onbSeen();
+  onbList = ONB_SLIDES.filter(x => x.since > seen);
+  if(seen > 0) onbList = onbList.filter(x => !x.setup);
+  if(!onbList.length) return;
+  onbIdx = 0; $('onb').hidden = false; renderOnboarding();
+}
+function renderOnboarding(){
+  const sl = onbList[onbIdx], body = $('onbBody');
+  body.textContent = '';
+  const w = document.createElement('div'); w.className = 'onb-slide';
+  w.innerHTML = '<div class="onb-ico"><svg viewBox="0 0 24 24">' + sl.icon + '</svg></div><h2></h2><p></p>';
+  w.querySelector('h2').textContent = sl.title; w.querySelector('p').textContent = sl.text;
+  if(sl.setup){
+    const o = document.createElement('div'); o.className = 'stage-opts';
+    [['class','ابتدائي / متوسط','تُسمّى «فصل» — مثل 101 و 102'], ['sec','ثانوي','تُسمّى «شعبة»']].forEach(([k,t,d]) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'stage-opt' + (onbStage === k ? ' sel' : '');
+      b.innerHTML = '<b></b><span></span>'; b.firstChild.textContent = t; b.lastChild.textContent = d;
+      b.onclick = () => { onbStage = k; o.querySelectorAll('.stage-opt').forEach(x => x.classList.toggle('sel', x === b)); };
+      o.appendChild(b);
+    });
+    w.appendChild(o);
+    const n = document.createElement('input'); n.className = 'form-field'; n.id = 'onbName'; n.maxLength = 40; n.placeholder = 'اسمك (اختياري)'; n.autocomplete = 'off';
+    w.appendChild(n);
+  }
+  body.appendChild(w);
+  const dots = $('onbDots'); dots.textContent = '';
+  onbList.forEach((_, i) => { const d = document.createElement('i'); if(i === onbIdx) d.className = 'on'; dots.appendChild(d); });
+  const last = onbIdx === onbList.length - 1;
+  $('onbNext').textContent = last ? 'ابدأ' : 'التالي';
+  $('onbSkip').style.visibility = last ? 'hidden' : 'visible';
+}
+function nextOnboarding(){
+  if(onbIdx < onbList.length - 1){ onbIdx++; renderOnboarding(); return; }
+  finishOnboarding(false);
+}
+function finishOnboarding(skipped){
+  const nm = $('onbName');
+  if(!skipped){
+    if(nm && nm.value.trim()) saveProfile({name: nm.value.trim()});
+    if(onbStage && onbStage !== getStage()) saveProfile({stage: onbStage});
+  }
+  try{ localStorage.setItem('gradesheet_onboard', String(ONB_VERSION)); }catch(e){}
+  if(!skipped && onbStage && onbStage !== loadStageBefore){ location.reload(); return; }
+  const el = $('onb'); el.classList.add('closing');
+  setTimeout(() => { el.hidden = true; el.classList.remove('closing'); renderGreeting(); }, 300);
+}
+let loadStageBefore = null;
+
+/* ===== التثبيت ===== */
+let deferredInstall = null;
+function isStandalone(){ try{ return matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; }catch(e){ return false; } }
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); deferredInstall = e; });
+window.addEventListener('appinstalled', () => { $('installCard').hidden = true; });
+function hideInstallCard(){ $('installCard').hidden = true; try{ localStorage.setItem('gradesheet_install_hidden', '1'); }catch(e){} }
+function initInstallCard(){
+  let hidden = false; try{ hidden = localStorage.getItem('gradesheet_install_hidden') === '1'; }catch(e){}
+  $('installCard').hidden = hidden || isStandalone();
+}
+const INSTALL_GUIDE = {
+  desktop:{t:'التثبيت على الكمبيوتر', s:['افتح الموقع في كروم أو إيدج.','اضغط أيقونة التثبيت في شريط العنوان، أو القائمة ⋮ ثم «تثبيت سجل الطلاب».','يفتح التطبيق في نافذة مستقلة ويظهر في قائمة ابدأ وسطح المكتب.']},
+  android:{t:'التثبيت على أندرويد', s:['افتح الموقع في متصفح كروم.','اضغط القائمة ⋮ في أعلى الصفحة.','اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية» ثم «تثبيت».']},
+  ios:{t:'الآيفون: إضافة للشاشة الرئيسية', s:['افتح الموقع في متصفح سفاري.','اضغط زر المشاركة (المربع والسهم للأعلى).','اختر «إضافة إلى الشاشة الرئيسية» ثم «إضافة».']}
+};
+function installApp(kind){
+  if(kind !== 'ios' && deferredInstall){
+    const d = deferredInstall; deferredInstall = null;
+    d.prompt(); return;
+  }
+  const g = INSTALL_GUIDE[kind];
+  $('installTitle').textContent = g.t;
+  const ol = $('installSteps'); ol.textContent = '';
+  g.s.forEach(x => { const li = document.createElement('li'); li.textContent = x; ol.appendChild(li); });
+  openModal('installModal');
 }
 
 /* ===== لوحة الأرقام (تظهر تحت الخانة) ===== */
@@ -3389,9 +3574,13 @@ document.addEventListener('visibilitychange', () => { if(document.hidden) save()
 
 document.body.classList.add('intro');
 setTimeout(() => document.body.classList.remove('intro'), 2200);
+initStageLabels();
+loadStageBefore = getStage();
+initInstallCard();
 updateThemeIcon();
 renderGreeting();
 render();
+maybeOnboard();
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('./sw.js', {updateViaCache:'none'}).catch(() => {});
 }
