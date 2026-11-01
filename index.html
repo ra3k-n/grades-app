@@ -848,6 +848,26 @@ tbody tr{transition:background-color .2s, transform .2s}
 .form-field:focus{box-shadow:0 0 0 4px color-mix(in srgb, var(--accent) 25%, transparent)}
 .num-keypad:not([hidden]){animation:riseIn .3s both}
 .num-keypad button{transition:transform .1s, background-color .1s}
+
+/* حركة زر المظهر + قائمة زجاجية */
+#themeBtn svg{overflow:visible}
+#themeBtn .sun-core{fill:currentColor; stroke:none; transform-origin:12px 12px; transform:scale(1); transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+#themeBtn .moon-cut{transform:translate(0,0); transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+#themeBtn .sun-rays{transform-origin:12px 12px; transform:rotate(-70deg) scale(.3); opacity:0; transition:transform .6s cubic-bezier(.2,.8,.2,1), opacity .35s}
+#themeBtn.is-dark .sun-core{transform:scale(.56)}
+#themeBtn.is-dark .moon-cut{transform:translate(14px,-14px)}
+#themeBtn.is-dark .sun-rays{transform:rotate(0) scale(1); opacity:1}
+html.vt-run *{transition:none!important}
+::view-transition-old(root),::view-transition-new(root){animation:none; mix-blend-mode:normal}
+::view-transition-old(root){z-index:1}
+::view-transition-new(root){z-index:2}
+.float-tools .menu-dropdown{
+  top:calc(100% + 10px); border-radius:20px; padding:8px;
+  background:color-mix(in srgb, var(--bg2) 90%, transparent);
+  -webkit-backdrop-filter:blur(24px) saturate(1.7); backdrop-filter:blur(24px) saturate(1.7);
+  border:1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  box-shadow:0 14px 40px rgba(0,0,0,.2);
+}
 </style>
 </head>
 <body>
@@ -855,7 +875,9 @@ tbody tr{transition:background-color .2s, transform .2s}
 <div class="float-tools">
     <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" aria-label="تبديل المظهر">
       <svg id="themeIcon" viewBox="0 0 24 24">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        <mask id="moonMask"><rect x="0" y="0" width="24" height="24" fill="#fff"/><circle class="moon-cut" cx="17" cy="7" r="7" fill="#000"/></mask>
+        <circle class="sun-core" cx="12" cy="12" r="9" mask="url(#moonMask)"/>
+        <g class="sun-rays"><line x1="12" y1="1.5" x2="12" y2="3.5"/><line x1="12" y1="20.5" x2="12" y2="22.5"/><line x1="1.5" y1="12" x2="3.5" y2="12"/><line x1="20.5" y1="12" x2="22.5" y2="12"/><line x1="4.6" y1="4.6" x2="6" y2="6"/><line x1="18" y1="18" x2="19.4" y2="19.4"/><line x1="4.6" y1="19.4" x2="6" y2="18"/><line x1="18" y1="6" x2="19.4" y2="4.6"/></g>
       </svg>
     </button>
     <button class="icon-btn" id="menuBtn" onclick="toggleMenu(event)" aria-label="القائمة">
@@ -2655,16 +2677,33 @@ function currentTheme(){
 }
 function updateThemeIcon(){
   const dark = currentTheme() === 'dark';
-  $('themeIcon').innerHTML = dark
-    ? '<circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.93" y1="4.93" x2="6.34" y2="6.34"/><line x1="17.66" y1="17.66" x2="19.07" y2="19.07"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.93" y1="19.07" x2="6.34" y2="17.66"/><line x1="17.66" y1="6.34" x2="19.07" y2="4.93"/>'
-    : '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+  $('themeBtn').classList.toggle('is-dark', dark);
 }
 function toggleTheme(){
   const next = currentTheme() === 'dark' ? 'light' : 'dark';
-  document.documentElement.setAttribute('data-theme', next);
-  try{ localStorage.setItem('gradesheet_theme', next); }catch(e){}
-  updateThemeIcon();
-  render();
+  const apply = () => {
+    document.documentElement.setAttribute('data-theme', next);
+    try{ localStorage.setItem('gradesheet_theme', next); }catch(e){}
+    updateThemeIcon();
+    render();
+  };
+  const reduce = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  if(!document.startViewTransition || reduce){ apply(); return; }
+  const r = $('themeBtn').getBoundingClientRect();
+  const x = r.left + r.width / 2, y = r.top + r.height / 2;
+  const end = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y));
+  const root = document.documentElement;
+  root.classList.add('vt-run');
+  $('themeBtn').classList.toggle('is-dark', next === 'dark');
+  let t;
+  try{ t = document.startViewTransition(apply); }catch(e){ root.classList.remove('vt-run'); apply(); return; }
+  t.ready.then(() => {
+    root.animate(
+      { clipPath: ['circle(0px at ' + x + 'px ' + y + 'px)', 'circle(' + end + 'px at ' + x + 'px ' + y + 'px)'] },
+      { duration: 700, easing: 'cubic-bezier(.2,.8,.2,1)', pseudoElement: '::view-transition-new(root)' }
+    );
+  }).catch(() => {});
+  t.finished.finally(() => root.classList.remove('vt-run'));
 }
 try{
   matchMedia('(prefers-color-scheme:dark)').addEventListener('change', () => {
