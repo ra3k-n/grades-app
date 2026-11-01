@@ -54,7 +54,7 @@ body{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none}
 input,textarea,select{-webkit-user-select:text; user-select:text; -webkit-touch-callout:default}
 input[readonly]{-webkit-user-select:none; user-select:none; -webkit-touch-callout:none; cursor:pointer}
 body{
-  font-family:'Segoe UI',Tahoma,'Noto Naskh Arabic',system-ui,sans-serif;
+  font-family:'Tajawal','Cairo','Segoe UI Variable','Segoe UI','Noto Sans Arabic',Tahoma,'Noto Naskh Arabic',system-ui,sans-serif;
   background:var(--bg); color:var(--ink);
   padding-top:calc(var(--top-total) + env(safe-area-inset-top,0px) + 8px);
   padding-bottom:calc(52px + env(safe-area-inset-bottom, 0px) + 10px);
@@ -795,6 +795,20 @@ html.vt-run *{transition:none!important}
 @keyframes splashPop{from{opacity:0; transform:scale(.7)} to{opacity:1; transform:none}}
 @keyframes splashRise{from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none}}
 @keyframes splashBar{0%{transform:translateX(250%)} 100%{transform:translateX(-120%)}}
+
+/* التحية */
+.hero-greet{position:relative; z-index:2; margin-top:14px; text-align:center; color:#fff; text-shadow:0 1px 8px rgba(0,0,0,.65);}
+.hg-hello{font-size:26px; font-weight:900; line-height:1.3}
+.hg-date{font-size:17px; font-weight:700; margin-top:4px; opacity:.95}
+/* رجوع / للأمام */
+.undo-row{display:flex; justify-content:flex-end; gap:8px; margin:8px 4px 0}
+.ur-btn{width:38px; height:38px; border-radius:50%; border:1px solid var(--line); background:var(--bg2); color:var(--ink); display:inline-flex; align-items:center; justify-content:center; cursor:pointer; padding:0; transition:transform .25s cubic-bezier(.2,.8,.2,1), opacity .2s; box-shadow:var(--shadow)}
+.ur-btn svg{width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2; stroke-linecap:round; stroke-linejoin:round}
+.ur-btn:active:not(:disabled){transform:scale(.88)}
+.ur-btn:disabled{opacity:.35; cursor:default; box-shadow:none}
+/* إصلاح اختفاء أيقونة الزرين في الوضع الفاتح */
+.float-tools .icon-btn:hover,.float-tools .icon-btn:active,.float-tools .icon-btn:focus{color:var(--ink); border-color:var(--line); background:color-mix(in srgb, var(--bg2) 72%, transparent)}
+@media (max-width:600px){.hg-hello{font-size:23px}.hg-date{font-size:15px}}
 </style>
 </head>
 <body>
@@ -829,22 +843,18 @@ html.vt-run *{transition:none!important}
         <svg viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v6h-6"/></svg>
         نسخة احتياطية
       </button>
-      <button onclick="closeMenu();openWordDialog()">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
-        استيراد من Excel
+      <button onclick="closeMenu();document.getElementById('restoreFileInput').click()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        استعادة نسخة
       </button>
       <button onclick="closeMenu();openColorsDialog()">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="8" cy="10" r="1" fill="currentColor"/><circle cx="12" cy="7" r="1" fill="currentColor"/><circle cx="16" cy="10" r="1" fill="currentColor"/></svg>
         تغيير الألوان
       </button>
-      <button class="danger" onclick="closeMenu();confirmClearAllRecords()">
-        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-        مسح كل سجل الطلاب
+      <button onclick="closeMenu();openModal('settingsModal')">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        الإعدادات
       </button>
-      <a href="https://t.me/ra3k_n" target="_blank" rel="noopener" onclick="closeMenu()">
-        <svg viewBox="0 0 24 24" style="fill:currentColor;stroke:none"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
-        تيليجرام
-      </a>
     </div>
 </div>
 
@@ -852,7 +862,12 @@ html.vt-run *{transition:none!important}
   <div class="hero">
     <h1>سجل الدرجات</h1>
     <p>نظام إدارة الدرجات</p>
-  </div>
+    <div class="hero-greet"><div class="hg-hello" id="greetHello"></div><div class="hg-date" id="greetDate"></div></div>
+</div>
+<div class="undo-row">
+  <button class="ur-btn" id="undoBtn" onclick="histUndo()" aria-label="رجوع" disabled><svg viewBox="0 0 24 24"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg></button>
+  <button class="ur-btn" id="redoBtn" onclick="histRedo()" aria-label="للأمام" disabled><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg></button>
+</div>
   <div class="sections-strip" id="sectionsStrip"></div>
   <div id="sectionsContainer"></div>
 </main>
@@ -984,6 +999,25 @@ html.vt-run *{transition:none!important}
       <button class="btn primary" onclick="saveFont()">حفظ</button>
       <button class="btn" onclick="resetFont()">افتراضي</button>
       <button class="btn" onclick="closeModal('fontModal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="settingsModal" hidden>
+  <div class="modal-content">
+    <h3>الإعدادات</h3>
+    <div class="menu-list">
+      <button class="menu-item" onclick="closeModal('settingsModal');openWordDialog()">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+        استيراد من Excel
+      </button>
+      <button class="menu-item" style="color:var(--red)" onclick="closeModal('settingsModal');confirmClearAllRecords()">
+        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        مسح الكل
+      </button>
+    </div>
+    <div class="modal-actions" style="margin-top:14px">
+      <button class="btn" onclick="closeModal('settingsModal')">إغلاق</button>
     </div>
   </div>
 </div>
@@ -1126,6 +1160,7 @@ function load(){
   return null;
 }
 function save(){
+  try{ histRecord(); }catch(e){}
   try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
   catch(e){ console.warn('فشل الحفظ', e); }
 }
@@ -2642,6 +2677,46 @@ try{
   });
 }catch(e){}
 
+
+/* ===== التحية ===== */
+function renderGreeting(){
+  const d = new Date();
+  $('greetHello').textContent = d.getHours() < 12 ? 'صباح الخير' : 'مساء الخير';
+  let g = '', hj = '';
+  try{ g = d.toLocaleDateString('ar-SA-u-ca-gregory', {weekday:'long', day:'numeric', month:'long', year:'numeric'}); }catch(e){}
+  try{ hj = d.toLocaleDateString('ar-SA-u-ca-islamic-umalqura', {day:'numeric', month:'long', year:'numeric'}); }catch(e){}
+  $('greetDate').textContent = g + (hj ? '  ·  ' + hj : '');
+}
+
+/* ===== رجوع / للأمام ===== */
+const HIST_MAX = 30;
+let hist = [], histPos = -1, histT = 0;
+function histInit(){ hist = [JSON.stringify(state)]; histPos = 0; histT = 0; updateUR(); }
+function histRecord(){
+  if(histPos < 0) return;
+  const snap = JSON.stringify(state);
+  if(snap === hist[histPos]) return;
+  const now = Date.now();
+  if(histPos === hist.length - 1 && histPos > 0 && now - histT < 900){ hist[histPos] = snap; }
+  else { hist.length = histPos + 1; hist.push(snap); histPos++; if(hist.length > HIST_MAX){ hist.shift(); histPos--; } }
+  histT = now; updateUR();
+}
+function histGo(i){
+  if(i < 0 || i >= hist.length) return;
+  const snap = hist[i];
+  try{ state = JSON.parse(snap); }catch(e){ return; }
+  histPos = i; histT = 0;
+  try{ localStorage.setItem(STORAGE_KEY, snap); }catch(e){}
+  render(); updateUR();
+}
+function histUndo(){ histRecord(); if(histPos > 0){ histGo(histPos - 1); notify('تم الرجوع'); } }
+function histRedo(){ if(histPos < hist.length - 1){ histGo(histPos + 1); notify('تم التقدم'); } }
+function updateUR(){
+  const u = $('undoBtn'), r = $('redoBtn');
+  if(u) u.disabled = !(histPos > 0 || (histPos === 0 && JSON.stringify(state) !== hist[0]));
+  if(r) r.disabled = !(histPos >= 0 && histPos < hist.length - 1);
+}
+
 /* ===== لوحة الأرقام (تظهر تحت الخانة) ===== */
 const keypad = $('numKeypad');
 const ICON_BACK = '<svg viewBox="0 0 24 24"><path d="M21 5H9l-6 7 6 7h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1z"/><line x1="12" y1="9.5" x2="17" y2="14.5"/><line x1="17" y1="9.5" x2="12" y2="14.5"/></svg>';
@@ -3053,6 +3128,8 @@ window.addEventListener('pagehide', save);
 document.addEventListener('visibilitychange', () => { if(document.hidden) save(); });
 
 updateThemeIcon();
+histInit();
+renderGreeting();
 render();
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('./sw.js', {updateViaCache:'none'}).catch(() => {});
