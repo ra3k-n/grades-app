@@ -1,6 +1,6 @@
 {
-  "name": "سجل الدرجات",
-  "short_name": "سجل الدرجات",
+  "name": "سجل الطلاب",
+  "short_name": "سجل الطلاب",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f3f3f0",
