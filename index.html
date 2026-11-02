@@ -1025,6 +1025,9 @@ html.vt-run *{transition:none!important}
 .up-dev{display:flex; align-items:center; justify-content:space-between; gap:8px; background:var(--bg2); border:1px solid var(--line); border-radius:12px; padding:8px 12px; margin-bottom:6px}
 .up-dev b{font-size:22px; letter-spacing:3px; direction:ltr}
 .up-note{margin:0 0 12px; font-size:12px; line-height:1.7; color:var(--mut)}
+.up-warn{background:color-mix(in srgb, var(--orange) 16%, transparent); border:1px solid color-mix(in srgb, var(--orange) 45%, transparent); border-radius:12px; padding:10px 12px; font-size:13px; line-height:1.8; color:var(--ink); font-weight:700}
+.up-have{margin-top:2px}
+.up-have summary{cursor:pointer; font-weight:800; font-size:14px; color:var(--accent); padding:6px 0}
 .up-err{margin:0 0 8px; color:var(--red); font-size:13px; font-weight:700}
 .up-err[hidden]{display:none}
 .ok-ring{width:84px; height:84px; margin:4px auto 0; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; animation:popIn .6s cubic-bezier(.2,.8,.2,1) both}
@@ -1145,22 +1148,31 @@ html.vt-run *{transition:none!important}
 
 <div class="modal" id="upgradeModal" hidden>
   <div class="modal-content">
-    <h3>الترقية إلى النسخة السنوية</h3>
+    <h3>الاشتراك السنوي</h3>
     <p class="up-reason" id="upReason"></p>
     <div class="up-price"><b>100</b> ر.س <span>للسنة الدراسية</span></div>
-    <ul class="up-list"><li>شعب وأسماء بلا حدود</li><li>تستمر بياناتك الحالية كما هي</li><li>يُفعَّل بكود خاص بجهازك</li></ul>
-    <div class="up-step"><span>1</span> رقم طلب جهازك</div>
-    <div class="up-dev"><b id="upDev"></b><button class="btn" onclick="copyDeviceNo()">نسخ</button></div>
-    <div class="up-step"><span>2</span> أدخل رقم جوالك لإرسال الكود</div>
-    <input class="form-field" id="upPhone" inputmode="tel" maxlength="16" placeholder="05xxxxxxxx" autocomplete="off">
-    <p class="up-note">رقمك يُستخدم فقط لإرسال كود التفعيل، ولا يُنشر ولا يُشارك مع أي جهة.</p>
-    <button class="btn primary" style="width:100%; margin-bottom:12px" onclick="sendWhatsApp()">طلب الكود عبر واتساب</button>
-    <div class="up-step"><span>3</span> ألصق الكود هنا</div>
-    <textarea class="form-field" id="upCode" rows="3" placeholder="v1...." autocomplete="off" spellcheck="false" style="min-height:70px; direction:ltr; text-align:left; font-size:12px"></textarea>
-    <p class="up-err" id="upErr" hidden></p>
-    <div class="modal-actions">
-      <button class="btn primary" onclick="activateCode()">تفعيل</button>
-      <button class="btn" onclick="closeModal('upgradeModal')">لاحقاً</button>
+    <ul class="up-list"><li>شعب وأسماء بلا حدود</li><li>بياناتك الحالية تبقى كما هي</li><li>يُفعَّل بكود خاص بجهازك</li></ul>
+    <div class="up-warn">رسوم الاشتراك غير مستردة، ويُنظر في أي طلب استرجاع بعد مرور فترة من الاشتراك.</div>
+    <button class="btn primary" style="width:100%; margin:12px 0" onclick="openSubNotice()">اشتراك</button>
+    <details class="up-have"><summary>لدي كود التفعيل</summary>
+      <textarea class="form-field" id="upCode" rows="3" placeholder="الصق الكود هنا" autocomplete="off" spellcheck="false" style="min-height:70px; direction:ltr; text-align:left; font-size:12px; margin-top:8px"></textarea>
+      <p class="up-err" id="upErr" hidden></p>
+      <button class="btn primary" style="width:100%" onclick="activateCode()">تفعيل</button>
+    </details>
+    <div class="modal-actions"><button class="btn" onclick="closeModal('upgradeModal')">إغلاق</button></div>
+  </div>
+</div>
+
+<div class="modal" id="subNoticeModal" hidden>
+  <div class="modal-content">
+    <h3>إتمام الاشتراك</h3>
+    <p style="font-size:15px; line-height:1.9; color:var(--ink2); margin:0 0 10px">سيتم تحويلك إلى واتساب للتواصل مع صاحب التطبيق، وإتمام الدفع، واستلام كود التفعيل.</p>
+    <div class="up-dev"><span style="font-size:13px; color:var(--ink2); font-weight:700">رقم طلب جهازك</span><b id="upDev"></b></div>
+    <p class="up-note">يُرسل هذا الرقم ضمن الرسالة ليُصدر لك الكود المناسب لجهازك.</p>
+    <div class="up-warn">تنبيه: رسوم الاشتراك غير مستردة، ويُنظر في أي طلب استرجاع بعد مرور فترة من الاشتراك.</div>
+    <div class="modal-actions" style="margin-top:14px">
+      <button class="btn primary" onclick="sendWhatsApp()">متابعة عبر واتساب</button>
+      <button class="btn" onclick="closeModal('subNoticeModal')">رجوع</button>
     </div>
   </div>
 </div>
@@ -3282,25 +3294,26 @@ function renderSubscription(){
     '<div class="set-actions" style="margin-top:12px"></div>';
   const act = c.querySelector('.set-actions');
   const b = document.createElement('button'); b.className = 'btn' + (isPaid() ? '' : ' primary');
-  if(isPaid()){ b.textContent = 'إلغاء التفعيل على هذا الجهاز'; b.onclick = cancelLicense; }
-  else { b.textContent = exp ? 'تجديد الاشتراك' : 'ترقية'; b.onclick = () => openUpgrade(''); }
+  if(isPaid()){ b.textContent = 'إلغاء الاشتراك'; b.onclick = cancelLicense; }
+  else { b.textContent = exp ? 'تجديد الاشتراك' : 'اشتراك'; b.onclick = () => openUpgrade(''); }
   act.appendChild(b);
 }
 function openUpgrade(reason){
   $('upReason').textContent = reason || '';
-  $('upDev').textContent = deviceNo(); $('upErr').hidden = true; $('upCode').value = '';
+  $('upErr').hidden = true; $('upCode').value = '';
   openModal('upgradeModal');
 }
+function openSubNotice(){ $('upDev').textContent = deviceNo(); openModal('subNoticeModal'); }
 function copyDeviceNo(){
   const v = deviceNo();
   if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(v).then(() => notify('تم نسخ الرقم'), () => notify(v));
   else notify(v);
 }
 function sendWhatsApp(){
-  const ph = $('upPhone').value.trim();
-  const msg = 'السلام عليكم، أرغب بتفعيل النسخة السنوية من تطبيق سجل الطلاب.\nرقم طلب الجهاز: ' + deviceNo() + (ph ? '\nرقم جوالي: ' + ph : '');
+  const msg = 'السلام عليكم، أرغب بالاشتراك السنوي في تطبيق سجل الطلاب.\nرقم طلب الجهاز: ' + deviceNo();
   if(!OWNER_WA){ notify('رقم واتساب غير مُعدّ بعد'); return; }
   window.open('https://wa.me/' + OWNER_WA + '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+  closeModal('subNoticeModal');
 }
 async function activateCode(){
   const err = $('upErr'); err.hidden = true;
@@ -3316,9 +3329,9 @@ async function activateCode(){
   openModal('activatedModal'); render();
 }
 function cancelLicense(){
-  showConfirm('إلغاء التفعيل', 'سيعود هذا الجهاز إلى النسخة المجانية وتبقى بياناتك محفوظة. يمكنك إعادة التفعيل بنفس الكود ما دامت مدته سارية.', () => {
+  showConfirm('إلغاء الاشتراك', 'هل أنت متأكد من إلغاء الاشتراك؟<br>سيعود التطبيق إلى النسخة المجانية (شعبة واحدة، حتى ' + FREE_NAMES + ' اسماً). تبقى بياناتك محفوظة، ولا يمكنك الإضافة فوق هذا الحد.', () => {
     try{ localStorage.removeItem(LIC_KEY); }catch(e){}
-    applyLic(null); notify('تم إلغاء التفعيل'); render();
+    applyLic(null); notify('تم إلغاء الاشتراك'); render();
   });
 }
 const REASON_SECTION = 'النسخة المجانية تتسع لشعبة واحدة فقط. رقّ للنسخة السنوية لإضافة شعب أخرى.';
