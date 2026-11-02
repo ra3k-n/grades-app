@@ -1012,6 +1012,26 @@ html.vt-run *{transition:none!important}
 .install-btn:hover{background:var(--accent); color:#fff; border-color:var(--accent)}
 .install-btn:active{transform:scale(.95)}
 .guide-steps{margin:0 0 12px; padding:0 20px 0 0; font-size:15px; line-height:2; color:var(--ink2)}
+
+/* الترقية */
+.up-reason{margin:0 0 10px; font-size:14px; line-height:1.8; color:var(--ink2)}
+.up-reason:empty{display:none}
+.up-price{font-size:15px; font-weight:800; color:var(--ink); margin-bottom:8px}
+.up-price b{font-size:34px; color:var(--accent); font-weight:900}
+.up-price span{font-size:13px; color:var(--mut); font-weight:700}
+.up-list{margin:0 0 14px; padding:0 18px 0 0; font-size:14px; line-height:1.9; color:var(--ink2)}
+.up-step{display:flex; align-items:center; gap:8px; font-size:14px; font-weight:800; margin:10px 0 6px}
+.up-step span{width:22px; height:22px; border-radius:50%; background:var(--accent); color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:12px}
+.up-dev{display:flex; align-items:center; justify-content:space-between; gap:8px; background:var(--bg2); border:1px solid var(--line); border-radius:12px; padding:8px 12px; margin-bottom:6px}
+.up-dev b{font-size:22px; letter-spacing:3px; direction:ltr}
+.up-note{margin:0 0 12px; font-size:12px; line-height:1.7; color:var(--mut)}
+.up-err{margin:0 0 8px; color:var(--red); font-size:13px; font-weight:700}
+.up-err[hidden]{display:none}
+.ok-ring{width:84px; height:84px; margin:4px auto 0; border-radius:50%; background:var(--accent); display:flex; align-items:center; justify-content:center; animation:popIn .6s cubic-bezier(.2,.8,.2,1) both}
+.ok-ring svg{width:44px; height:44px; fill:none; stroke:#fff; stroke-width:3; stroke-linecap:round; stroke-linejoin:round; stroke-dasharray:30; stroke-dashoffset:30; animation:okDraw .6s .3s ease forwards}
+@keyframes okDraw{to{stroke-dashoffset:0}}
+.sub-badge.on{background:color-mix(in srgb, var(--green) 22%, transparent); color:var(--green)}
+.sub-badge.off{background:color-mix(in srgb, var(--red) 20%, transparent); color:var(--red)}
 </style>
 </head>
 <body>
@@ -1095,14 +1115,7 @@ html.vt-run *{transition:none!important}
         <button type="button" class="chip" data-stage="sec" onclick="setStage('sec')">ثانوي (شعبة)</button>
       </div>
     </div>
-    <div class="set-card">
-      <h3>الاشتراك</h3>
-      <div class="sub-row"><span>الحالة</span><span><span class="sub-badge">النسخة المجانية</span></span></div>
-      <div class="sub-row"><span>الحد المتاح</span><span>شعبة واحدة · حتى 25 اسماً</span></div>
-      <div class="sub-row"><span>تاريخ البدء</span><span>—</span></div>
-      <div class="sub-row"><span>تاريخ الانتهاء</span><span>—</span></div>
-      <p class="set-note">الاشتراك السنوي المدفوع سيتوفر قريباً، وستظهر هنا حالته وتواريخه.</p>
-    </div>
+    <div class="set-card" id="subCard"></div>
     <div class="set-card">
       <h3>البيانات</h3>
       <div class="set-actions" style="flex-direction:column">
@@ -1127,6 +1140,37 @@ html.vt-run *{transition:none!important}
     <h3 id="installTitle">طريقة التثبيت</h3>
     <ol class="guide-steps" id="installSteps"></ol>
     <div class="modal-actions"><button class="btn" onclick="closeModal('installModal')">حسناً</button></div>
+  </div>
+</div>
+
+<div class="modal" id="upgradeModal" hidden>
+  <div class="modal-content">
+    <h3>الترقية إلى النسخة السنوية</h3>
+    <p class="up-reason" id="upReason"></p>
+    <div class="up-price"><b>100</b> ر.س <span>للسنة الدراسية</span></div>
+    <ul class="up-list"><li>شعب وأسماء بلا حدود</li><li>تستمر بياناتك الحالية كما هي</li><li>يُفعَّل بكود خاص بجهازك</li></ul>
+    <div class="up-step"><span>1</span> رقم طلب جهازك</div>
+    <div class="up-dev"><b id="upDev"></b><button class="btn" onclick="copyDeviceNo()">نسخ</button></div>
+    <div class="up-step"><span>2</span> أدخل رقم جوالك لإرسال الكود</div>
+    <input class="form-field" id="upPhone" inputmode="tel" maxlength="16" placeholder="05xxxxxxxx" autocomplete="off">
+    <p class="up-note">رقمك يُستخدم فقط لإرسال كود التفعيل، ولا يُنشر ولا يُشارك مع أي جهة.</p>
+    <button class="btn primary" style="width:100%; margin-bottom:12px" onclick="sendWhatsApp()">طلب الكود عبر واتساب</button>
+    <div class="up-step"><span>3</span> ألصق الكود هنا</div>
+    <textarea class="form-field" id="upCode" rows="3" placeholder="v1...." autocomplete="off" spellcheck="false" style="min-height:70px; direction:ltr; text-align:left; font-size:12px"></textarea>
+    <p class="up-err" id="upErr" hidden></p>
+    <div class="modal-actions">
+      <button class="btn primary" onclick="activateCode()">تفعيل</button>
+      <button class="btn" onclick="closeModal('upgradeModal')">لاحقاً</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="activatedModal" hidden>
+  <div class="modal-content" style="text-align:center">
+    <div class="ok-ring"><svg viewBox="0 0 24 24"><polyline points="5 13 10 18 19 7"/></svg></div>
+    <h3 style="margin-top:12px">تم التفعيل</h3>
+    <p style="color:var(--ink2); font-size:15px; line-height:1.9" id="actText"></p>
+    <div class="modal-actions"><button class="btn primary" onclick="closeModal('activatedModal')">ابدأ</button></div>
   </div>
 </div>
 
@@ -1357,7 +1401,7 @@ const DEFAULT_COLUMNS = [
   { key:'att', title:'تحضير',                    color:'#cfe2ee', type:'attendance' }
 ];
 
-const DEFAULT_SECTIONS = ['101','102','103','104','206'];
+const DEFAULT_SECTIONS = ['101'];
 
 const DEFAULT_COL_COLORS = {};
 DEFAULT_COLUMNS.forEach(c => { DEFAULT_COL_COLORS[c.key] = c.color; });
@@ -1992,6 +2036,7 @@ function scrollToSection(si){
 }
 function addStudent(si){
   const section = state.sections[si];
+  if(!isPaid() && section.students.length >= FREE_NAMES){ openUpgrade(REASON_NAMES); return; }
   const stu = makeStudent(section.students.length + 1);
   section.students.push(stu);
   save();
@@ -2325,11 +2370,13 @@ function confirmClearRecord(si, ri){
 
 /* ===== شعبة ===== */
 function openAddSectionDialog(){
+  if(!isPaid() && state.sections.length >= FREE_SECTIONS){ openUpgrade(REASON_SECTION); return; }
   $('newSectionInput').value = '';
   openModal('addSectionModal');
   setTimeout(() => $('newSectionInput').focus(), 100);
 }
 function confirmAddSection(){
+  if(!isPaid() && state.sections.length >= FREE_SECTIONS){ closeModal('addSectionModal'); openUpgrade(REASON_SECTION); return; }
   const v = $('newSectionInput').value.trim();
   if(!v){ notify('أدخل رقم الشعبة'); return; }
   state.sections.push(makeSection(v));
@@ -2491,6 +2538,18 @@ function groupSections(lines){
 function confirmWordImport(){
   const parsed = window.__wordParsed;
   if(!parsed){ notify('اختر ملف Excel أولاً'); return; }
+  if(!isPaid()){
+    const hd = st => (st.name || '').trim() || Object.values(st.scores || {}).some(v => String(v == null ? '' : v).trim()) || Object.keys(st.attendance || {}).length || (st.notes || []).length || st.totalConfirmed;
+    const secs = new Set(state.sections.map(x => String(x.sec)));
+    let over = false;
+    parsed.forEach(p => {
+      if(p.sec) secs.add(String(p.sec));
+      const t = p.sec ? state.sections.find(x => String(x.sec) === String(p.sec)) : state.sections[0];
+      if((t ? t.students.filter(hd).length : 0) + p.names.length > FREE_NAMES) over = true;
+    });
+    if(secs.size > FREE_SECTIONS){ closeModal('wordModal'); openUpgrade(REASON_SECTION); return; }
+    if(over){ closeModal('wordModal'); openUpgrade(REASON_NAMES); return; }
+  }
   let added = 0;
   const cleaned = new Set();
   const hasData = st => (st.name || '').trim() || Object.values(st.scores || {}).some(v => String(v == null ? '' : v).trim()) ||
@@ -3162,6 +3221,109 @@ function installApp(kind){
   openModal('installModal');
 }
 
+
+/* ===== الاشتراك والترخيص ===== */
+const FREE_SECTIONS = 1, FREE_NAMES = 25;
+const LIC_KEY = 'gradesheet_license', DEV_KEY = 'gradesheet_device';
+const LIC_PUBKEY = {"kty": "EC", "crv": "P-256", "x": "ZTb0Xk7qhJR6ReJGuoCJ6RxOcSWNrbomr-Drx1BT8nE", "y": "AybluuKuJRzJWTHJ8uKzPAaEsmNpngLo_a3a1T84Kc4"};
+const OWNER_WA = '';   /* رقم واتساب صاحب التطبيق بصيغة دولية بدون + مثل 9665XXXXXXXX */
+let lic = {status:'free'};
+function ymd(d){ d = d || new Date(); return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate(); }
+function ymdDate(n){ n = String(n); return new Date(+n.slice(0,4), +n.slice(4,6) - 1, +n.slice(6,8)); }
+function fmtYmd(n){ try{ return ymdDate(n).toLocaleDateString('ar-SA-u-ca-gregory', {day:'numeric', month:'long', year:'numeric'}); }catch(e){ return String(n); } }
+function deviceNo(){
+  let v = ''; try{ v = localStorage.getItem(DEV_KEY) || ''; }catch(e){}
+  if(!/^\d{8}$/.test(v)){
+    const a = new Uint32Array(1); (window.crypto || {getRandomValues:x => { x[0] = Math.random() * 4e9; }}).getRandomValues(a);
+    v = String(10000000 + (a[0] % 90000000));
+    try{ localStorage.setItem(DEV_KEY, v); }catch(e){}
+  }
+  return v;
+}
+function b64uBytes(t){ t = t.replace(/-/g,'+').replace(/_/g,'/'); while(t.length % 4) t += '='; const b = atob(t), u = new Uint8Array(b.length); for(let i = 0; i < b.length; i++) u[i] = b.charCodeAt(i); return u; }
+async function verifyCode(code){
+  const parts = String(code || '').replace(/\s+/g,'').split('.');
+  if(parts.length !== 3 || parts[0] !== 'v1') return {ok:false, reason:'format'};
+  try{
+    const data = b64uBytes(parts[1]), sig = b64uBytes(parts[2]);
+    const key = await crypto.subtle.importKey('jwk', LIC_PUBKEY, {name:'ECDSA', namedCurve:'P-256'}, false, ['verify']);
+    const ok = await crypto.subtle.verify({name:'ECDSA', hash:'SHA-256'}, key, sig, data);
+    if(!ok) return {ok:false, reason:'sig'};
+    const [d, st, en] = new TextDecoder().decode(data).split('|');
+    if(d !== deviceNo()) return {ok:false, reason:'device'};
+    return {ok:true, s:+st, e:+en};
+  }catch(e){ return {ok:false, reason:'error'}; }
+}
+function readLic(){ try{ return JSON.parse(localStorage.getItem(LIC_KEY) || 'null'); }catch(e){ return null; } }
+function applyLic(info){
+  if(!info) lic = {status:'free'};
+  else lic = {status: ymd() <= info.e ? 'active' : 'expired', s:info.s, e:info.e};
+  renderSubscription();
+}
+function initLicense(){
+  deviceNo();
+  const st = readLic();
+  if(st && st.code){ applyLic({s:st.s, e:st.e}); verifyCode(st.code).then(r => { if(r.ok) applyLic(r); else { try{ localStorage.removeItem(LIC_KEY); }catch(e){} applyLic(null); } }); }
+  else applyLic(null);
+}
+function isPaid(){ return lic.status === 'active'; }
+function daysLeft(){ return Math.max(0, Math.ceil((ymdDate(lic.e) - ymdDate(ymd())) / 86400000)); }
+function renderSubscription(){
+  const c = $('subCard'); if(!c) return;
+  const free = lic.status === 'free', exp = lic.status === 'expired';
+  const badge = lic.status === 'active' ? '<span class="sub-badge on">مفعّل</span>' : exp ? '<span class="sub-badge off">منتهي</span>' : '<span class="sub-badge">النسخة المجانية</span>';
+  c.innerHTML = '<h3>الاشتراك</h3>' +
+    '<div class="sub-row"><span>الحالة</span><span>' + badge + '</span></div>' +
+    '<div class="sub-row"><span>الحد المتاح</span><span>' + (isPaid() ? 'بلا حدود' : 'شعبة واحدة · حتى ' + FREE_NAMES + ' اسماً') + '</span></div>' +
+    '<div class="sub-row"><span>تاريخ البدء</span><span>' + (free ? '—' : fmtYmd(lic.s)) + '</span></div>' +
+    '<div class="sub-row"><span>تاريخ الانتهاء</span><span>' + (free ? '—' : fmtYmd(lic.e)) + '</span></div>' +
+    (isPaid() ? '<div class="sub-row"><span>المتبقي</span><span>' + daysLeft() + ' يوماً</span></div>' : '') +
+    '<div class="sub-row"><span>رقم طلب الجهاز</span><span style="direction:ltr">' + deviceNo() + '</span></div>' +
+    '<div class="set-actions" style="margin-top:12px"></div>';
+  const act = c.querySelector('.set-actions');
+  const b = document.createElement('button'); b.className = 'btn' + (isPaid() ? '' : ' primary');
+  if(isPaid()){ b.textContent = 'إلغاء التفعيل على هذا الجهاز'; b.onclick = cancelLicense; }
+  else { b.textContent = exp ? 'تجديد الاشتراك' : 'ترقية'; b.onclick = () => openUpgrade(''); }
+  act.appendChild(b);
+}
+function openUpgrade(reason){
+  $('upReason').textContent = reason || '';
+  $('upDev').textContent = deviceNo(); $('upErr').hidden = true; $('upCode').value = '';
+  openModal('upgradeModal');
+}
+function copyDeviceNo(){
+  const v = deviceNo();
+  if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(v).then(() => notify('تم نسخ الرقم'), () => notify(v));
+  else notify(v);
+}
+function sendWhatsApp(){
+  const ph = $('upPhone').value.trim();
+  const msg = 'السلام عليكم، أرغب بتفعيل النسخة السنوية من تطبيق سجل الطلاب.\nرقم طلب الجهاز: ' + deviceNo() + (ph ? '\nرقم جوالي: ' + ph : '');
+  if(!OWNER_WA){ notify('رقم واتساب غير مُعدّ بعد'); return; }
+  window.open('https://wa.me/' + OWNER_WA + '?text=' + encodeURIComponent(msg), '_blank', 'noopener');
+}
+async function activateCode(){
+  const err = $('upErr'); err.hidden = true;
+  const r = await verifyCode($('upCode').value);
+  if(!r.ok){
+    err.textContent = r.reason === 'device' ? 'هذا الكود لجهاز آخر، تأكد من رقم طلب جهازك.' : r.reason === 'sig' ? 'الكود غير صحيح.' : 'تأكد من لصق الكود كاملاً.';
+    err.hidden = false; return;
+  }
+  if(ymd() > r.e){ err.textContent = 'انتهت مدة هذا الكود.'; err.hidden = false; return; }
+  try{ localStorage.setItem(LIC_KEY, JSON.stringify({code: $('upCode').value.replace(/\s+/g,''), s:r.s, e:r.e})); }catch(e){}
+  applyLic(r); closeModal('upgradeModal');
+  $('actText').textContent = 'شكراً لك! فُتحت لك كل الميزات حتى ' + fmtYmd(r.e) + '.';
+  openModal('activatedModal'); render();
+}
+function cancelLicense(){
+  showConfirm('إلغاء التفعيل', 'سيعود هذا الجهاز إلى النسخة المجانية وتبقى بياناتك محفوظة. يمكنك إعادة التفعيل بنفس الكود ما دامت مدته سارية.', () => {
+    try{ localStorage.removeItem(LIC_KEY); }catch(e){}
+    applyLic(null); notify('تم إلغاء التفعيل'); render();
+  });
+}
+const REASON_SECTION = 'النسخة المجانية تتسع لشعبة واحدة فقط. رقّ للنسخة السنوية لإضافة شعب أخرى.';
+const REASON_NAMES = 'وصلت إلى الحد الأقصى في النسخة المجانية (' + FREE_NAMES + ' اسماً في الشعبة). رقّ للنسخة السنوية لإضافة المزيد.';
+
 /* ===== لوحة الأرقام (تظهر تحت الخانة) ===== */
 const keypad = $('numKeypad');
 const ICON_BACK = '<svg viewBox="0 0 24 24"><path d="M21 5H9l-6 7 6 7h12a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1z"/><line x1="12" y1="9.5" x2="17" y2="14.5"/><line x1="17" y1="9.5" x2="12" y2="14.5"/></svg>';
@@ -3574,6 +3736,7 @@ document.addEventListener('visibilitychange', () => { if(document.hidden) save()
 
 document.body.classList.add('intro');
 setTimeout(() => document.body.classList.remove('intro'), 2200);
+initLicense();
 initStageLabels();
 loadStageBefore = getStage();
 initInstallCard();

@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>مولّد أكواد التفعيل (للمالك فقط)</title>
+<style>
+  body{font-family:'Segoe UI',Tahoma,system-ui,sans-serif; background:#f3f3f0; color:#1a1a1a; margin:0; padding:20px; line-height:1.8}
+  .box{max-width:640px; margin:0 auto 16px; background:#fff; border:1px solid #ddd; border-radius:16px; padding:18px}
+  h1{font-size:20px; margin:0 0 12px; color:#1f5c55} h2{font-size:16px; margin:0 0 10px}
+  label{display:block; font-weight:700; font-size:13px; margin:10px 0 4px}
+  input,textarea{width:100%; box-sizing:border-box; padding:10px; border:1px solid #ccc; border-radius:10px; font:inherit}
+  textarea{direction:ltr; text-align:left; font-size:12px; min-height:80px}
+  button{padding:10px 18px; border:none; border-radius:10px; background:#1f5c55; color:#fff; font:inherit; font-weight:700; cursor:pointer; margin-top:10px}
+  button.sec{background:#e6e6e0; color:#1a1a1a}
+  .warn{background:#fff4e0; border:1px solid #f0c978; border-radius:10px; padding:10px; font-size:13px}
+  .row{display:flex; gap:10px} .row>div{flex:1}
+</style>
+</head>
+<body>
+<div class="box"><h1>مولّد أكواد التفعيل</h1>
+<div class="warn">للمالك فقط. المفتاح الخاص يبقى عندك ولا يُرفع إلى GitHub ولا يُرسل لأحد. هذه الصفحة تعمل بدون إنترنت.</div></div>
+
+<div class="box">
+<h2>1) إنشاء المفاتيح (مرة واحدة فقط)</h2>
+<button onclick="genKeys()">إنشاء زوج مفاتيح</button>
+<label>المفتاح العام (أرسله للمطوّر ليُضاف إلى التطبيق)</label>
+<textarea id="pub" readonly></textarea>
+<label>المفتاح الخاص (احفظه في مكان آمن، ولا تشاركه)</label>
+<textarea id="priv" readonly></textarea>
+<button class="sec" onclick="dl()">حفظ المفتاح الخاص كملف</button>
+</div>
+
+<div class="box">
+<h2>2) توليد كود لمعلّم</h2>
+<label>المفتاح الخاص (الصقه أو اختر الملف)</label>
+<textarea id="privIn"></textarea>
+<input type="file" id="privFile" accept=".json,.txt" style="margin-top:6px">
+<div class="row">
+<div><label>رقم طلب الجهاز (8 أرقام)</label><input id="dev" inputmode="numeric" maxlength="8" placeholder="12345678"></div>
+</div>
+<div class="row">
+<div><label>تاريخ البدء</label><input id="st" type="date"></div>
+<div><label>تاريخ الانتهاء (آخر يوم)</label><input id="en" type="date"></div>
+</div>
+<button onclick="makeCode()">توليد الكود</button>
+<label>الكود</label>
+<textarea id="out" readonly></textarea>
+<button class="sec" onclick="copyOut()">نسخ رسالة الرد</button>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const b64u=b=>btoa(String.fromCharCode(...new Uint8Array(b))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const ymd=v=>v.replace(/-/g,'');
+(function(){ const t=new Date(), p=n=>String(n).padStart(2,'0'); $('st').value=t.getFullYear()+'-'+p(t.getMonth()+1)+'-'+p(t.getDate()); const e=new Date(t.getFullYear()+1,t.getMonth(),t.getDate()-1); $('en').value=e.getFullYear()+'-'+p(e.getMonth()+1)+'-'+p(e.getDate()); })();
+async function genKeys(){
+  const k=await crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},true,['sign','verify']);
+  const pub=await crypto.subtle.exportKey('jwk',k.publicKey), pr=await crypto.subtle.exportKey('jwk',k.privateKey);
+  $('pub').value=JSON.stringify({kty:pub.kty,crv:pub.crv,x:pub.x,y:pub.y});
+  $('priv').value=JSON.stringify(pr); $('privIn').value=$('priv').value;
+}
+function dl(){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([$('priv').value||$('privIn').value],{type:'application/json'})); a.download='activation-private-key.json'; a.click(); }
+$('privFile').onchange=async e=>{ const f=e.target.files[0]; if(f) $('privIn').value=await f.text(); };
+async function makeCode(){
+  try{
+    const dev=$('dev').value.trim(); if(!/^\d{8}$/.test(dev)) return alert('رقم الجهاز يجب أن يكون 8 أرقام');
+    if(!$('st').value||!$('en').value||$('en').value<$('st').value) return alert('راجع التاريخين');
+    const key=await crypto.subtle.importKey('jwk',JSON.parse($('privIn').value),{name:'ECDSA',namedCurve:'P-256'},false,['sign']);
+    const data=new TextEncoder().encode(dev+'|'+ymd($('st').value)+'|'+ymd($('en').value));
+    const sig=await crypto.subtle.sign({name:'ECDSA',hash:'SHA-256'},key,data);
+    $('out').value='v1.'+b64u(data)+'.'+b64u(sig);
+  }catch(e){ alert('تعذّر التوليد: تأكد من المفتاح الخاص'); }
+}
+function copyOut(){
+  const c=$('out').value; if(!c) return;
+  navigator.clipboard.writeText('تم استلام طلبك، هذا كود التفعيل (ينتهي '+$('en').value+'):\n\n'+c+'\n\nالصقه في التطبيق: الإعدادات ← ترقية.');
+}
+</script>
+</body>
+</html>
