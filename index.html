@@ -907,6 +907,19 @@ html.vt-run *{transition:none!important}
 .strip-bar .sections-strip{position:relative; top:auto; margin-top:0}
 .strip-bar .undo-row{position:absolute; z-index:200; left:6px; background:var(--bg); padding:3px; border-radius:999px; box-shadow:var(--shadow); top:50%; transform:translateY(-50%); margin:0; gap:6px; display:flex}
 .strip-bar .ur-btn{width:34px; height:34px; box-shadow:none}
+/* بحث في كل الشعب */
+.ur-btn svg{width:18px; height:18px; fill:none; stroke:currentColor; stroke-width:2.2; stroke-linecap:round; stroke-linejoin:round}
+.strip-bar .sections-strip{padding-left:130px}
+.gsearch{position:absolute; top:100%; left:8px; right:8px; margin-top:6px; background:var(--card,var(--bg2)); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); padding:8px; z-index:210}
+.gsearch[hidden]{display:none}
+.gsearch input{width:100%; font:inherit; font-size:15px; padding:10px 12px; border-radius:12px; border:1px solid var(--line); background:var(--bg); color:var(--ink)}
+.gs-res{max-height:42vh; overflow:auto; margin-top:6px}
+.gs-item{display:flex; justify-content:space-between; gap:8px; padding:10px 8px; border-radius:10px; cursor:pointer; font-weight:700; font-size:14px}
+.gs-item:active,.gs-item:hover{background:color-mix(in srgb, var(--accent) 14%, transparent)}
+.gs-item small{color:var(--ink2); font-weight:700; white-space:nowrap}
+.gs-empty{padding:10px 8px; color:var(--ink2); font-size:13px}
+tr.gs-flash td{animation:gsflash 1.6s ease}
+@keyframes gsflash{0%,60%{background:color-mix(in srgb, var(--accent) 35%, transparent)}100%{background:transparent}}
 /* صفحة الإعدادات */
 .set-page{position:fixed; inset:0; z-index:800; background:var(--bg); overflow:auto; animation:fade .25s ease}
 .set-page[hidden]{display:none}
@@ -971,10 +984,12 @@ html.vt-run *{transition:none!important}
   </div>
   <div class="strip-bar">
     <div class="undo-row">
+      <button class="ur-btn" id="gSearchBtn" onclick="toggleGSearch()" aria-label="بحث في كل الشعب"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></button>
       <button class="ur-btn" id="undoBtn" onclick="histUndo()" aria-label="رجوع" disabled><svg viewBox="0 0 24 24"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg></button>
       <button class="ur-btn" id="redoBtn" onclick="histRedo()" aria-label="للأمام" disabled><svg viewBox="0 0 24 24"><line x1="20" y1="12" x2="4" y2="12"/><polyline points="10 6 4 12 10 18"/></svg></button>
     </div>
     <div class="sections-strip" id="sectionsStrip"></div>
+    <div class="gsearch" id="gSearch" hidden><input type="text" id="gSearchInp" placeholder="ابحث بالاسم في كل الشعب" oninput="runGSearch()"><div class="gs-res" id="gSearchRes"></div></div>
   </div>
   <div id="sectionsContainer"></div>
 </main>
@@ -1835,6 +1850,35 @@ document.addEventListener('click', (e) => {
   if(e.target.closest && (e.target.closest('.search-row') || e.target.closest('[aria-label="بحث"]'))) return;
   [...searchOpen].forEach(closeSearch);
 });
+
+function toggleGSearch(){
+  const g=$('gSearch'); g.hidden=!g.hidden;
+  if(!g.hidden){ $('gSearchInp').value=''; runGSearch(); $('gSearchInp').focus(); }
+}
+function runGSearch(){
+  const q=normalizeAr($('gSearchInp').value||''), box=$('gSearchRes'); box.innerHTML='';
+  if(!q){ box.innerHTML='<div class="gs-empty">اكتب جزءاً من الاسم</div>'; return; }
+  let n=0;
+  state.sections.forEach((sec,si)=>sec.students.forEach((stu,ri)=>{
+    if(n<40 && stu.name && normalizeAr(stu.name).includes(q)){
+      n++; const d=document.createElement('div'); d.className='gs-item';
+      d.innerHTML='<span>'+esc(stu.name)+'</span><small>شعبة '+esc(sec.sec)+'</small>';
+      d.onclick=()=>gGo(si,ri); box.appendChild(d);
+    }
+  }));
+  if(!n) box.innerHTML='<div class="gs-empty">لا توجد نتائج</div>';
+}
+function gGo(si,ri){
+  $('gSearch').hidden=true;
+  scrollToSection(si);
+  setTimeout(()=>{
+    const tr=document.querySelector('#section_'+si+' tbody tr[data-ri="'+ri+'"]'); if(!tr) return;
+    tr.hidden=false; tr.scrollIntoView({block:'center',behavior:'smooth'});
+    tr.classList.remove('gs-flash'); void tr.offsetWidth; tr.classList.add('gs-flash');
+    setTimeout(()=>tr.classList.remove('gs-flash'),1800);
+  },450);
+}
+document.addEventListener('click',e=>{ const g=$('gSearch'); if(g&&!g.hidden&&!e.target.closest('#gSearch,#gSearchBtn')) g.hidden=true; });
 function scrollToSection(si){
   const el = $('section_' + si);
   if(!el) return;
