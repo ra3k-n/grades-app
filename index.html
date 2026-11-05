@@ -376,7 +376,7 @@ td.name-cell input:not([readonly]){
   background:var(--bg2);
   box-shadow:inset 0 0 0 2px var(--accent);
 }
-td.num-cell{width:48px; background:var(--bg2); font-weight:700; font-size:13px}
+td.num-cell{-webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent; width:48px; background:var(--bg2); font-weight:700; font-size:13px}
 thead th.num-col{width:48px; background:linear-gradient(180deg,#e4e4e4,#d8d8d4); border-left:none}
 :root[data-theme="dark"] thead th.num-col{background:linear-gradient(180deg,#2d3835,#263130)}
 td.num-cell input{
@@ -1676,7 +1676,12 @@ function buildStudentRow(stu, si, ri){
   }
   const tdNum = document.createElement('td');
   tdNum.className = 'num-cell';
-  tdNum.innerHTML = '<input size="1" readonly data-si="' + si + '" data-ri="' + ri + '" data-field="num" value="' + esc(stu.num) + '" inputmode="none" data-num="1">';
+  tdNum.innerHTML = '<input size="1" readonly tabindex="-1" data-si="' + si + '" data-ri="' + ri + '" data-field="num" value="' + esc(stu.num) + '" inputmode="none" style="pointer-events:none">';
+  tdNum.style.cursor = 'pointer';
+  tdNum.addEventListener('click', () => {
+    if(typeof selectModeSections !== 'undefined' && selectModeSections.has(si)){ toggleStudentSelection(si, ri); return; }
+    currentSectionForMenu = si; currentRowForMenu = ri; openRowMenu(si, ri);
+  });
   tr.appendChild(tdNum);
   tr.appendChild(tdName);
 
